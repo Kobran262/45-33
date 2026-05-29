@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Винил-каталог — дизайн всех экранов · Аналоговый стол</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=Archivo:wght@400..600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #211d18;
+    --bg-deep: #191510;
+    --panel: #2d2820;
+    --panel-line: #3d362b;
+    --row-line: #322c23;
+    --ink: #ead9b6;
+    --ink-soft: #d8cfbf;
+    --ink-mut: #9a8f78;
+    --ink-faint: #8a7f6a;
+    --gold: #c98f3c;
+    --gold-soft: #b88a4a;
+    --green: #7fa86a;
+    --red: #c97a5a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #14110d;
+    font-family: 'Archivo', sans-serif;
+    color: var(--ink-soft);
+    padding: 48px 24px 90px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page-head { max-width: 1340px; margin: 0 auto 14px; }
+  .page-head .eyebrow { font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:3px; color:var(--gold); text-transform:uppercase; }
+  .page-head h1 {
+    font-family: 'Fraunces', serif; font-size: 36px; font-weight: 600;
+    color: #f3ecdd; margin-top: 8px; letter-spacing: -0.5px;
+  }
+  .page-head p {
+    margin-top: 10px; font-size: 14.5px; color: var(--ink-mut);
+    max-width: 680px; line-height: 1.65;
+  }
+  .grid {
+    margin: 40px 0 0;
+    display: flex; flex-direction: row; flex-wrap: nowrap;
+    gap: 40px;
+    overflow-x: auto; overflow-y: hidden;
+    padding: 4px 24px 24px;
+    scroll-snap-type: x proximity;
+  }
+  .grid::-webkit-scrollbar { height: 10px; }
+  .grid::-webkit-scrollbar-track { background: #1c1813; border-radius: 5px; }
+  .grid::-webkit-scrollbar-thumb { background: #3d362b; border-radius: 5px; }
+  .cell { scroll-snap-align: start; flex: 0 0 auto; }
+  .scroll-hint {
+    max-width:1340px; margin: 18px auto 0; font-family:'IBM Plex Mono',monospace;
+    font-size:11px; color:var(--gold); letter-spacing:1px;
+  }
+  .cell { display: flex; flex-direction: column; align-items: center; }
+  .cap { width: 320px; margin-bottom: 16px; }
+  .cap .n { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--gold); letter-spacing:1.5px; }
+  .cap .t { font-family:'Fraunces',serif; font-size:20px; color:#f3ecdd; margin-top:3px; }
+  .cap .d { font-size:12.5px; color:var(--ink-faint); line-height:1.5; margin-top:5px; }
+
+  /* phone */
+  .phone {
+    width: 320px; height: 680px;
+    border-radius: 40px; padding: 11px;
+    background: #2a2620;
+    box-shadow: 0 26px 64px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05);
+  }
+  .screen {
+    width: 100%; height: 100%; border-radius: 30px;
+    background: var(--bg); overflow: hidden; position: relative;
+    display: flex; flex-direction: column;
+  }
+  .sb {
+    display:flex; justify-content:space-between; align-items:center;
+    padding: 14px 22px 4px; font-size:12px; font-weight:600; color:var(--ink-faint);
+    flex-shrink: 0;
+  }
+  .body { flex: 1; overflow: hidden; }
+
+  /* nav bar */
+  .nav {
+    flex-shrink:0; height:62px; background:var(--bg-deep);
+    border-top:1px solid var(--row-line);
+    display:flex; align-items:center; justify-content:space-around;
+  }
+  .nav .ni { display:flex; flex-direction:column; align-items:center; gap:3px; }
+  .nav .ic { font-style:normal; font-size:18px; color:#5e5648; }
+  .nav .nl { font-size:8.5px; color:#5e5648; font-family:'IBM Plex Mono',monospace; }
+  .nav .ni.on .ic, .nav .ni.on .nl { color:var(--gold); }
+
+  /* generic */
+  .sec-h { display:flex; justify-content:space-between; align-items:baseline; padding: 16px 22px 8px; }
+  .sec-h h3 { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--ink-faint); text-transform:uppercase; font-weight:500; }
+  .sec-h a { font-size:10px; color:var(--gold); font-family:'IBM Plex Mono',monospace; }
+
+  /* felt panel */
+  .felt {
+    margin: 6px 16px 0; border-radius: 16px;
+    background: var(--panel); border: 1px solid var(--panel-line);
+    padding: 15px 16px 14px;
+  }
+  .felt-k { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--ink-faint); text-transform:uppercase; }
+  .felt-t { font-family:'Fraunces',serif; font-size:23px; font-weight:600; color:var(--ink); margin-top:3px; }
+
+  .disc { border-radius:50%; background: repeating-radial-gradient(circle, #1a1712 0 2px, #241f18 2px 4px); position:relative; flex-shrink:0; box-shadow:0 4px 14px rgba(0,0,0,0.5); }
+  .disc.lbl-gold::after { content:''; position:absolute; inset:36%; border-radius:50%; background:var(--gold); }
+  .disc.lbl-gold::before { content:''; position:absolute; inset:46%; border-radius:50%; background:var(--bg); z-index:1; }
+
+  /* sleeve */
+  .sleeve { border-radius:3px; flex-shrink:0; box-shadow:0 3px 9px rgba(0,0,0,0.45); position:relative; }
+  .grade { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--green); border:1px solid #3d4a30; padding:2px 6px; border-radius:3px; white-space:nowrap; }
+
+  /* list row */
+  .row { display:flex; gap:12px; align-items:center; padding:10px 0; border-bottom:1px solid var(--row-line); }
+  .row .nm { font-family:'Fraunces',serif; font-size:14px; color:var(--ink); font-weight:600; line-height:1.1; }
+  .row .ar { font-size:10.5px; color:var(--ink-faint); margin-top:2px; }
+
+  /* tabs */
+  .tabs { display:flex; gap:7px; padding: 12px 22px 6px; }
+  .tab { font-family:'IBM Plex Mono',monospace; font-size:10px; padding:6px 12px; border-radius:20px; border:1px solid var(--panel-line); color:var(--ink-mut); white-space:nowrap; }
+  .tab.on { background:var(--gold); color:var(--bg); border-color:var(--gold); font-weight:500; }
+
+  /* fab */
+  .fab {
+    position:absolute; bottom:78px; right:18px;
+    width:52px; height:52px; border-radius:50%;
+    background:var(--gold); color:var(--bg);
+    display:flex; align-items:center; justify-content:center;
+    font-size:25px; box-shadow:0 8px 20px rgba(201,143,60,0.4);
+  }
+
+  /* buttons */
+  .btn { display:flex; align-items:center; justify-content:center; gap:8px;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:1px;
+    text-transform:uppercase; border-radius:10px; padding:13px; }
+  .btn-gold { background:var(--gold); color:var(--bg); font-weight:500; }
+  .btn-ghost { background:transparent; color:var(--ink-mut); border:1px solid var(--panel-line); }
+
+  /* field */
+  .field { margin: 0 22px 12px; }
+  .field-l { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1.5px; color:var(--ink-faint); text-transform:uppercase; margin-bottom:5px; }
+  .field-v { background:var(--panel); border:1px solid var(--panel-line); border-radius:9px; padding:11px 12px; font-size:13px; color:var(--ink); }
+  .field-v.empty { color:#5e5648; }
+
+  .topbar { display:flex; justify-content:space-between; align-items:center; padding: 8px 20px 0; flex-shrink:0; }
+  .topbar .tb-ic { width:34px; height:34px; border-radius:50%; background:var(--panel); border:1px solid var(--panel-line); display:flex; align-items:center; justify-content:center; font-size:15px; color:var(--ink-mut); font-style:normal; }
+  .topbar .tb-av { width:34px; height:34px; border-radius:50%; background:var(--gold); display:flex; align-items:center; justify-content:center; font-size:13px; color:var(--bg); font-family:'Fraunces',serif; font-weight:600; }
+  .footnote { max-width:1340px; margin:64px auto 0; padding-top:26px; border-top:1px solid #2e2920; font-size:13px; color:#79705f; line-height:1.7; }
+  .footnote b { color:#bdb39d; font-weight:600; }
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <div class="eyebrow">концепт 05 · аналоговый стол</div>
+  <h1>Винил-каталог — дизайн всех экранов</h1>
+  <p>Десять ключевых экранов MVP в едином визуальном языке. Статичный макет — без рабочих переходов и интерактива. Задача этого этапа: утвердить облик вкладок, карточек, списков, форм и состояний. Оживление — следующий шаг.</p>
+</div>
+
+<div class="scroll-hint">→ листай вбок, чтобы увидеть все 10 экранов</div>
+
+<div class="grid">
+
+  <!-- ============ 1. ГЛАВНЫЙ ЭКРАН ============ -->
+  <div class="cell">
+    <div class="cap">
+      <div class="n">01 / 10</div>
+      <div class="t">Главный экран — коллекция</div>
+      <div class="d">«Стол» с последним добавленным наверху, ниже — вся полка списком с грейдингом состояния.</div>
+    </div>
+    <div class="phone"><div class="screen">
+      <div class="sb"><span>9:41</span><span>●●● ▮</span></div>
+      <div class="topbar">
+        <div class="tb-av">M</div>
+        <div class="tb-ic">⌖</div>
+      </div>
+      <div class="body">
+        <div class="felt" style="margin-top:10px;">
+          <div class="felt-k">коллекция · 148 пластинок</div>
+          <div class="felt-t">На столе</div>
+          <div style="display:flex;align-items:center;gap:14px;margin-top:13px;">
+            <div class="disc lbl-gold" style="width:74px;height:74px;"></div>
+            <div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--ink-faint);letter-spacing:1px;">ПОСЛЕДНЕЕ ДОБАВЛЕНО</div>
+              <div style="font-family:'Fraunces',serif;font-size:15px;color:var(--ink);font-weight:600;margin-top:3px;">Kind of Blue</div>
+              <div style="font-size:10.5px;color:var(--ink-mut);margin-top:2px;">Miles Davis · 1959 · €38</div>
+            </div>
+          </div>
+        </div>
+        <div class="tabs">
+          <div class="tab on">всё</div><div class="tab">джаз</div><div class="tab">рок</div><div class="tab">любимое</div>
+        </div>
+        <div class="sec-h"><h3>вся полка</h3><a>фильтр ↓</a></div>
+        <div style="padding:0 22px;">
+          <div class="row">
+            <div class="sleeve" style="width:44px;height:44px;background:#2f5d6e;"></div>
+            <div style="flex:1;"><div class="nm">Rumours</div><div class="ar">Fleetwood Mac · 1977</div></div>
+            <div class="grade">VG+</div>
+          </div>
+          <div class="row">
+            <div class="sleeve" style="width:44px;height:44px;background:#7a6a3a;"></div>
+            <div style="flex:1;"><div class="nm">Blue Train</div><div class="ar">John Coltrane · 1958</div></div>
+            <div class="grade">NM</div>
+          </div>
+          <div class="row">
+            <div class="sleeve" style="width:44px;height:44px;background:#9c3d52;"></div>
+            <div style="flex:1;"><div class="nm">Hounds of Love</div><div class="ar">Kate Bush · 1985</div></div>
+            <div class="grade">VG</div>
+          </div>
+          <div class="row">
+            <div class="sleeve" style="width:44px;height:44px;background:#3a5536;"></div>
+            <div style="flex:1;"><div class="nm">Pet Sounds</div><div class="ar">Beach Boys · 1966</div></div>
+            <div class="grade">NM</div>
+          </div>
+          <div class="row" style="border-bottom:none;">
+            <div class="sleeve" style="width:44px;height:44px;background:#a8632c;"></div>
+            <div style="flex:1;"><div class="nm">Aja</div><div class="ar">Steely Dan · 1977</div></div>
+            <div class="grade">VG+</div>
+          </div>
+        </div>
+      </div>
+      <div class="fab">+</div>
+      <div class="nav">
+        <div class="ni on"><span class="ic">▤</span><span class="nl">полка</span></div>
+        <div class="ni"><span class="ic">♡</span><span class="nl">вишлист</span></div>
+        <div class="ni"><span class="ic">◍</span><span class="nl">витрина</span></div>
+      </div>
+    </div></div></div>
+  </div>
+
+  <!-- ============ 2. КАРТОЧКА ПЛАСТИНКИ ============ -->
+  <div class="cell">
+    <div class="cap">
+      <div class="n">02 / 10</div>
+      <div class="t">Карточка пластинки</div>
+      <div class="d">Детальный вид релиза: обложка, данные с Discogs, цена покупки (приватно), история и теги.</div>
+    </div>
+    <div class="phone"><div class="screen">
+      <div class="sb"><span>9:41</span><span>●●● ▮</span></div>
+      <div class="body">
+        <div style="padding:6px 22px 4px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);">‹ полка</span>
+        </div>
+        <div style="display:flex;justify-content:center;padding:8px 22px 14px;">
+          <div class="sleeve" style="width:170px;height:170px;background:#b8472b;box-shadow:0 14px 30px rgba(0,0,0,0.55);"></div>
+        </div>
+        <div style="padding:0 22px;text-align:center;">
+          <div style="font-family:'Fraunces',serif;font-size:24px;font-weight:600;color:var(--ink);line-height:1.05;">Kind of Blue</div>
+          <div style="font-size:12px;color:var(--ink-mut);margin-top:4px;">Miles Davis</div>
+        </div>
+        <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:12px 22px 0;">
+          <span class="tab">джаз</span><span class="tab">1959</span><span class="tab">Columbia</span><span class="tab on">любимое</span>
+        </div>
+        <div style="margin:16px 22px 0;border-radius:12px;background:var(--panel);border:1px solid var(--panel-line);padding:4px 14px;">
+          <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--row-line);">
+            <span style="font-size:11px;color:var(--ink-faint);">Прессинг</span><span style="font-size:11.5px;color:var(--ink);">US 1st · mono</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--row-line);">
+            <span style="font-size:11px;color:var(--ink-faint);">Состояние</span><span class="grade">VG+</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:9px 0;">
+            <span style="font-size:11px;color:var(--ink-faint);">Цена покупки</span><span style="font-size:11.5px;color:var(--gold);font-family:'IBM Plex Mono',monospace;">€38 · приватно</span>
+          </div>
+        </div>
+        <div style="margin:14px 22px 0;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--ink-faint);text-transform:uppercase;">история</div>
+          <div style="font-family:'Fraunces',serif;font-style:italic;font-size:13px;color:var(--ink-soft);line-height:1.4;margin-top:5px;">«Блошиный рынок у Калемегдана. Конверт потёрт, звук — как новый.»</div>
+        </div>
+      </div>
+      <div class="nav">
+        <div class="ni on"><span class="ic">▤</span><span class="nl">полка</span></div>
+        <div class="ni"><span class="ic">♡</span><span class="nl">вишлист</span></div>
+        <div class="ni"><span class="ic">◍</span><span class="nl">витрина</span></div>
+      </div>
+    </div></div></div>
+  </div>
+
+  <!-- ============ 3. ДОБАВЛЕНИЕ — ПО ОДНОЙ ============ -->
+  <div class="cell">
+    <div class="cap">
+      <div class="n">03 / 10</div>
+      <div class="t">Добавление — режим «по одной»</div>
+      <div class="d">Размеренный поток на одну запись. Здесь живёт вайб: факт о релизе, спокойный темп.</div>
+    </div>
+    <div class="phone"><div class="screen">
+      <div class="sb"><span>9:41</span><span>●●● ▮</span></div>
+      <div class="body">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 22px 6px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);">✕ отмена</span>
+          <div style="display:flex;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:10px;">
+            <span style="color:var(--gold);">по одной</span><span style="color:#4a4338;">·</span><span style="color:var(--ink-faint);">списком</span>
+          </div>
+        </div>
+        <div style="text-align:center;padding:10px 22px 4px;">
+          <div style="font-family:'Fraunces',serif;font-size:21px;font-weight:600;color:var(--ink);">Новая пластинка</div>
+        </div>
+        <div style="margin:14px 22px 16px;display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--panel-line);border-radius:11px;padding:11px 13px;">
+          <span style="font-size:15px;color:var(--ink-faint);">⌕</span>
+          <span style="font-size:12.5px;color:#5e5648;">артист или название альбома…</span>
+        </div>
+        <div style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--ink-faint);margin-bottom:8px;">— ИЛИ —</div>
+        <div style="margin:0 22px 16px;display:flex;align-items:center;justify-content:center;gap:8px;border:1px dashed var(--panel-line);border-radius:11px;padding:13px;color:var(--ink-mut);font-size:12px;">
+          <span style="font-size:15px;">▦</span> отсканировать штрихкод
+        </div>
+        <div style="margin:0 22px;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--ink-faint);text-transform:uppercase;margin-bottom:8px;">найдено в discogs</div>
+          <div style="border-radius:12px;background:var(--panel);border:1px solid var(--gold);padding:13px;">
+            <div style="display:flex;gap:12px;align-items:center;">
+              <div class="sleeve" style="width:54px;height:54px;background:#b8472b;"></div>
+              <div style="flex:1;">
+                <div style="font-family:'Fraunces',serif;font-size:15px;color:var(--ink);font-weight:600;">Kind of Blue</div>
+                <div style="font-size:10.5px;color:var(--ink-mut);margin-top:2px;">Miles Davis · 1959 · Columbia</div>
+                <div style="font-size:10px;color:var(--gold);margin-top:3px;font-family:'IBM Plex Mono',monospace;">US 1st · mono</div>
+              </div>
+            </div>
+            <div style="font-family:'Fraunces',serif;font-style:italic;font-size:11.5px;color:var(--ink-faint);line-height:1.4;margin-top:10px;border-top:1px solid var(--row-line);padding-top:9px;">
+              А знаешь — этот альбом записали всего за две сессии. Почти всё с первого дубля.
+            </div>
+          </div>
+        </div>
+        <div style="margin:14px 22px 0;">
+          <div class="btn btn-gold">＋ добавить на полку</div>
+        </div>
+      </div>
+      <div class="nav">
+        <div class="ni on"><span class="ic">▤</span><span class="nl">полка</span></div>
+        <div class="ni"><span class="ic">♡</span><span class="nl">вишлист</span></div>
+        <div class="ni"><span class="ic">◍</span><span class="nl">витрина</span></div>
+      </div>
+    </div></div></div>
+  </div>
+
+  <!-- ============ 4. ДОБАВЛЕНИЕ — СПИСКОМ ============ -->
+  <div class="cell">
+    <div class="cap">
+      <div class="n">04 / 10</div>
+      <div class="t">Добавление — режим «списком»</div>
+      <div class="d">Серийное сканирование → список-черновик. Флаг «проверь» на неоднозначных, тон спокойный.</div>
+    </div>
+    <div class="phone"><div class="screen">
+      <div class="sb"><span>9:41</span><span>●●● ▮</span></div>
+      <div class="body">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 22px 6px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);">✕ отмена</span>
+          <div style="display:flex;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:10px;">
+            <span style="color:var(--ink-faint);">по одной</span><span style="color:#4a4338;">·</span><span style="color:var(--gold);">списком</span>
+          </div>
+        </div>
+        <div style="margin:10px 16px 0;border-radius:14px;background:#15120e;border:1px solid var(--panel-line);height:128px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;position:relative;">
+          <div style="width:120px;height:54px;border:2px solid var(--gold);border-radius:6px;"></div>
+          <span style="font-size:11px;color:var(--ink-mut);">наведи на штрихкод пластинки</span>
+        </div>
+        <div class="sec-h"><h3>отсканировано · 6</h3><a>готово →</a></div>
+        <div style="padding:0 22px;">
+          <div class="row">
+            <div class="sleeve" style="width:38px;height:38px;background:#b8472b;"></div>
+            <div style="flex:1;"><div class="nm">Kind of Blue</div><div class="ar">Miles Davis</div></div>
+            <span style="font-size:14px;color:var(--ink-faint);">✕</span>
+          </div>
+          <div class="row">
+            <div class="sleeve" style="width:38px;height:38px;background:#2f5d6e;"></div>
+            <div style="flex:1;"><div class="nm">Rumours</div><div class="ar">Fleetwood Mac</div></div>
+            <span style="font-size:14px;color:var(--ink-faint);">✕</span>
+          </div>
+          <div class="row">
+            <div class="sleeve" style="width:38px;height:38px;background:#7a6a3a;"></div>
+            <div style="flex:1;">
+              <div class="nm">Blue Train</div>
+              <div style="font-size:9.5px;color:var(--gold);font-family:'IBM Plex Mono',monospace;margin-top:2px;">⚑ 3 переиздания — проверь</div>
+            </div>
+            <span style="font-size:14px;color:var(--ink-faint);">✕</span>
+          </div>
+          <div class="row">
+            <div class="sleeve" style="width:38px;height:38px;background:#9c3d52;"></div>
+            <div style="flex:1;">
+              <div class="nm">Hounds of Love</div>
+              <div style="font-size:9.5px;color:var(--red);font-family:'IBM Plex Mono',monospace;margin-top:2px;">⚠ возможно, уже на полке</div>
+            </div>
+            <span style="font-size:14px;color:var(--ink-faint);">✕</span>
+          </div>
+          <div class="row" style="border-bottom:none;">
+            <div style="width:38px;height:38px;border:1px dashed var(--panel-line);border-radius:3px;display:flex;align-items:center;justify-content:center;color:#5e5648;font-size:16px;">+</div>
+            <div style="flex:1;"><div style="font-size:12px;color:var(--ink-mut);">добавить вручную</div></div>
+          </div>
+        </div>
+        <div style="margin:14px 22px 0;"><div class="btn btn-gold">сохранить 6 пластинок</div></div>
+      </div>
+      <div class="nav">
+        <div class="ni on"><span class="ic">▤</span><span class="nl">полка</span></div>
+        <div class="ni"><span class="ic">♡</span><span class="nl">вишлист</span></div>
+        <div class="ni"><span class="ic">◍</span><span class="nl">витрина</span></div>
+      </div>
+    </div></div></div>
+  </div>
+
+  <!-- ============ 5. ВИШЛИСТ ============ -->
+  <div class="cell">
+    <div class="cap">
+      <div class="n">05 / 10</div>
+      <div class="t">Вишлист</div>
+      <div class="d">Список охоты — то, что хочется добыть. Тот же визуальный язык, что и полка.</div>
+    </div>
+    <div class="phone"><div class="screen">
+      <div class="sb"><span>9:41</span><span>●●● ▮</span></div>
+      <div class="body">
+        <div class="felt">
+          <div class="felt-k">в розыске · 12 пластинок</div>
+          <div class="felt-t">Вишлист</div>
+          <div style="font-family:'Fraunces',serif;font-style:italic;font-size:12px;color:var(--ink-faint);margin-top:8px;line-height:1.4;">
+            То, за чем ты охотишься. Жаба пока держит — но это временно.
+          </div>
+        </div>
+        <div class="sec-h"><h3>хочу найти</h3><a>＋ добавить</a></div>
+        <div style="padding:0 22px;">
+          <div class="row">
+            <div class="sleeve" style="width:44px;height:44px;background:#444;border:1px dashed #5e5648;"></div>
+            <div style="flex:1;"><div class="nm">The Velvet Underground & Nico</div><div class="ar">The Velvet Underground · 1967</div></div>
+            <span style="font-size:15px;color:var(--gold);">♥</span>
+          </div>
+          <div class="row">
+            <div class="sleeve" style="width:44px;height:44px;background:#444;border:1px dashed #5e5648;"></div>
+            <div style="flex:1;"><div class="nm">Marquee Moon</div><div class="ar">Television · 1977</div></div>
+            <span style="font-size:15px;color:var(--gold);">♥</span>
+          </div>
+          <div class="row">
+            <div class="sleeve" style="width:44px;height:44px;background:#444;border:1px dashed #5e5648;"></div>
+            <div style="flex:1;"><div class="nm">Spirit of Eden</div><div class="ar">Talk Talk · 1988</div></div>
+            <span style="font-size:15px;color:var(--gold);">♥</span>
+          </div>
+          <div class="row" style="border-bottom:none;">
+            <div class="sleeve" style="width:44px;height:44px;background:#444;border:1px dashed #5e5648;"></div>
+            <div style="flex:1;"><div class="nm">Saturn</div><div class="ar">Sun Ra · 1972</div></div>
+            <span style="font-size:15px;color:var(--gold);">♥</span>
+          </div>
+        </div>
+        <div style="margin:18px 22px 0;border-radius:12px;background:var(--panel);border:1px solid var(--panel-line);padding:12px 13px;">
+          <div style="font-size:10px;color:var(--gold);font-family:'IBM Plex Mono',monospace;">💡 подсказка</div>
+          <div style="font-size:11.5px;color:var(--ink-soft);margin-top:4px;line-height:1.4;">У тебя есть тома 1, 2 и 4 этой серии — не хватает третьего.</div>
+        </div>
+      </div>
+      <div class="nav">
+        <div class="ni"><span class="ic">▤</span><span class="nl">полка</span></div>
+        <div class="ni on"><span class="ic">♡</span><span class="nl">вишлист</span></div>
+        <div class="ni"><span class="ic">◍</span><span class="nl">витрина</span></div>
+      </div>
+    </div></div></div>
+  </div>
+
+  <!-- ============ 6. ВИТРИНА — КАРТОЧКА ПЛАСТИНКИ ============ -->
+  <div class="cell">
+    <div class="cap">
+      <div class="n">06 / 10</div>
+      <div class="t">Витрина — карточка пластинки</div>
+      <div class="d">Готовая к шарингу карточка одной пластинки. Пометка приложения с ником — внизу.</div>
+    </div>
+    <div class="phone"><div class="screen">
+      <div class="sb"><span>9:41</span><span>●●● ▮</span></div>
+      <div class="body">
+        <div style="text-align:center;padding:8px 22px 4px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);">‹ назад</span>
+        </div>
+        <div style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--ink-faint);text-transform:uppercase;padding-bottom:10px;">предпросмотр карточки</div>
+        <!-- сама карточка -->
+        <div style="margin:0 20px;border-radius:14px;overflow:hidden;background:#1a1712;border:1px solid var(--panel-line);">
+          <div style="padding:22px 20px 6px;display:flex;justify-content:center;">
+            <div class="sleeve" style="width:150px;height:150px;background:#b8472b;box-shadow:0 12px 26px rgba(0,0,0,0.6);"></div>
+          </div>
+          <div style="text-align:center;padding:14px 20px 4px;">
+            <div style="font-family:'Fraunces',serif;font-size:21px;font-weight:600;color:var(--ink);">Kind of Blue</div>
+            <div style="font-size:11.5px;color:var(--ink-mut);margin-top:3px;">Miles Davis</div>
+          </div>
+          <div style="display:flex;justify-content:center;gap:18px;padding:10px 20px 6px;">
+            <div style="text-align:center;"><div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--ink-faint);">ГОД</div><div style="font-size:12px;color:var(--gold);margin-top:2px;">1959</div></div>
+            <div style="text-align:center;"><div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--ink-faint);">ПРЕССИНГ</div><div style="font-size:12px;color:var(--gold);margin-top:2px;">US 1st</div></div>
+            <div style="text-align:center;"><div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--ink-faint);">ЛЕЙБЛ</div><div style="font-size:12px;color:var(--gold);margin-top:2px;">Columbia</div></div>
+          </div>
+          <div style="font-family:'Fraunces',serif;font-style:italic;font-size:11.5px;color:var(--ink-faint);text-align:center;padding:6px 24px 0;line-height:1.4;">
+            «найдено на блошином рынке у Калемегдана»
+          </div>
+          <div style="margin-top:14px;border-top:1px solid var(--row-line);padding:9px 20px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--ink-faint);">@marko.collects</span>
+            <span style="font-family:'Fraunces',serif;font-size:10px;color:var(--gold-soft);">◍ Crate</span>
+          </div>
+        </div>
+        <div style="margin:14px 22px 0;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--ink-faint);text-transform:uppercase;margin-bottom:7px;">стиль карточки</div>
+          <div style="display:flex;gap:8px;">
+            <div style="width:42px;height:42px;border-radius:8px;background:#1a1712;border:2px solid var(--gold);flex-shrink:0;"></div>
+            <div style="width:42px;height:42px;border-radius:8px;background:#2f2a22;border:1px solid var(--panel-line);flex-shrink:0;"></div>
+            <div style="width:42px;height:42px;border-radius:8px;background:#332a1c;border:1px solid var(--panel-line);position:relative;flex-shrink:0;">
+              <span style="position:absolute;top:-6px;right:-6px;background:var(--gold);color:var(--bg);font-size:8px;font-family:'IBM Plex Mono',monospace;border-radius:4px;padding:1px 4px;">PRO</span>
+            </div>
+            <div style="width:42px;height:42px;border-radius:8px;background:#2a2230;border:1px solid var(--panel-line);position:relative;flex-shrink:0;">
+              <span style="position:absolute;top:-6px;right:-6px;background:var(--gold);color:var(--bg);font-size:8px;font-family:'IBM Plex Mono',monospace;border-radius:4px;padding:1px 4px;">PRO</span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin:14px 22px 0;">
+          <div class="btn btn-ghost" style="flex:1;">настроить</div>
+          <div class="btn btn-gold" style="flex:1.6;">↗ поделиться</div>
+        </div>
+      </div>
+      <div class="nav">
+        <div class="ni"><span class="ic">▤</span><span class="nl">полка</span></div>
+        <div class="ni"><span class="ic">♡</span><span class="nl">вишлист</span></div>
+        <div class="ni on"><span class="ic">◍</span><span class="nl">витрина</span></div>
+      </div>
+    </div></div></div>
+  </div>
+
+  <!-- ============ 7. ВИТРИНА — КАРТОЧКА КОЛЛЕКЦИИ ============ -->
+  <div class="cell">
+    <div class="cap">
+      <div class="n">07 / 10</div>
+      <div class="t">Витрина — карточка коллекции</div>
+      <div class="d">Формат «полка»: сетка обложек + краткая статистика. Вирусное ядро приложения.</div>
+    </div>
+    <div class="phone"><div class="screen">
+      <div class="sb"><span>9:41</span><span>●●● ▮</span></div>
+      <div class="body">
+        <div style="text-align:center;padding:8px 22px 4px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);">‹ назад</span>
+        </div>
+        <div style="display:flex;justify-content:center;gap:7px;padding-bottom:10px;">
+          <span class="tab on">полка</span><span class="tab">сетка</span>
+        </div>
+        <div style="margin:0 20px;border-radius:14px;overflow:hidden;background:#1a1712;border:1px solid var(--panel-line);">
+          <div style="padding:18px 18px 8px;text-align:center;">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:2px;color:var(--ink-faint);">КОЛЛЕКЦИЯ ВИНИЛА</div>
+            <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--ink);margin-top:3px;">Джаз-полка</div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:6px 18px 10px;">
+            <div class="sleeve" style="aspect-ratio:1;background:#b8472b;"></div>
+            <div class="sleeve" style="aspect-ratio:1;background:#7a6a3a;"></div>
+            <div class="sleeve" style="aspect-ratio:1;background:#2f5d6e;"></div>
+            <div class="sleeve" style="aspect-ratio:1;background:#9c3d52;"></div>
+            <div class="sleeve" style="aspect-ratio:1;background:#3a5536;"></div>
+            <div class="sleeve" style="aspect-ratio:1;background:#a8632c;"></div>
+            <div class="sleeve" style="aspect-ratio:1;background:#5a4a7a;"></div>
+            <div class="sleeve" style="aspect-ratio:1;background:#6e5536;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-around;padding:8px 18px;border-top:1px solid var(--row-line);">
+            <div style="text-align:center;"><div style="font-family:'Fraunces',serif;font-size:18px;color:var(--gold);font-weight:600;">41</div><div style="font-size:8.5px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;">ПЛАСТИНОК</div></div>
+            <div style="text-align:center;"><div style="font-family:'Fraunces',serif;font-size:18px;color:var(--gold);font-weight:600;">1956–88</div><div style="font-size:8.5px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;">ГОДЫ</div></div>
+            <div style="text-align:center;"><div style="font-family:'Fraunces',serif;font-size:18px;color:var(--gold);font-weight:600;">Blue Note</div><div style="font-size:8.5px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;">ЧАЩЕ ВСЕГО</div></div>
+          </div>
+          <div style="border-top:1px solid var(--row-line);padding:9px 18px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--ink-faint);">@marko.collects</span>
+            <span style="font-family:'Fraunces',serif;font-size:10px;color:var(--gold-soft);">◍ Crate</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin:16px 22px 0;">
+          <div class="btn btn-ghost" style="flex:1;">настроить</div>
+          <div class="btn btn-gold" style="flex:1.6;">↗ поделиться</div>
+        </div>
+      </div>
+      <div class="nav">
+        <div class="ni"><span class="ic">▤</span><span class="nl">полка</span></div>
+        <div class="ni"><span class="ic">♡</span><span class="nl">вишлист</span></div>
+        <div class="ni on"><span class="ic">◍</span><span class="nl">витрина</span></div>
+      </div>
+    </div></div></div>
+  </div>
+
+  <!-- ============ 8. ПУСТОЙ ПЕРВЫЙ ЭКРАН ============ -->
+  <div class="cell">
+    <div class="cap">
+      <div class="n">08 / 10</div>
+      <div class="t">Первый запуск — пустая полка</div>
+      <div class="d">Что видит человек с пустой коллекцией. Вайбовое приглашение к первому действию.</div>
+    </div>
+    <div class="phone"><div class="screen">
+      <div class="sb"><span>9:41</span><span>●●● ▮</span></div>
+      <div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 34px;text-align:center;">
+        <div class="disc lbl-gold" style="width:120px;height:120px;opacity:0.9;"></div>
+        <div style="font-family:'Fraunces',serif;font-size:23px;font-weight:600;color:var(--ink);margin-top:26px;line-height:1.15;">
+          Полка пока пуста
+        </div>
+        <div style="font-family:'Fraunces',serif;font-style:italic;font-size:13.5px;color:var(--ink-mut);margin-top:10px;line-height:1.5;">
+          Каждая коллекция начинается с одной пластинки. Где-то она у тебя уже лежит — давай занесём.
+        </div>
+        <div style="width:100%;margin-top:26px;">
+          <div class="btn btn-gold">＋ добавить первую пластинку</div>
+        </div>
+        <div style="width:100%;margin-top:10px;">
+          <div class="btn btn-ghost">▦ отсканировать целую стопку</div>
+        </div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--ink-faint);margin-top:20px;letter-spacing:0.5px;">
+          уже коллекционируешь? режим «списком» быстрее
+        </div>
+      </div>
+      <div class="nav">
+        <div class="ni on"><span class="ic">▤</span><span class="nl">полка</span></div>
+        <div class="ni"><span class="ic">♡</span><span class="nl">вишлист</span></div>
+        <div class="ni"><span class="ic">◍</span><span class="nl">витрина</span></div>
+      </div>
+    </div></div></div>
+  </div>
+
+  <!-- ============ 9. ПРОФИЛЬ ============ -->
+  <div class="cell">
+    <div class="cap">
+      <div class="n">09 / 10</div>
+      <div class="t">Профиль</div>
+      <div class="d">Переехал из нижней панели наверх. Аккаунт, сводка коллекции, премиум, настройки.</div>
+    </div>
+    <div class="phone"><div class="screen">
+      <div class="sb"><span>9:41</span><span>●●● ▮</span></div>
+      <div class="topbar">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);">‹ полка</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-faint);">настройки ⚙</span>
+      </div>
+      <div class="body">
+        <div style="text-align:center;padding:14px 22px 4px;">
+          <div style="width:70px;height:70px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:30px;color:var(--bg);font-weight:600;margin:0 auto;">M</div>
+          <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--ink);margin-top:10px;">Marko</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-faint);margin-top:2px;">@marko.collects · с 2024</div>
+        </div>
+        <div style="display:flex;gap:8px;margin:16px 22px 0;">
+          <div style="flex:1;background:var(--panel);border:1px solid var(--panel-line);border-radius:10px;padding:10px 8px;text-align:center;">
+            <div style="font-family:'Fraunces',serif;font-size:19px;color:var(--gold);font-weight:600;">148</div>
+            <div style="font-size:8.5px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;">ПЛАСТИНОК</div>
+          </div>
+          <div style="flex:1;background:var(--panel);border:1px solid var(--panel-line);border-radius:10px;padding:10px 8px;text-align:center;">
+            <div style="font-family:'Fraunces',serif;font-size:19px;color:var(--gold);font-weight:600;">€2 340</div>
+            <div style="font-size:8.5px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;">ВЛОЖЕНО</div>
+          </div>
+          <div style="flex:1;background:var(--panel);border:1px solid var(--panel-line);border-radius:10px;padding:10px 8px;text-align:center;">
+            <div style="font-family:'Fraunces',serif;font-size:19px;color:var(--gold);font-weight:600;">7</div>
+            <div style="font-size:8.5px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;">КОЛЛЕКЦИЙ</div>
+          </div>
+        </div>
+        <div style="margin:16px 22px 0;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--ink-faint);text-transform:uppercase;margin-bottom:7px;">статистика коллекции</div>
+          <div style="border-radius:12px;background:var(--panel);border:1px solid var(--panel-line);padding:13px 14px;">
+            <div style="display:flex;gap:4px;align-items:flex-end;height:46px;margin-bottom:8px;">
+              <div style="flex:1;background:var(--gold-soft);height:40%;border-radius:2px;"></div>
+              <div style="flex:1;background:var(--gold-soft);height:65%;border-radius:2px;"></div>
+              <div style="flex:1;background:var(--gold);height:100%;border-radius:2px;"></div>
+              <div style="flex:1;background:var(--gold-soft);height:55%;border-radius:2px;"></div>
+              <div style="flex:1;background:var(--gold-soft);height:75%;border-radius:2px;"></div>
+              <div style="flex:1;background:var(--gold-soft);height:30%;border-radius:2px;"></div>
+            </div>
+            <div style="font-size:10px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;">по десятилетиям · базовый вид</div>
+            <div style="margin-top:10px;border-top:1px solid var(--row-line);padding-top:9px;display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:11px;color:var(--ink-soft);">Расширенная аналитика</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--bg);background:var(--gold);padding:3px 8px;border-radius:5px;">PRO</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin:16px 22px 0;border-radius:12px;background:#2d2417;border:1px solid var(--gold);padding:13px 14px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div style="font-family:'Fraunces',serif;font-size:15px;color:var(--ink);font-weight:600;">Crate Premium</div>
+              <div style="font-size:10.5px;color:var(--ink-mut);margin-top:2px;">стили витрины и статистика — пакетом</div>
+            </div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--bg);background:var(--gold);padding:6px 11px;border-radius:7px;">открыть</div>
+          </div>
+        </div>
+        <div style="margin:16px 22px 0;border-radius:12px;background:var(--panel);border:1px solid var(--panel-line);padding:2px 14px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--row-line);">
+            <span style="font-size:12.5px;color:var(--ink-soft);">Имя и ник</span><span style="font-size:13px;color:var(--ink-faint);">›</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--row-line);">
+            <span style="font-size:12.5px;color:var(--ink-soft);">Стиль витрины по умолчанию</span><span style="font-size:13px;color:var(--ink-faint);">›</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--row-line);">
+            <span style="font-size:12.5px;color:var(--ink-soft);">Резервная копия коллекции</span><span style="font-size:13px;color:var(--ink-faint);">›</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;">
+            <span style="font-size:12.5px;color:var(--ink-soft);">О приложении</span><span style="font-size:13px;color:var(--ink-faint);">›</span>
+          </div>
+        </div>
+      </div>
+      <div class="nav">
+        <div class="ni"><span class="ic">▤</span><span class="nl">полка</span></div>
+        <div class="ni"><span class="ic">♡</span><span class="nl">вишлист</span></div>
+        <div class="ni"><span class="ic">◍</span><span class="nl">витрина</span></div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- ============ 10. КАРТА ВИНИЛ-СТОРОВ ============ -->
+  <div class="cell">
+    <div class="cap">
+      <div class="n">10 / 10</div>
+      <div class="t">Карта винил-сторов</div>
+      <div class="d">Фича пост-MVP. Открывается иконкой ⌖ с главного экрана. Магазины рядом + список.</div>
+    </div>
+    <div class="phone"><div class="screen">
+      <div class="sb"><span>9:41</span><span>●●● ▮</span></div>
+      <div class="topbar">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);">‹ полка</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-faint);">＋ добавить стор</span>
+      </div>
+      <div class="body">
+        <div style="padding:10px 22px 4px;">
+          <div style="font-family:'Fraunces',serif;font-size:21px;font-weight:600;color:var(--ink);">Винил рядом</div>
+          <div style="font-family:'Fraunces',serif;font-style:italic;font-size:12px;color:var(--ink-faint);margin-top:3px;">5 магазинов в пределах прогулки</div>
+        </div>
+        <!-- стилизованная карта -->
+        <div style="margin:12px 16px 0;height:188px;border-radius:14px;border:1px solid var(--panel-line);background:#1c1813;position:relative;overflow:hidden;">
+          <div style="position:absolute;inset:0;background-image:linear-gradient(var(--panel-line) 1px,transparent 1px),linear-gradient(90deg,var(--panel-line) 1px,transparent 1px);background-size:34px 34px;opacity:0.4;"></div>
+          <div style="position:absolute;left:18%;top:60%;width:46px;height:7px;background:#322c23;border-radius:4px;transform:rotate(18deg);"></div>
+          <div style="position:absolute;left:40%;top:25%;width:70px;height:7px;background:#322c23;border-radius:4px;transform:rotate(-12deg);"></div>
+          <div style="position:absolute;left:30%;top:46%;width:8px;height:8px;border-radius:50%;background:var(--ink-faint);"></div>
+          <div style="position:absolute;left:30%;top:46%;width:18px;height:18px;border-radius:50%;border:1px solid var(--ink-faint);transform:translate(-5px,-5px);"></div>
+          <div style="position:absolute;left:52%;top:33%;display:flex;flex-direction:column;align-items:center;">
+            <div style="width:24px;height:24px;border-radius:50% 50% 50% 0;background:var(--gold);transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;">
+              <span style="transform:rotate(45deg);font-size:11px;color:var(--bg);">♪</span>
+            </div>
+          </div>
+          <div style="position:absolute;left:22%;top:62%;width:22px;height:22px;border-radius:50% 50% 50% 0;background:var(--gold-soft);transform:rotate(-45deg);"></div>
+          <div style="position:absolute;left:68%;top:58%;width:22px;height:22px;border-radius:50% 50% 50% 0;background:var(--gold-soft);transform:rotate(-45deg);"></div>
+          <div style="position:absolute;right:10px;bottom:10px;background:var(--panel);border:1px solid var(--panel-line);border-radius:7px;font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--ink-mut);padding:5px 8px;">⌖ я здесь</div>
+        </div>
+        <div class="sec-h"><h3>магазины поблизости</h3></div>
+        <div style="padding:0 22px;">
+          <div class="row">
+            <div style="width:40px;height:40px;border-radius:8px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--bg);flex-shrink:0;">♪</div>
+            <div style="flex:1;"><div class="nm">Yugovinyl</div><div class="ar">Цара Душана 12 · 400 м</div></div>
+            <span style="font-size:10px;color:var(--gold);font-family:'IBM Plex Mono',monospace;">открыт</span>
+          </div>
+          <div class="row">
+            <div style="width:40px;height:40px;border-radius:8px;background:var(--panel);border:1px solid var(--panel-line);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--ink-mut);flex-shrink:0;">♪</div>
+            <div style="flex:1;"><div class="nm">Plić Records</div><div class="ar">Његошева 4 · 750 м</div></div>
+            <span style="font-size:10px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;">до 20:00</span>
+          </div>
+          <div class="row" style="border-bottom:none;">
+            <div style="width:40px;height:40px;border-radius:8px;background:var(--panel);border:1px solid var(--panel-line);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--ink-mut);flex-shrink:0;">♪</div>
+            <div style="flex:1;"><div class="nm">Disk Shop</div><div class="ar">Краља Петра 30 · 1.1 км</div></div>
+            <span style="font-size:10px;color:var(--red);font-family:'IBM Plex Mono',monospace;">закрыт</span>
+          </div>
+        </div>
+        <div style="margin:14px 22px 0;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--ink-faint);line-height:1.5;">
+          данные OpenStreetMap · нашёл магазин не на карте?<br>добавь его сам
+        </div>
+      </div>
+      <div class="nav">
+        <div class="ni on"><span class="ic">▤</span><span class="nl">полка</span></div>
+        <div class="ni"><span class="ic">♡</span><span class="nl">вишлист</span></div>
+        <div class="ni"><span class="ic">◍</span><span class="nl">витрина</span></div>
+      </div>
+    </div></div>
+  </div>
+
+</div>
+
+<div class="footnote">
+  <p><b>Что это и что дальше.</b> Десять экранов в едином визуальном языке концепта «Аналоговый стол» — главный экран, карточка пластинки, оба режима добавления, вишлист, две карточки витрины и пустой первый запуск. Это статичный макет: он фиксирует облик — типографику (Fraunces для заголовков и «голоса», IBM Plex Mono для служебных надписей), палитру (тёмный тёплый фон, золотой акцент), компоненты (felt-панель, карточки, грейдинг состояния, нав-бар). <b>Следующий шаг — оживление:</b> когда облик утверждён, эти экраны превращаются в кликабельный прототип. Навигация: профиль переехал в верхний угол главного экрана, рядом — иконка карты винил-сторов (пост-MVP). Нижняя панель — три вкладки: полка, вишлист, витрина. <b>Монетизация показана контекстно:</b> премиум-стили (метка PRO) — прямо на экране витрины при выборе стиля; расширенная аналитика — на экране профиля под базовой статистикой. Профиль перестаёт быть единственным местом продажи. Имя <code>Crate</code> и ник <code>@marko.collects</code> — условные плейсхолдеры.</p>
+</div>
+
+</body>
+</html>

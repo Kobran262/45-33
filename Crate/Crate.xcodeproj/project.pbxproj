@@ -1,0 +1,523 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 63;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0EA55A5D7CDF89B49DEBD415 /* EditRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5409DE94B1F380CC5AB9966 /* EditRecordView.swift */; };
+		0FE4BEED812D0A9929058386 /* OverpassService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AD4D23386A56662F5F16460 /* OverpassService.swift */; };
+		105C98D2FDFCBDF2C5E12C4D /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAC2B920AB7309003EB612A /* UserProfile.swift */; };
+		18A5A56DFD9529EE9D2B9046 /* Secrets.plist in Resources */ = {isa = PBXBuildFile; fileRef = D7A963054023C25D6E4AF073 /* Secrets.plist */; };
+		1BE8D42154A40B2DC2EF0023 /* ShowcaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C88B9FCFB383542634348A4 /* ShowcaseView.swift */; };
+		2053BDC4E87D1BC565A47EEC /* VinylStoreSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3727E6211B6AA476E667F08A /* VinylStoreSyncService.swift */; };
+		259A72ECEBF5010A31AFD483 /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2AB21246A2F0E9D647B150 /* BarcodeScannerView.swift */; };
+		31F340CCD557FEF0457A4869 /* ShelfView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85083F7FCFE82359E799904 /* ShelfView.swift */; };
+		374CF63D1E6F4B2768CABAE1 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C11CE165262F399FA2847554 /* LocationService.swift */; };
+		3B12C66CA9791710568CD34A /* WishlistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA52FC076E60D230A9AF238 /* WishlistView.swift */; };
+		3BC8A37CD26556771F299B9E /* UserVinylStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9D9013FC13D067D8729471 /* UserVinylStore.swift */; };
+		46A83906DCF68A29A974F3E2 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C888EA375FCF3F3FAC8A588 /* ProfileView.swift */; };
+		4FCEE7B3E552D55F6C9B1E4B /* CrateVinylApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B69514F959D78CD4C54817C /* CrateVinylApp.swift */; };
+		60F38EA6445B998444AECE7B /* VinylRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12389EB1A4FF46103D2A7EA5 /* VinylRecord.swift */; };
+		68D269B97ECE2623D3085365 /* AddBatchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87DE5E0632DA2C1E3A303586 /* AddBatchView.swift */; };
+		797BE53CB89D7436D4D97DE5 /* VoiceContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF33A9843F653913128DD91 /* VoiceContent.swift */; };
+		7D3E86C7A05B0D8576F79613 /* WishlistEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F24A0795BE2A555E2EF8338 /* WishlistEntry.swift */; };
+		7FDDC2D4E6CC4EFBD73F5A62 /* SuggestionsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B448D4F61AB48EA6E71BBA /* SuggestionsEngine.swift */; };
+		8B3A1142E6D82226052648BD /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B43C0B3AD3D86F0D56FDE8 /* Theme.swift */; };
+		8F6A406FA9E2C187941F1614 /* ImageDataTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0E38A130414A2548154D2A /* ImageDataTools.swift */; };
+		983AEB799756EAB97A556785 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB0E183FD8BB4B9FBD1C9AC9 /* Assets.xcassets */; };
+		9C5613974063A7FAD0F242A8 /* RecordDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4269576C19C49E86267A457 /* RecordDetailView.swift */; };
+		A5EC7AE7921C995FE9C572EB /* AppSecrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2859E2144AA02D35EDAE5A53 /* AppSecrets.swift */; };
+		AAA474CE09CEF82A7D7CF847 /* SharePNGExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23DC20B83FA70B06C29424A3 /* SharePNGExporter.swift */; };
+		AE563B52FE7ECD5A3B5786F1 /* ShowcaseRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E747EA0DD350E36A128C73 /* ShowcaseRecordView.swift */; };
+		B01363CA142207F6F39967EA /* VinylShopsMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB73496FE89BB39C2D7C7B9D /* VinylShopsMapView.swift */; };
+		B41D91C7436F5D1B43CEF1C5 /* SavedCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F77451838576A7A27BFA72E /* SavedCollection.swift */; };
+		D1C9690CF1217E54CA7BA1A0 /* RecordCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6B4B50DDA3E7240806368D /* RecordCover.swift */; };
+		D60682EC7C2A9F58548F92CD /* DiscogsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82444B2C19293AF968E1ADE5 /* DiscogsService.swift */; };
+		E258CCD45FBFA7C679C40C70 /* DiscogsModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8441ED32578A9AB316D3533 /* DiscogsModels.swift */; };
+		E49FA85AAE8BE392647DD1B2 /* DiscogsBarcodeSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D118B9129A3175ADF038129 /* DiscogsBarcodeSearch.swift */; };
+		E552751DA0482F3FE3D730DA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B325EF2DA9B8B79A3F25ACB2 /* ContentView.swift */; };
+		E59080885D09A22667C2B91A /* AddSingleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F51D601D4FCAE124F619FD /* AddSingleView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		12389EB1A4FF46103D2A7EA5 /* VinylRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VinylRecord.swift; sourceTree = "<group>"; };
+		1527999A4B3AF85FFEAA508F /* Crate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Crate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C888EA375FCF3F3FAC8A588 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		23DC20B83FA70B06C29424A3 /* SharePNGExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePNGExporter.swift; sourceTree = "<group>"; };
+		24F51D601D4FCAE124F619FD /* AddSingleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSingleView.swift; sourceTree = "<group>"; };
+		2859E2144AA02D35EDAE5A53 /* AppSecrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSecrets.swift; sourceTree = "<group>"; };
+		34B43C0B3AD3D86F0D56FDE8 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		3727E6211B6AA476E667F08A /* VinylStoreSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VinylStoreSyncService.swift; sourceTree = "<group>"; };
+		3BF33A9843F653913128DD91 /* VoiceContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceContent.swift; sourceTree = "<group>"; };
+		3F77451838576A7A27BFA72E /* SavedCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedCollection.swift; sourceTree = "<group>"; };
+		4B69514F959D78CD4C54817C /* CrateVinylApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrateVinylApp.swift; sourceTree = "<group>"; };
+		52E747EA0DD350E36A128C73 /* ShowcaseRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowcaseRecordView.swift; sourceTree = "<group>"; };
+		5AD4D23386A56662F5F16460 /* OverpassService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassService.swift; sourceTree = "<group>"; };
+		5DA52FC076E60D230A9AF238 /* WishlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishlistView.swift; sourceTree = "<group>"; };
+		6D118B9129A3175ADF038129 /* DiscogsBarcodeSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscogsBarcodeSearch.swift; sourceTree = "<group>"; };
+		6F24A0795BE2A555E2EF8338 /* WishlistEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishlistEntry.swift; sourceTree = "<group>"; };
+		82444B2C19293AF968E1ADE5 /* DiscogsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscogsService.swift; sourceTree = "<group>"; };
+		87DE5E0632DA2C1E3A303586 /* AddBatchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBatchView.swift; sourceTree = "<group>"; };
+		8C88B9FCFB383542634348A4 /* ShowcaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowcaseView.swift; sourceTree = "<group>"; };
+		99B448D4F61AB48EA6E71BBA /* SuggestionsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsEngine.swift; sourceTree = "<group>"; };
+		A5409DE94B1F380CC5AB9966 /* EditRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRecordView.swift; sourceTree = "<group>"; };
+		B325EF2DA9B8B79A3F25ACB2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		BCAC2B920AB7309003EB612A /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		BF6B4B50DDA3E7240806368D /* RecordCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordCover.swift; sourceTree = "<group>"; };
+		C11CE165262F399FA2847554 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		CA9D9013FC13D067D8729471 /* UserVinylStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserVinylStore.swift; sourceTree = "<group>"; };
+		D7A963054023C25D6E4AF073 /* Secrets.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Secrets.plist; sourceTree = "<group>"; };
+		D85083F7FCFE82359E799904 /* ShelfView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShelfView.swift; sourceTree = "<group>"; };
+		EB2AB21246A2F0E9D647B150 /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
+		EE0E38A130414A2548154D2A /* ImageDataTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDataTools.swift; sourceTree = "<group>"; };
+		F4269576C19C49E86267A457 /* RecordDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordDetailView.swift; sourceTree = "<group>"; };
+		F8441ED32578A9AB316D3533 /* DiscogsModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscogsModels.swift; sourceTree = "<group>"; };
+		FB0E183FD8BB4B9FBD1C9AC9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FB73496FE89BB39C2D7C7B9D /* VinylShopsMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VinylShopsMapView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		02790D8819E7AD3A85DE90BB /* Crate */ = {
+			isa = PBXGroup;
+			children = (
+				03B7C5FBF4ED74ABFB851099 /* App */,
+				6D58E9CC42E39E636FD6F91C /* Config */,
+				A423C5756A13CD7CD5B26A75 /* Models */,
+				E01EBAC3E70D0E285DD9172F /* Services */,
+				74C492DD680407A698EEBED7 /* Views */,
+			);
+			path = Crate;
+			sourceTree = "<group>";
+		};
+		03B7C5FBF4ED74ABFB851099 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				4B69514F959D78CD4C54817C /* CrateVinylApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		1561654D16ED3C4229584CC0 /* Stores */ = {
+			isa = PBXGroup;
+			children = (
+				3727E6211B6AA476E667F08A /* VinylStoreSyncService.swift */,
+			);
+			path = Stores;
+			sourceTree = "<group>";
+		};
+		19DB9D77D6EF32723F181F56 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				FB0E183FD8BB4B9FBD1C9AC9 /* Assets.xcassets */,
+				D7A963054023C25D6E4AF073 /* Secrets.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		618F94E6ECF6177B2B0F882C /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				EB2AB21246A2F0E9D647B150 /* BarcodeScannerView.swift */,
+				BF6B4B50DDA3E7240806368D /* RecordCover.swift */,
+				34B43C0B3AD3D86F0D56FDE8 /* Theme.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		6D58E9CC42E39E636FD6F91C /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				2859E2144AA02D35EDAE5A53 /* AppSecrets.swift */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		74C492DD680407A698EEBED7 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				87DE5E0632DA2C1E3A303586 /* AddBatchView.swift */,
+				24F51D601D4FCAE124F619FD /* AddSingleView.swift */,
+				B325EF2DA9B8B79A3F25ACB2 /* ContentView.swift */,
+				A5409DE94B1F380CC5AB9966 /* EditRecordView.swift */,
+				1C888EA375FCF3F3FAC8A588 /* ProfileView.swift */,
+				F4269576C19C49E86267A457 /* RecordDetailView.swift */,
+				D85083F7FCFE82359E799904 /* ShelfView.swift */,
+				52E747EA0DD350E36A128C73 /* ShowcaseRecordView.swift */,
+				8C88B9FCFB383542634348A4 /* ShowcaseView.swift */,
+				5DA52FC076E60D230A9AF238 /* WishlistView.swift */,
+				618F94E6ECF6177B2B0F882C /* Components */,
+				DC9EC6CCB023DD12101A7186 /* Map */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		94B6F723AB29E753B22EE56D /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				C11CE165262F399FA2847554 /* LocationService.swift */,
+				5AD4D23386A56662F5F16460 /* OverpassService.swift */,
+			);
+			path = Map;
+			sourceTree = "<group>";
+		};
+		A423C5756A13CD7CD5B26A75 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				3F77451838576A7A27BFA72E /* SavedCollection.swift */,
+				BCAC2B920AB7309003EB612A /* UserProfile.swift */,
+				CA9D9013FC13D067D8729471 /* UserVinylStore.swift */,
+				12389EB1A4FF46103D2A7EA5 /* VinylRecord.swift */,
+				6F24A0795BE2A555E2EF8338 /* WishlistEntry.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		ACD5A121DEB7703FD8B03477 /* Discogs */ = {
+			isa = PBXGroup;
+			children = (
+				6D118B9129A3175ADF038129 /* DiscogsBarcodeSearch.swift */,
+				F8441ED32578A9AB316D3533 /* DiscogsModels.swift */,
+				82444B2C19293AF968E1ADE5 /* DiscogsService.swift */,
+			);
+			path = Discogs;
+			sourceTree = "<group>";
+		};
+		C79DB4467C20A8488B8B447B = {
+			isa = PBXGroup;
+			children = (
+				02790D8819E7AD3A85DE90BB /* Crate */,
+				19DB9D77D6EF32723F181F56 /* Resources */,
+				DB93F282A8026B470F1903D5 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DB93F282A8026B470F1903D5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1527999A4B3AF85FFEAA508F /* Crate.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DC9EC6CCB023DD12101A7186 /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				FB73496FE89BB39C2D7C7B9D /* VinylShopsMapView.swift */,
+			);
+			path = Map;
+			sourceTree = "<group>";
+		};
+		E01EBAC3E70D0E285DD9172F /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				EE0E38A130414A2548154D2A /* ImageDataTools.swift */,
+				23DC20B83FA70B06C29424A3 /* SharePNGExporter.swift */,
+				99B448D4F61AB48EA6E71BBA /* SuggestionsEngine.swift */,
+				3BF33A9843F653913128DD91 /* VoiceContent.swift */,
+				ACD5A121DEB7703FD8B03477 /* Discogs */,
+				94B6F723AB29E753B22EE56D /* Map */,
+				1561654D16ED3C4229584CC0 /* Stores */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DB32D7965F23950826673C7C /* Crate */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CF113867DAD3E077F927D94A /* Build configuration list for PBXNativeTarget "Crate" */;
+			buildPhases = (
+				FFC58C82188F931AB9A473BA /* Sources */,
+				64BB92204370EAE280FCD6F8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Crate;
+			packageProductDependencies = (
+			);
+			productName = Crate;
+			productReference = 1527999A4B3AF85FFEAA508F /* Crate.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9ADFF5926EAD9B59D340BCC7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					DB32D7965F23950826673C7C = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = CE718F41822762418C79AB24 /* Build configuration list for PBXProject "Crate" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = ru;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				ru,
+			);
+			mainGroup = C79DB4467C20A8488B8B447B;
+			minimizedProjectReferenceProxies = 1;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DB32D7965F23950826673C7C /* Crate */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		64BB92204370EAE280FCD6F8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				983AEB799756EAB97A556785 /* Assets.xcassets in Resources */,
+				18A5A56DFD9529EE9D2B9046 /* Secrets.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FFC58C82188F931AB9A473BA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68D269B97ECE2623D3085365 /* AddBatchView.swift in Sources */,
+				E59080885D09A22667C2B91A /* AddSingleView.swift in Sources */,
+				A5EC7AE7921C995FE9C572EB /* AppSecrets.swift in Sources */,
+				259A72ECEBF5010A31AFD483 /* BarcodeScannerView.swift in Sources */,
+				E552751DA0482F3FE3D730DA /* ContentView.swift in Sources */,
+				4FCEE7B3E552D55F6C9B1E4B /* CrateVinylApp.swift in Sources */,
+				E49FA85AAE8BE392647DD1B2 /* DiscogsBarcodeSearch.swift in Sources */,
+				E258CCD45FBFA7C679C40C70 /* DiscogsModels.swift in Sources */,
+				D60682EC7C2A9F58548F92CD /* DiscogsService.swift in Sources */,
+				0EA55A5D7CDF89B49DEBD415 /* EditRecordView.swift in Sources */,
+				8F6A406FA9E2C187941F1614 /* ImageDataTools.swift in Sources */,
+				374CF63D1E6F4B2768CABAE1 /* LocationService.swift in Sources */,
+				0FE4BEED812D0A9929058386 /* OverpassService.swift in Sources */,
+				46A83906DCF68A29A974F3E2 /* ProfileView.swift in Sources */,
+				D1C9690CF1217E54CA7BA1A0 /* RecordCover.swift in Sources */,
+				9C5613974063A7FAD0F242A8 /* RecordDetailView.swift in Sources */,
+				B41D91C7436F5D1B43CEF1C5 /* SavedCollection.swift in Sources */,
+				AAA474CE09CEF82A7D7CF847 /* SharePNGExporter.swift in Sources */,
+				31F340CCD557FEF0457A4869 /* ShelfView.swift in Sources */,
+				AE563B52FE7ECD5A3B5786F1 /* ShowcaseRecordView.swift in Sources */,
+				1BE8D42154A40B2DC2EF0023 /* ShowcaseView.swift in Sources */,
+				7FDDC2D4E6CC4EFBD73F5A62 /* SuggestionsEngine.swift in Sources */,
+				8B3A1142E6D82226052648BD /* Theme.swift in Sources */,
+				105C98D2FDFCBDF2C5E12C4D /* UserProfile.swift in Sources */,
+				3BC8A37CD26556771F299B9E /* UserVinylStore.swift in Sources */,
+				60F38EA6445B998444AECE7B /* VinylRecord.swift in Sources */,
+				B01363CA142207F6F39967EA /* VinylShopsMapView.swift in Sources */,
+				2053BDC4E87D1BC565A47EEC /* VinylStoreSyncService.swift in Sources */,
+				797BE53CB89D7436D4D97DE5 /* VoiceContent.swift in Sources */,
+				7D3E86C7A05B0D8576F79613 /* WishlistEntry.swift in Sources */,
+				3B12C66CA9791710568CD34A /* WishlistView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		35AE90157023590ADEF3BB9A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		B42788AECDEA3AF851EA467E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 54VMCQN8D8;
+				INFOPLIST_FILE = Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.crate.vinyl;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		BD5701042534EF9CAC913D11 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		DA2DB7350446F551DF2232E8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 54VMCQN8D8;
+				INFOPLIST_FILE = Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.crate.vinyl;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CE718F41822762418C79AB24 /* Build configuration list for PBXProject "Crate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BD5701042534EF9CAC913D11 /* Debug */,
+				35AE90157023590ADEF3BB9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		CF113867DAD3E077F927D94A /* Build configuration list for PBXNativeTarget "Crate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DA2DB7350446F551DF2232E8 /* Debug */,
+				B42788AECDEA3AF851EA467E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9ADFF5926EAD9B59D340BCC7 /* Project object */;
+}

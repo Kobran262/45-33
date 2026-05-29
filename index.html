@@ -1,0 +1,3666 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#211d18">
+  <title>Crate — каталог винила (рабочий прототип)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=Archivo:wght@400..600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #211d18;
+  --bg-deep: #191510;
+  --panel: #2d2820;
+  --panel-line: #3d362b;
+  --row-line: #322c23;
+  --ink: #ead9b6;
+  --ink-soft: #d8cfbf;
+  --ink-mut: #9a8f78;
+  --ink-faint: #8a7f6a;
+  --gold: #c98f3c;
+  --gold-soft: #b88a4a;
+  --green: #7fa86a;
+  --red: #c97a5a;
+  --nav-h: 62px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  background: #14110d;
+  font-family: 'Archivo', system-ui, sans-serif;
+  color: var(--ink-soft);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  padding: 12px 12px calc(12px + var(--safe-bottom));
+}
+
+#app-root {
+  width: 100%;
+  max-width: 390px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.phone {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: min(844px, 100dvh - 48px);
+  border-radius: clamp(28px, 5vw, 40px);
+  padding: clamp(8px, 2vw, 11px);
+  background: #2a2620;
+  box-shadow: 0 26px 64px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-radius: clamp(22px, 4vw, 30px);
+  background: var(--bg);
+  overflow: hidden;
+  position: relative;
+}
+
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-faint);
+  flex-shrink: 0;
+}
+
+.view {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  min-height: 0;
+  padding-bottom: calc(var(--nav-h) + var(--safe-bottom));
+  animation: view-in 0.22s ease;
+}
+
+.view--active { display: flex; }
+
+.view--centered .empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 34px;
+  text-align: center;
+}
+
+@keyframes view-in {
+  from { opacity: 0; transform: translateX(8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.view[data-tab] { padding-bottom: calc(var(--nav-h) + var(--safe-bottom)); }
+#view-record,
+#view-add-single,
+#view-add-batch,
+#view-showcase-record,
+#view-showcase-collection,
+#view-profile,
+#view-map,
+#view-empty {
+  padding-bottom: calc(var(--nav-h) + var(--safe-bottom));
+}
+
+#view-profile,
+#view-map,
+#view-record,
+#view-add-single,
+#view-add-batch,
+#view-showcase-record,
+#view-showcase-collection {
+  z-index: 2;
+  background: var(--bg);
+}
+
+.scroll-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding-bottom: 88px;
+}
+
+.scroll-body::-webkit-scrollbar { width: 0; }
+
+/* Topbar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 18px 0;
+  flex-shrink: 0;
+}
+
+.topbar--back { padding-top: 2px; }
+
+.tb-av, .tb-ic {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tb-av {
+  background: var(--gold);
+  color: var(--bg);
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.tb-ic {
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  color: var(--ink-mut);
+  font-size: 15px;
+}
+
+.topbar-muted {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-faint);
+}
+
+.back-link {
+  display: inline-block;
+  margin: 6px 20px 4px;
+  padding: 4px 0;
+  border: none;
+  background: none;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--gold);
+  cursor: pointer;
+  text-align: left;
+}
+
+.topbar .back-link { margin: 0; }
+
+/* Felt panel */
+.felt {
+  margin: 8px 16px 0;
+  border-radius: 16px;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  padding: 15px 16px 14px;
+}
+
+.felt-k {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+}
+
+.felt-t {
+  font-family: 'Fraunces', serif;
+  font-size: 23px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-top: 3px;
+}
+
+.felt-latest {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 13px;
+}
+
+.felt-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--ink-faint);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.felt-album {
+  font-family: 'Fraunces', serif;
+  font-size: 15px;
+  color: var(--ink);
+  font-weight: 600;
+  margin-top: 3px;
+}
+
+.felt-meta { font-size: 10.5px; color: var(--ink-mut); margin-top: 2px; }
+
+.felt-quote {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-faint);
+  margin-top: 8px;
+  line-height: 1.4;
+}
+
+/* Disc & sleeve */
+.disc {
+  border-radius: 50%;
+  background: repeating-radial-gradient(circle, #1a1712 0 2px, #241f18 2px 4px);
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+}
+
+.disc--gold::after {
+  content: '';
+  position: absolute;
+  inset: 36%;
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+.disc--gold::before {
+  content: '';
+  position: absolute;
+  inset: 46%;
+  border-radius: 50%;
+  background: var(--bg);
+  z-index: 1;
+}
+
+.sleeve {
+  border-radius: 3px;
+  flex-shrink: 0;
+  box-shadow: 0 3px 9px rgba(0, 0, 0, 0.45);
+}
+
+.sleeve--lg {
+  width: min(170px, 52vw);
+  height: min(170px, 52vw);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.55);
+}
+
+.sleeve--share {
+  width: 150px;
+  height: 150px;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.6);
+}
+
+.sleeve--dashed {
+  width: 38px;
+  height: 38px;
+  border: 1px dashed var(--panel-line);
+  background: transparent;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5e5648;
+  font-size: 16px;
+}
+
+.grade {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--green);
+  border: 1px solid #3d4a30;
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+/* Lists */
+.sec-h {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 16px 20px 8px;
+}
+
+.sec-h h3 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.link-btn {
+  border: none;
+  background: none;
+  font-size: 10px;
+  color: var(--gold);
+  font-family: 'IBM Plex Mono', monospace;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.list-pad { padding: 0 20px; }
+
+.row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--row-line);
+}
+
+.row--last { border-bottom: none; }
+
+.row--btn {
+  width: 100%;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.row-main { flex: 1; min-width: 0; }
+
+.row-title {
+  font-family: 'Fraunces', serif;
+  font-size: 14px;
+  color: var(--ink);
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.row-sub { font-size: 10.5px; color: var(--ink-faint); margin-top: 2px; }
+
+.row-accent {
+  font-size: 10px;
+  color: var(--gold);
+  margin-top: 3px;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.row-flag {
+  font-size: 9.5px;
+  font-family: 'IBM Plex Mono', monospace;
+  margin-top: 2px;
+}
+
+.row-flag--warn { color: var(--gold); }
+.row-flag--dup { color: var(--red); }
+
+.row-action, .row-chevron {
+  border: none;
+  background: none;
+  font-size: 14px;
+  color: var(--ink-faint);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.row-chevron { font-size: 16px; color: var(--ink-mut); }
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 7px;
+  padding: 12px 20px 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar { display: none; }
+
+.tabs--center { justify-content: center; }
+
+.tab {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--panel-line);
+  color: var(--ink-mut);
+  white-space: nowrap;
+  background: transparent;
+  cursor: pointer;
+}
+
+.tab--on {
+  background: var(--gold);
+  color: var(--bg);
+  border-color: var(--gold);
+  font-weight: 500;
+}
+
+/* FAB */
+.fab {
+  position: absolute;
+  bottom: calc(var(--nav-h) + 14px + var(--safe-bottom));
+  right: 16px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: var(--gold);
+  color: var(--bg);
+  font-size: 25px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(201, 143, 60, 0.4);
+  z-index: 5;
+}
+
+/* Nav */
+.nav {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--nav-h) + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+  background: var(--bg-deep);
+  border-top: 1px solid var(--row-line);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 10;
+}
+
+.ni {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 8px 20px;
+  font: inherit;
+}
+
+.ni .ic { font-size: 18px; color: #5e5648; }
+.ni .nl {
+  font-size: 8.5px;
+  color: #5e5648;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.ni--on .ic, .ni--on .nl { color: var(--gold); }
+
+.nav--hidden { transform: translateY(100%); opacity: 0; pointer-events: none; }
+
+/* Buttons */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 10px;
+  padding: 13px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-gold { background: var(--gold); color: var(--bg); font-weight: 500; }
+.btn-ghost { background: transparent; color: var(--ink-mut); border: 1px solid var(--panel-line); }
+.btn-block { width: 100%; }
+.btn-row { display: flex; gap: 10px; margin: 14px 20px 0; }
+.btn-row .btn { flex: 1; }
+.btn-grow { flex: 1.6 !important; }
+
+/* Record detail */
+.record-cover-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 8px 20px 14px;
+}
+
+.record-head { padding: 0 20px; text-align: center; }
+
+.record-title {
+  font-family: 'Fraunces', serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.05;
+}
+
+.record-artist { font-size: 12px; color: var(--ink-mut); margin-top: 4px; }
+
+.tag-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 12px 20px 0;
+}
+
+.meta-panel {
+  margin: 16px 20px 0;
+  border-radius: 12px;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  padding: 4px 14px;
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--row-line);
+  font-size: 11px;
+}
+
+.meta-row:last-child { border-bottom: none; }
+.meta-row dt { color: var(--ink-faint); }
+.meta-row dd { color: var(--ink); font-size: 11.5px; }
+.meta-row dd.price { color: var(--gold); font-family: 'IBM Plex Mono', monospace; }
+
+.story-block { margin: 14px 20px 0; }
+
+.field-l {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.story-text {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+
+.record-actions {
+  display: flex;
+  gap: 10px;
+  margin: 18px 20px 0;
+}
+
+.record-actions .btn { flex: 1; }
+
+/* Add flow */
+.add-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 20px;
+}
+
+.mode-toggle {
+  display: flex;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  align-items: center;
+}
+
+.mode-toggle__on { color: var(--gold); }
+.mode-toggle__sep { color: #4a4338; }
+.mode-toggle__link {
+  border: none;
+  background: none;
+  color: var(--ink-faint);
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.screen-title {
+  font-family: 'Fraunces', serif;
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--ink);
+  padding: 6px 20px;
+}
+
+.screen-title--center { text-align: center; padding-top: 10px; }
+
+.screen-subtitle {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-faint);
+  margin: 3px 20px 0;
+}
+
+.search-field {
+  margin: 14px 20px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  border-radius: 11px;
+  padding: 11px 13px;
+}
+
+.search-field__icon { font-size: 15px; color: var(--ink-faint); }
+
+.search-field input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 12.5px;
+  color: var(--ink);
+  outline: none;
+  font-family: inherit;
+}
+
+.search-field input::placeholder { color: #5e5648; }
+
+.divider-label {
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--ink-faint);
+  margin-bottom: 8px;
+}
+
+.scan-zone {
+  margin: 0 20px 16px;
+  width: calc(100% - 40px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px dashed var(--panel-line);
+  border-radius: 11px;
+  padding: 13px;
+  color: var(--ink-mut);
+  font-size: 12px;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.discogs-block { margin: 0 20px; }
+
+.discogs-card {
+  border-radius: 12px;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  padding: 13px;
+  margin-top: 8px;
+}
+
+.discogs-card--selected { border-color: var(--gold); }
+
+.discogs-card__row { display: flex; gap: 12px; align-items: center; }
+
+.vibe-line {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 11.5px;
+  color: var(--ink-faint);
+  line-height: 1.4;
+  margin-top: 10px;
+  border-top: 1px solid var(--row-line);
+  padding-top: 9px;
+}
+
+#btn-add-one { margin: 14px 20px 0; width: calc(100% - 40px); }
+
+.scanner-box {
+  margin: 10px 16px 0;
+  border-radius: 14px;
+  background: #15120e;
+  border: 1px solid var(--panel-line);
+  height: 128px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--ink-mut);
+}
+
+.scanner-frame {
+  width: 120px;
+  height: 54px;
+  border: 2px solid var(--gold);
+  border-radius: 6px;
+}
+
+/* Wishlist dashed sleeves */
+.sleeve--wish {
+  width: 44px;
+  height: 44px;
+  background: #444;
+  border: 1px dashed #5e5648;
+  box-shadow: none;
+}
+
+.wish-heart { font-size: 15px; color: var(--gold); }
+
+.tip-card {
+  margin: 18px 20px 0;
+  border-radius: 12px;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  padding: 12px 13px;
+}
+
+.tip-card__label {
+  font-size: 10px;
+  color: var(--gold);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.tip-card p {
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* Showcase hub */
+.showcase-picks { padding: 8px 16px 0; display: flex; flex-direction: column; gap: 10px; }
+
+.showcase-pick {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+
+.showcase-pick__preview {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  background: #1a1712;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.showcase-pick__preview--grid { padding: 8px; }
+
+.showcase-pick__title {
+  font-family: 'Fraunces', serif;
+  font-size: 15px;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.showcase-pick__sub { font-size: 10.5px; color: var(--ink-faint); margin-top: 2px; }
+
+.showcase-pick__arrow { font-size: 18px; color: var(--ink-mut); margin-left: auto; }
+
+.mini-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+  width: 48px;
+}
+
+.mini-grid .sleeve { width: 22px; height: 22px; }
+
+.mini-grid--sm { width: 44px; }
+.mini-grid--sm .sleeve { width: 20px; height: 20px; }
+
+.preview-label {
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  padding-bottom: 10px;
+}
+
+/* Share cards */
+.share-card {
+  margin: 0 18px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #1a1712;
+  border: 1px solid var(--panel-line);
+}
+
+.share-card__cover {
+  padding: 22px 20px 6px;
+  display: flex;
+  justify-content: center;
+}
+
+.share-card__title {
+  text-align: center;
+  font-family: 'Fraunces', serif;
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--ink);
+  padding: 14px 20px 0;
+}
+
+.share-card__artist {
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--ink-mut);
+  margin-top: 3px;
+  padding-bottom: 4px;
+}
+
+.share-card__stats {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  padding: 10px 20px 6px;
+}
+
+.stat-k {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8px;
+  color: var(--ink-faint);
+  text-align: center;
+}
+
+.stat-v {
+  display: block;
+  font-size: 12px;
+  color: var(--gold);
+  margin-top: 2px;
+  text-align: center;
+}
+
+.share-card__quote {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 11.5px;
+  color: var(--ink-faint);
+  text-align: center;
+  padding: 6px 24px 0;
+  line-height: 1.4;
+}
+
+.share-card__foot {
+  margin-top: 14px;
+  border-top: 1px solid var(--row-line);
+  padding: 9px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--ink-faint);
+}
+
+.share-card__foot .brand {
+  font-family: 'Fraunces', serif;
+  font-size: 10px;
+  color: var(--gold-soft);
+}
+
+.share-card__coll-head {
+  padding: 18px 18px 8px;
+  text-align: center;
+}
+
+.coll-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 2px;
+  color: var(--ink-faint);
+}
+
+.coll-title {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-top: 3px;
+}
+
+.coll-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  padding: 6px 18px 10px;
+}
+
+.coll-grid .sleeve { aspect-ratio: 1; width: 100%; height: auto; }
+
+.coll-grid--list .sleeve { aspect-ratio: auto; height: 28px; }
+
+.coll-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 18px;
+  border-top: 1px solid var(--row-line);
+}
+
+.coll-stat-n {
+  display: block;
+  font-family: 'Fraunces', serif;
+  font-size: 18px;
+  color: var(--gold);
+  font-weight: 600;
+  text-align: center;
+}
+
+.coll-stat-k {
+  display: block;
+  font-size: 8.5px;
+  color: var(--ink-faint);
+  font-family: 'IBM Plex Mono', monospace;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.style-picker { margin: 14px 20px 0; }
+
+.style-picker__row { display: flex; gap: 8px; margin-top: 7px; }
+
+.style-swatch {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  border: 1px solid var(--panel-line);
+  background: #2f2a22;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.style-swatch:first-child { background: #1a1712; }
+.style-swatch--on { border: 2px solid var(--gold); }
+.style-swatch--alt { background: #2a2230; }
+.style-swatch:nth-child(3) { background: #332a1c; }
+
+.style-swatch--pro span {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: var(--gold);
+  color: var(--bg);
+  font-size: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  border-radius: 4px;
+  padding: 1px 4px;
+}
+
+/* Empty state */
+.empty-title {
+  font-family: 'Fraunces', serif;
+  font-size: 23px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-top: 26px;
+  line-height: 1.15;
+}
+
+.empty-copy {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 13.5px;
+  color: var(--ink-mut);
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+.empty-state .btn-block { margin-top: 26px; }
+.empty-state .btn-ghost { margin-top: 10px; }
+
+.empty-hint {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--ink-faint);
+  margin-top: 20px;
+  letter-spacing: 0.5px;
+}
+
+/* Profile */
+.profile-head { text-align: center; padding: 14px 20px 4px; }
+
+.profile-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Fraunces', serif;
+  font-size: 30px;
+  color: var(--bg);
+  font-weight: 600;
+  margin: 0 auto;
+}
+
+.profile-name {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-top: 10px;
+}
+
+.profile-handle {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-faint);
+  margin-top: 2px;
+}
+
+.stat-trio {
+  display: flex;
+  gap: 8px;
+  margin: 16px 20px 0;
+}
+
+.stat-box {
+  flex: 1;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  border-radius: 10px;
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.stat-box__n {
+  font-family: 'Fraunces', serif;
+  font-size: 19px;
+  color: var(--gold);
+  font-weight: 600;
+  display: block;
+}
+
+.stat-box__k {
+  font-size: 8.5px;
+  color: var(--ink-faint);
+  font-family: 'IBM Plex Mono', monospace;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 2px;
+}
+
+.chart-card {
+  margin: 8px 20px 0;
+  border-radius: 12px;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  padding: 13px 14px;
+}
+
+.chart-bars {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  height: 46px;
+  margin-bottom: 8px;
+}
+
+.chart-bars div {
+  flex: 1;
+  background: var(--gold-soft);
+  border-radius: 2px;
+  min-height: 4px;
+}
+
+.chart-bars div:nth-child(3) { background: var(--gold); }
+
+.chart-note {
+  font-size: 10px;
+  color: var(--ink-faint);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.chart-pro-row {
+  margin-top: 10px;
+  border-top: 1px solid var(--row-line);
+  padding-top: 9px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.badge-pro {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--bg);
+  background: var(--gold);
+  padding: 3px 8px;
+  border-radius: 5px;
+}
+
+.premium-banner {
+  margin: 16px 20px 0;
+  border-radius: 12px;
+  background: #2d2417;
+  border: 1px solid var(--gold);
+  padding: 13px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.premium-banner__title {
+  font-family: 'Fraunces', serif;
+  font-size: 15px;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.premium-banner__sub { font-size: 10.5px; color: var(--ink-mut); margin-top: 2px; }
+
+.premium-banner__cta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--bg);
+  background: var(--gold);
+  padding: 6px 11px;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.settings-list {
+  margin: 16px 20px 0;
+  border-radius: 12px;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  padding: 2px 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 0;
+  border: none;
+  border-bottom: 1px solid var(--row-line);
+  background: none;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  width: 100%;
+}
+
+.settings-row:last-child { border-bottom: none; }
+.settings-row span { color: var(--ink-faint); font-size: 13px; }
+.settings-row--demo span { font-family: 'IBM Plex Mono', monospace; font-size: 10px; }
+
+/* Map */
+.map-mock {
+  margin: 12px 16px 0;
+  height: 188px;
+  border-radius: 14px;
+  border: 1px solid var(--panel-line);
+  background: #1c1813;
+  position: relative;
+  overflow: hidden;
+}
+
+.map-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--panel-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--panel-line) 1px, transparent 1px);
+  background-size: 34px 34px;
+  opacity: 0.4;
+}
+
+.map-road {
+  position: absolute;
+  height: 7px;
+  background: #322c23;
+  border-radius: 4px;
+}
+
+.map-road--1 { left: 18%; top: 60%; width: 46px; transform: rotate(18deg); }
+.map-road--2 { left: 40%; top: 25%; width: 70px; transform: rotate(-12deg); }
+
+.map-you {
+  position: absolute;
+  left: 30%;
+  top: 46%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ink-faint);
+  box-shadow: 0 0 0 5px transparent;
+  border: 1px solid var(--ink-faint);
+  width: 18px;
+  height: 18px;
+  transform: translate(-5px, -5px);
+  border-radius: 50%;
+}
+
+.map-pin {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50% 50% 50% 0;
+  background: var(--gold);
+  transform: rotate(-45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--bg);
+}
+
+.map-pin span { transform: rotate(45deg); }
+
+.map-pin--main { left: 52%; top: 33%; }
+.map-pin--soft { width: 22px; height: 22px; background: var(--gold-soft); }
+.map-pin--2 { left: 22%; top: 62%; }
+.map-pin--3 { left: 68%; top: 58%; }
+
+.map-label {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  border-radius: 7px;
+  font-size: 9px;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--ink-mut);
+  padding: 5px 8px;
+}
+
+.store-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: var(--ink-mut);
+  flex-shrink: 0;
+}
+
+.store-icon--on {
+  background: var(--gold);
+  color: var(--bg);
+  border-color: var(--gold);
+}
+
+.store-status {
+  font-size: 10px;
+  color: var(--ink-faint);
+  font-family: 'IBM Plex Mono', monospace;
+  white-space: nowrap;
+}
+
+.store-status--open { color: var(--gold); }
+.store-status--closed { color: var(--red); }
+
+.map-footnote {
+  margin: 14px 20px 0;
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--ink-faint);
+  line-height: 1.5;
+}
+
+.desktop-hint {
+  margin-top: 14px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: #5e5648;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+@media (min-width: 420px) {
+  body { padding-top: 20px; }
+}
+
+@media (display-mode: standalone) {
+  .desktop-hint { display: none; }
+}
+
+/* Modal, toast, forms */
+.hidden { display: none !important; }
+
+.list-empty {
+  padding: 24px 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--ink-faint);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.discogs-hint {
+  font-size: 11px;
+  color: var(--ink-faint);
+  line-height: 1.5;
+  padding: 8px 0;
+}
+
+.discogs-pick {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  margin-bottom: 8px;
+  font: inherit;
+  color: inherit;
+}
+
+#discogs-results { margin: 0 20px; }
+
+#discogs-selected { margin: 0 20px 12px; }
+
+#btn-add-one { margin: 14px 20px 20px; width: calc(100% - 40px); }
+#btn-add-one:disabled { opacity: 0.45; cursor: not-allowed; }
+
+#btn-save-batch { margin: 14px 20px 20px; width: calc(100% - 40px); }
+#btn-save-batch:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.scanner-box { cursor: pointer; }
+.scanner-box:active { opacity: 0.85; }
+
+.modal-root {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.modal-root--open {
+  display: flex;
+  pointer-events: auto;
+}
+
+.modal-backdrop, .sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.modal.sheet, .sheet.panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 390px;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  border-radius: 16px 16px 0 0;
+  padding: 20px;
+  margin-top: auto;
+  animation: sheet-up 0.28s ease;
+}
+
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.modal-title {
+  font-family: 'Fraunces', serif;
+  font-size: 18px;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+
+.form-field {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  margin-top: 4px;
+  background: var(--bg);
+  border: 1px solid var(--panel-line);
+  border-radius: 9px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--ink);
+  font-family: inherit;
+  outline: none;
+}
+
+.form-field textarea { resize: vertical; min-height: 72px; }
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.modal-actions .btn { flex: 1; }
+
+#filter-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+}
+
+#filter-sheet.sheet--open {
+  display: flex;
+  pointer-events: auto;
+}
+
+.sheet-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.sheet-opt {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 0;
+  border: none;
+  border-bottom: 1px solid var(--row-line);
+  background: none;
+  font-family: 'Fraunces', serif;
+  font-size: 15px;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.sheet-opt--on { color: var(--gold); }
+.sheet-opt:last-child { border-bottom: none; }
+
+#toast-root {
+  position: fixed;
+  left: 50%;
+  bottom: calc(80px + var(--safe-bottom));
+  transform: translateX(-50%);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  width: min(320px, 90vw);
+}
+
+.toast {
+  background: var(--panel);
+  border: 1px solid var(--gold);
+  color: var(--ink);
+  font-size: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.25s, transform 0.25s;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.toast--show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.btn-danger {
+  color: var(--red) !important;
+  border-color: #5a3d30 !important;
+}
+
+#import-file { display: none; }
+
+.settings-row--danger { color: var(--red); }
+
+.add-mode-hint {
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--gold);
+  margin-top: -4px;
+  margin-bottom: 8px;
+}
+
+.nav { transition: transform 0.25s, opacity 0.25s; }
+
+#collection-tabs { padding: 12px 16px 6px; }
+
+.suggestion-card {
+  margin: 0 16px 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #2d2417;
+  border: 1px solid var(--gold);
+}
+
+.suggestion-card__title {
+  font-family: 'Fraunces', serif;
+  font-size: 14px;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.suggestion-card__body {
+  font-size: 11px;
+  color: var(--ink-mut);
+  margin: 4px 0 10px;
+  line-height: 1.4;
+}
+
+.btn-sm {
+  padding: 8px 12px;
+  font-size: 9px;
+}
+
+.cover-upload {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+
+.cover-upload input { display: none; }
+
+.cover-upload__hint {
+  display: block;
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--gold);
+  margin-top: 8px;
+}
+
+.coll-picker-wrap {
+  margin: 0 20px 10px;
+}
+
+.coll-picker-wrap select {
+  width: 100%;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  border-radius: 9px;
+  padding: 10px 12px;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.record-actions--secondary { margin-top: 0; }
+
+</style>
+</head>
+<body>
+<!-- CRATE_BODY -->
+<div id="app-root">
+    <div class="phone" role="application" aria-label="Crate — прототип приложения">
+      <div class="screen">
+        <div class="status-bar" aria-hidden="true">
+          <span class="status-time">9:41</span>
+          <span class="status-icons">●●● ▮</span>
+        </div>
+
+        <!-- ========== ПОЛКА (главный) ========== -->
+        <section class="view view--active" id="view-shelf" data-tab="shelf">
+          <header class="topbar">
+            <button type="button" class="tb-av" data-nav="profile" aria-label="Профиль">M</button>
+            <button type="button" class="tb-ic" data-nav="map" aria-label="Карта винил-сторов">⌖</button>
+          </header>
+          <div class="scroll-body">
+            <div class="felt">
+              <div class="felt-k">коллекция · <span id="shelf-count">148</span> пластинок</div>
+              <div class="felt-t">На столе</div>
+              <div class="felt-latest">
+                <div class="disc disc--gold" style="width:74px;height:74px;"></div>
+                <div>
+                  <div class="felt-label">последнее добавлено</div>
+                  <div class="felt-album">Kind of Blue</div>
+                  <div class="felt-meta">Miles Davis · 1959 · €38</div>
+                </div>
+              </div>
+            </div>
+            <div class="tabs" id="collection-tabs" role="tablist"></div>
+            <div id="suggestions-list"></div>
+            <div class="sec-h">
+              <h3>вся полка</h3>
+              <button type="button" class="link-btn" id="btn-open-filter">фильтр ↓</button>
+            </div>
+            <div class="list-pad" id="shelf-list"></div>
+          </div>
+          <button type="button" class="fab" data-nav="add-single" aria-label="Добавить пластинку">+</button>
+        </section>
+
+        <!-- ========== ПУСТАЯ ПОЛКА ========== -->
+        <section class="view view--centered" id="view-empty">
+          <div class="empty-state">
+            <div class="disc disc--gold" style="width:120px;height:120px;opacity:0.9;"></div>
+            <h2 class="empty-title">Полка пока пуста</h2>
+            <p class="empty-copy">Каждая коллекция начинается с одной пластинки. Где-то она у тебя уже лежит — давай занесём.</p>
+            <button type="button" class="btn btn-gold btn-block" data-nav="add-single">＋ добавить первую пластинку</button>
+            <button type="button" class="btn btn-ghost btn-block" data-nav="add-batch">▦ отсканировать целую стопку</button>
+            <p class="empty-hint">уже коллекционируешь? режим «списком» быстрее</p>
+          </div>
+        </section>
+
+        <!-- ========== КАРТОЧКА ПЛАСТИНКИ ========== -->
+        <section class="view" id="view-record">
+          <div class="scroll-body">
+            <button type="button" class="back-link" data-back>‹ полка</button>
+            <label class="record-cover-wrap cover-upload">
+              <div class="sleeve sleeve--lg" id="record-cover" style="background:#b8472b;"></div>
+              <span class="cover-upload__hint">📷 добавить фото</span>
+              <input type="file" id="photo-input" accept="image/*" hidden>
+            </label>
+            <div class="record-head">
+              <h1 class="record-title" id="record-title">Kind of Blue</h1>
+              <p class="record-artist" id="record-artist">Miles Davis</p>
+            </div>
+            <div class="tag-row" id="record-tags"></div>
+            <dl class="meta-panel" id="record-meta"></dl>
+            <div class="story-block">
+              <div class="field-l">история</div>
+              <p class="story-text" id="record-story"></p>
+            </div>
+            <div class="record-actions">
+              <button type="button" class="btn btn-ghost" data-nav="showcase-record">◍ витрина</button>
+              <button type="button" class="btn btn-gold" id="btn-edit-record">редактировать</button>
+            </div>
+            <div class="record-actions record-actions--secondary">
+              <button type="button" class="btn btn-ghost" id="btn-toggle-fav">♡ в любимое</button>
+              <button type="button" class="btn btn-ghost" id="btn-to-wishlist">→ вишлист</button>
+              <button type="button" class="btn btn-ghost btn-danger" id="btn-delete-record">удалить</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== ДОБАВЛЕНИЕ — ПО ОДНОЙ ========== -->
+        <section class="view" id="view-add-single">
+          <div class="scroll-body">
+            <div class="add-header">
+              <button type="button" class="back-link" data-back>✕ отмена</button>
+              <div class="mode-toggle">
+                <span class="mode-toggle__on">по одной</span><span class="mode-toggle__sep">·</span>
+                <button type="button" class="mode-toggle__link" data-nav="add-batch">списком</button>
+              </div>
+            </div>
+            <h2 class="screen-title screen-title--center">Новая пластинка</h2>
+            <div class="search-field">
+              <span class="search-field__icon">⌕</span>
+              <input type="search" id="add-search" placeholder="артист или название альбома…" autocomplete="off">
+            </div>
+            <p class="divider-label">— или —</p>
+            <button type="button" class="scan-zone">
+              <span>▦</span> отсканировать штрихкод
+            </button>
+            <p class="add-mode-hint hidden" id="add-mode-label"></p>
+            <div class="discogs-block">
+              <div class="field-l">найдено в discogs</div>
+              <div id="discogs-results"></div>
+              <div id="discogs-selected" class="hidden"></div>
+            </div>
+            <button type="button" class="btn btn-ghost btn-block" id="btn-manual-add">добавить вручную</button>
+            <button type="button" class="btn btn-gold btn-block" id="btn-add-one">＋ добавить на полку</button>
+          </div>
+        </section>
+
+        <!-- ========== ДОБАВЛЕНИЕ — СПИСКОМ ========== -->
+        <section class="view" id="view-add-batch">
+          <div class="scroll-body">
+            <div class="add-header">
+              <button type="button" class="back-link" data-back>✕ отмена</button>
+              <div class="mode-toggle">
+                <button type="button" class="mode-toggle__link" data-nav="add-single">по одной</button><span class="mode-toggle__sep">·</span>
+                <span class="mode-toggle__on">списком</span>
+              </div>
+            </div>
+            <div class="scanner-box" id="btn-simulate-scan" role="button" tabindex="0">
+              <div class="scanner-frame"></div>
+              <span>наведи на штрихкод пластинки</span>
+            </div>
+            <div class="sec-h">
+              <h3>отсканировано · <span id="batch-count">0</span></h3>
+              <button type="button" class="link-btn" data-nav="shelf">готово →</button>
+            </div>
+            <div class="list-pad" id="batch-list"></div>
+            <button type="button" class="btn btn-gold btn-block" id="btn-save-batch" disabled>сохранить</button>
+          </div>
+        </section>
+
+        <!-- ========== ВИШЛИСТ ========== -->
+        <section class="view" id="view-wishlist" data-tab="wishlist">
+          <div class="scroll-body">
+            <div class="felt">
+              <div class="felt-k">в розыске · <span id="wishlist-count">0</span> пластинок</div>
+              <div class="felt-t">Вишлист</div>
+              <p class="felt-quote">То, за чем ты охотишься. Жаба пока держит — но это временно.</p>
+            </div>
+            <div class="sec-h">
+              <h3>хочу найти</h3>
+              <button type="button" class="link-btn" id="btn-add-wish">＋ добавить</button>
+            </div>
+            <div class="list-pad" id="wishlist-list"></div>
+            <div class="tip-card">
+              <div class="tip-card__label">💡 подсказка</div>
+              <p>У тебя есть тома 1, 2 и 4 этой серии — не хватает третьего.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== ВИТРИНА — ХАБ ========== -->
+        <section class="view" id="view-showcase" data-tab="showcase">
+          <div class="scroll-body">
+            <div class="felt">
+              <div class="felt-k">витрина</div>
+              <div class="felt-t">Поделиться</div>
+              <p class="felt-quote">Готовые карточки для сторис и чатов. Цена покупки на витрину не попадает.</p>
+            </div>
+            <div class="showcase-picks">
+              <button type="button" class="showcase-pick" data-nav="showcase-record">
+                <div class="showcase-pick__preview">
+                  <div class="sleeve" style="width:56px;height:56px;background:#b8472b;"></div>
+                </div>
+                <div class="showcase-pick__text">
+                  <div class="showcase-pick__title">Карточка пластинки</div>
+                  <div class="showcase-pick__sub">один релиз · фото в центре</div>
+                </div>
+                <span class="showcase-pick__arrow">›</span>
+              </button>
+              <button type="button" class="showcase-pick" data-nav="showcase-collection">
+                <div class="showcase-pick__preview showcase-pick__preview--grid">
+                  <div class="mini-grid">
+                    <div class="sleeve" style="background:#b8472b;"></div>
+                    <div class="sleeve" style="background:#7a6a3a;"></div>
+                    <div class="sleeve" style="background:#2f5d6e;"></div>
+                    <div class="sleeve" style="background:#9c3d52;"></div>
+                  </div>
+                </div>
+                <div class="showcase-pick__text">
+                  <div class="showcase-pick__title">Карточка коллекции</div>
+                  <div class="showcase-pick__sub">полка или сетка · статистика</div>
+                </div>
+                <span class="showcase-pick__arrow">›</span>
+              </button>
+            </div>
+            <div class="sec-h"><h3>недавние карточки</h3></div>
+            <div class="list-pad" id="showcase-recent"></div>
+          </div>
+        </section>
+
+        <!-- ========== ВИТРИНА — ПЛАСТИНКА ========== -->
+        <section class="view" id="view-showcase-record">
+          <div class="scroll-body">
+            <button type="button" class="back-link" data-back>‹ назад</button>
+            <p class="preview-label">предпросмотр карточки</p>
+            <article class="share-card" id="share-record-card">
+              <div class="share-card__cover">
+                <div class="sleeve sleeve--share" style="background:#b8472b;"></div>
+              </div>
+              <div class="share-card__title">Kind of Blue</div>
+              <div class="share-card__artist">Miles Davis</div>
+              <div class="share-card__stats">
+                <div><span class="stat-k">год</span><span class="stat-v">1959</span></div>
+                <div><span class="stat-k">прессинг</span><span class="stat-v">US 1st</span></div>
+                <div><span class="stat-k">лейбл</span><span class="stat-v">Columbia</span></div>
+              </div>
+              <p class="share-card__quote">«найдено на блошином рынке у Калемегдана»</p>
+              <footer class="share-card__foot">
+                <span>@marko.collects</span>
+                <span class="brand">◍ Crate</span>
+              </footer>
+            </article>
+            <div class="style-picker">
+              <div class="field-l">стиль карточки</div>
+              <div class="style-picker__row">
+                <button type="button" class="style-swatch style-swatch--on" aria-label="Базовый стиль"></button>
+                <button type="button" class="style-swatch" aria-label="Стиль 2"></button>
+                <button type="button" class="style-swatch style-swatch--pro" aria-label="Премиум стиль"><span>PRO</span></button>
+                <button type="button" class="style-swatch style-swatch--pro style-swatch--alt" aria-label="Премиум стиль 2"><span>PRO</span></button>
+              </div>
+            </div>
+            <div class="btn-row">
+              <button type="button" class="btn btn-ghost">настроить</button>
+              <button type="button" class="btn btn-gold btn-grow" id="btn-share-record">↗ поделиться</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== ВИТРИНА — КОЛЛЕКЦИЯ ========== -->
+        <section class="view" id="view-showcase-collection">
+          <div class="scroll-body">
+            <button type="button" class="back-link" data-back>‹ назад</button>
+            <div class="coll-picker-wrap"><select id="coll-picker" aria-label="Коллекция"></select></div>
+            <div class="tabs tabs--center" role="tablist">
+              <button type="button" class="tab tab--on" data-layout="shelf">полка</button>
+              <button type="button" class="tab" data-layout="grid">сетка</button>
+            </div>
+            <article class="share-card" id="collection-share-card">
+              <header class="share-card__coll-head">
+                <span class="coll-eyebrow">коллекция винила</span>
+                <h2 class="coll-title" id="coll-showcase-title">Джаз-полка</h2>
+              </header>
+              <div class="coll-grid" id="coll-grid"></div>
+              <div class="coll-stats">
+                <div><span class="coll-stat-n">41</span><span class="coll-stat-k">пластинок</span></div>
+                <div><span class="coll-stat-n">1956–88</span><span class="coll-stat-k">годы</span></div>
+                <div><span class="coll-stat-n">Blue Note</span><span class="coll-stat-k">чаще всего</span></div>
+              </div>
+              <footer class="share-card__foot">
+                <span>@marko.collects</span>
+                <span class="brand">◍ Crate</span>
+              </footer>
+            </article>
+            <div class="btn-row">
+              <button type="button" class="btn btn-ghost">настроить</button>
+              <button type="button" class="btn btn-gold btn-grow" id="btn-share-coll">↗ поделиться</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== ПРОФИЛЬ ========== -->
+        <section class="view" id="view-profile">
+          <header class="topbar topbar--back">
+            <button type="button" class="back-link" data-back>‹ полка</button>
+            <span class="topbar-muted">настройки ⚙</span>
+          </header>
+          <div class="scroll-body">
+            <div class="profile-head">
+              <div class="profile-avatar">M</div>
+              <h2 class="profile-name">Marko</h2>
+              <p class="profile-handle">@marko.collects · с 2024</p>
+            </div>
+            <div class="stat-trio">
+              <div class="stat-box"><span class="stat-box__n">148</span><span class="stat-box__k">пластинок</span></div>
+              <div class="stat-box"><span class="stat-box__n">€2 340</span><span class="stat-box__k">вложено</span></div>
+              <div class="stat-box"><span class="stat-box__n">7</span><span class="stat-box__k">коллекций</span></div>
+            </div>
+            <div class="field-l">статистика коллекции</div>
+            <div class="chart-card">
+              <div class="chart-bars" aria-hidden="true">
+                <div style="height:40%"></div><div style="height:65%"></div><div style="height:100%"></div>
+                <div style="height:55%"></div><div style="height:75%"></div><div style="height:30%"></div>
+              </div>
+              <p class="chart-note">по десятилетиям · базовый вид</p>
+              <div class="chart-pro-row">
+                <span>Расширенная аналитика</span>
+                <span class="badge-pro">PRO</span>
+              </div>
+            </div>
+            <div class="premium-banner">
+              <div>
+                <div class="premium-banner__title">Crate Premium</div>
+                <div class="premium-banner__sub">стили витрины и статистика — пакетом</div>
+              </div>
+              <button type="button" class="premium-banner__cta">открыть</button>
+            </div>
+            <nav class="settings-list">
+              <button type="button" class="settings-row" id="btn-profile-edit">Имя и ник <span>›</span></button>
+              <button type="button" class="settings-row" id="btn-export">Скачать резервную копию <span>↗</span></button>
+              <label class="settings-row"><span>Загрузить копию</span><span>›</span><input type="file" id="import-file" accept="application/json"></label>
+              <button type="button" class="settings-row settings-row--danger" id="btn-reset">Очистить коллекцию <span>⚠</span></button>
+            </nav>
+          </div>
+        </section>
+
+        <!-- ========== КАРТА СТОРОВ ========== -->
+        <section class="view" id="view-map">
+          <header class="topbar topbar--back">
+            <button type="button" class="back-link" data-back>‹ полка</button>
+            <span class="topbar-muted">＋ добавить стор</span>
+          </header>
+          <div class="scroll-body">
+            <h2 class="screen-title">Винил рядом</h2>
+            <p class="screen-subtitle">5 магазинов в пределах прогулки</p>
+            <div class="map-mock" aria-hidden="true">
+              <div class="map-grid"></div>
+              <div class="map-road map-road--1"></div>
+              <div class="map-road map-road--2"></div>
+              <div class="map-you"></div>
+              <div class="map-pin map-pin--main">♪</div>
+              <div class="map-pin map-pin--soft map-pin--2"></div>
+              <div class="map-pin map-pin--soft map-pin--3"></div>
+              <span class="map-label">⌖ я здесь</span>
+            </div>
+            <div class="sec-h"><h3>магазины поблизости</h3></div>
+            <div class="list-pad">
+              <div class="row">
+                <div class="store-icon store-icon--on">♪</div>
+                <div class="row-main"><div class="row-title">Yugovinyl</div><div class="row-sub">Цара Душана 12 · 400 м</div></div>
+                <span class="store-status store-status--open">открыт</span>
+              </div>
+              <div class="row">
+                <div class="store-icon">♪</div>
+                <div class="row-main"><div class="row-title">Plić Records</div><div class="row-sub">Његошева 4 · 750 м</div></div>
+                <span class="store-status">до 20:00</span>
+              </div>
+              <div class="row row--last">
+                <div class="store-icon">♪</div>
+                <div class="row-main"><div class="row-title">Disk Shop</div><div class="row-sub">Краља Петра 30 · 1.1 км</div></div>
+                <span class="store-status store-status--closed">закрыт</span>
+              </div>
+            </div>
+            <p class="map-footnote">данные OpenStreetMap · нашёл магазин не на карте?<br>добавь его сам</p>
+          </div>
+        </section>
+
+        <!-- Bottom nav -->
+        <nav class="nav" id="main-nav" aria-label="Основная навигация">
+          <button type="button" class="ni ni--on" data-tab-nav="shelf">
+            <span class="ic" aria-hidden="true">▤</span><span class="nl">полка</span>
+          </button>
+          <button type="button" class="ni" data-tab-nav="wishlist">
+            <span class="ic" aria-hidden="true">♡</span><span class="nl">вишлист</span>
+          </button>
+          <button type="button" class="ni" data-tab-nav="showcase">
+            <span class="ic" aria-hidden="true">◍</span><span class="nl">витрина</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <div id="toast-root" aria-live="polite"></div>
+  <div id="modal-root" class="modal-root"></div>
+  <div id="filter-sheet"></div>
+  <p class="desktop-hint">Crate v2 · модель приложения · localStorage · #/shelf</p>
+<script>
+/** @file Domain models — 1:1 маппинг на будущие Swift struct */
+const CrateModels = (() => {
+  const GRADES = ['VG', 'VG+', 'NM', 'M'];
+  const VINYL_COLORS = ['black', 'clear', 'red', 'gold', 'marble', 'splatter'];
+
+  /** @typedef {Object} Record */
+  /** @property {string} id */
+  /** @property {string} title */
+  /** @property {string} artist */
+  /** @property {number} year */
+  /** @property {string} color — цвет обложки (hex) */
+  /** @property {string} [photo] — base64 JPEG */
+  /** @property {string} [vinylColor] */
+  /** @property {string} grade */
+  /** @property {number} [price] */
+  /** @property {string} [currency] */
+  /** @property {string} [pressing] */
+  /** @property {string} [label] */
+  /** @property {string[]} tags */
+  /** @property {boolean} favorite */
+  /** @property {string} [story] */
+  /** @property {number} addedAt */
+
+  function uid(prefix = 'r') {
+    return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
+  }
+
+  function slug(title, artist) {
+    return `${title}|${artist}`.toLowerCase().trim();
+  }
+
+  function createRecord(partial = {}) {
+    const now = Date.now();
+    return {
+      id: partial.id || uid('r'),
+      title: partial.title || 'Без названия',
+      artist: partial.artist || 'Неизвестный артист',
+      year: Number(partial.year) || new Date().getFullYear(),
+      color: partial.color || '#5a4a7a',
+      photo: partial.photo || null,
+      vinylColor: partial.vinylColor || 'black',
+      grade: GRADES.includes(partial.grade) ? partial.grade : 'VG+',
+      price: Number(partial.price) || 0,
+      currency: partial.currency || '€',
+      pressing: partial.pressing || '—',
+      label: partial.label || '—',
+      tags: Array.isArray(partial.tags) ? [...partial.tags] : [],
+      favorite: !!partial.favorite,
+      story: partial.story || '',
+      addedAt: partial.addedAt || now,
+    };
+  }
+
+  function createWishlistItem(partial = {}) {
+    return {
+      id: partial.id || uid('w'),
+      title: partial.title,
+      artist: partial.artist,
+      year: partial.year || null,
+      note: partial.note || '',
+      addedAt: partial.addedAt || Date.now(),
+    };
+  }
+
+  function createProfile(partial = {}) {
+    return {
+      name: partial.name || 'Коллекционер',
+      handle: (partial.handle || 'collector').replace(/^@/, ''),
+      since: partial.since || new Date().getFullYear(),
+      avatar: partial.avatar || 'K',
+      premium: !!partial.premium,
+      defaultShowcaseStyle: partial.defaultShowcaseStyle || 0,
+    };
+  }
+
+  /** Сохранённая коллекция = фильтр по тегу/жанру/исполнителю */
+  function createCollection(partial = {}) {
+    return {
+      id: partial.id || uid('c'),
+      name: partial.name,
+      type: partial.type || 'tag', // tag | genre | artist | favorite | decade
+      value: partial.value,
+      createdAt: partial.createdAt || Date.now(),
+    };
+  }
+
+  function fromCatalog(entry, overrides = {}) {
+    const genreTag = entry.genre === 'jazz' ? 'джаз' : 'рок';
+    return createRecord({
+      title: entry.title,
+      artist: entry.artist,
+      year: entry.year,
+      color: entry.color,
+      pressing: entry.pressing,
+      label: entry.label,
+      tags: [genreTag, String(entry.year), entry.label].filter(Boolean),
+      ...overrides,
+    });
+  }
+
+  function formatPrice(record) {
+    if (!record.price && record.price !== 0) return '';
+    return `${record.currency || '€'}${record.price}`;
+  }
+
+  function matchFilter(record, filter) {
+    if (!filter || filter === 'all') return true;
+    if (filter === 'fav') return record.favorite;
+    if (filter === 'jazz') return record.tags?.some((t) => t.toLowerCase().includes('джаз'));
+    if (filter === 'rock') return record.tags?.some((t) => t.toLowerCase().includes('рок'));
+    if (filter.startsWith('tag:')) return record.tags?.includes(filter.slice(4));
+    if (filter.startsWith('artist:')) return record.artist.toLowerCase() === filter.slice(7).toLowerCase();
+    if (filter.startsWith('decade:')) {
+      const d = Math.floor(record.year / 10) * 10;
+      return String(d) === filter.slice(7);
+    }
+    return true;
+  }
+
+  function matchCollection(record, collection) {
+    if (collection.type === 'favorite') return record.favorite;
+    if (collection.type === 'tag') {
+      if (collection.value.startsWith('винил:')) return record.vinylColor === collection.value.slice(6);
+      return record.tags?.includes(collection.value);
+    }
+    if (collection.type === 'genre') return record.tags?.some((t) => t.toLowerCase().includes(collection.value));
+    if (collection.type === 'artist') return record.artist.toLowerCase() === collection.value.toLowerCase();
+    if (collection.type === 'decade') {
+      const d = Math.floor(record.year / 10) * 10;
+      return String(d) === collection.value;
+    }
+    return false;
+  }
+
+  return {
+    GRADES,
+    VINYL_COLORS,
+    uid,
+    slug,
+    createRecord,
+    createWishlistItem,
+    createProfile,
+    createCollection,
+    fromCatalog,
+    formatPrice,
+    matchFilter,
+    matchCollection,
+  };
+})();
+
+/** @file Store — единый источник правды + localStorage */
+const CrateStore = (() => {
+  const STORAGE_KEY = 'crate-app-v2';
+  const M = CrateModels;
+
+  const DEFAULT_CATALOG = [
+    { title: 'Kind of Blue', artist: 'Miles Davis', year: 1959, label: 'Columbia', pressing: 'US 1st · mono', genre: 'jazz', color: '#b8472b' },
+    { title: 'Rumours', artist: 'Fleetwood Mac', year: 1977, label: 'Warner', pressing: 'EU re', genre: 'rock', color: '#2f5d6e' },
+    { title: 'Blue Train', artist: 'John Coltrane', year: 1958, label: 'Blue Note', pressing: 'RVG', genre: 'jazz', color: '#7a6a3a' },
+    { title: 'Hounds of Love', artist: 'Kate Bush', year: 1985, label: 'EMI', pressing: 'UK 1st', genre: 'rock', color: '#9c3d52' },
+    { title: 'Pet Sounds', artist: 'Beach Boys', year: 1966, label: 'Capitol', pressing: 'mono', genre: 'rock', color: '#3a5536' },
+    { title: 'Aja', artist: 'Steely Dan', year: 1977, label: 'ABC', pressing: 'US', genre: 'jazz', color: '#a8632c' },
+    { title: 'The Velvet Underground & Nico', artist: 'The Velvet Underground', year: 1967, label: 'Verve', pressing: 'peelable', genre: 'rock', color: '#5a4a7a' },
+    { title: 'Marquee Moon', artist: 'Television', year: 1977, label: 'Elektra', pressing: 'US', genre: 'rock', color: '#4a6e8f' },
+    { title: 'Spirit of Eden', artist: 'Talk Talk', year: 1988, label: 'Parlophone', pressing: 'EU', genre: 'rock', color: '#6e5536' },
+    { title: 'Saturn', artist: 'Sun Ra', year: 1972, label: 'Impulse!', pressing: '—', genre: 'jazz', color: '#8b6914' },
+    { title: 'In Rainbows', artist: 'Radiohead', year: 2007, label: 'XL', pressing: 'box', genre: 'rock', color: '#3d3d3d' },
+    { title: 'Illmatic', artist: 'Nas', year: 1994, label: 'Columbia', pressing: 'US', genre: 'rock', color: '#6a4a3a' },
+    { title: 'Loveless', artist: 'My Bloody Valentine', year: 1991, label: 'Creation', pressing: 'UK', genre: 'rock', color: '#c45a7a' },
+    { title: 'Giant Steps', artist: 'John Coltrane', year: 1960, label: 'Atlantic', pressing: 'mono', genre: 'jazz', color: '#4a5a8b' },
+  ];
+
+  const SEED_RECORDS = [
+    M.createRecord({ id: 'kind-of-blue', title: 'Kind of Blue', artist: 'Miles Davis', year: 1959, color: '#b8472b', grade: 'VG+', price: 38, pressing: 'US 1st · mono', label: 'Columbia', tags: ['джаз', '1959', 'Columbia'], favorite: true, story: '«Блошиный рынок у Калемегдана. Конверт потёрт, звук — как новый.»', addedAt: Date.now() - 86400000 }),
+    M.createRecord({ id: 'rumours', title: 'Rumours', artist: 'Fleetwood Mac', year: 1977, color: '#2f5d6e', grade: 'VG+', price: 22, pressing: 'EU re', label: 'Warner', tags: ['рок', '1977'], addedAt: Date.now() - 172800000 }),
+    M.createRecord({ id: 'blue-train', title: 'Blue Train', artist: 'John Coltrane', year: 1958, color: '#7a6a3a', grade: 'NM', price: 45, pressing: 'RVG', label: 'Blue Note', tags: ['джаз', '1958'], addedAt: Date.now() - 259200000 }),
+    M.createRecord({ id: 'hounds', title: 'Hounds of Love', artist: 'Kate Bush', year: 1985, color: '#9c3d52', grade: 'VG', price: 18, pressing: 'UK 1st', label: 'EMI', tags: ['рок', '1985'], addedAt: Date.now() - 345600000 }),
+    M.createRecord({ id: 'pet-sounds', title: 'Pet Sounds', artist: 'Beach Boys', year: 1966, color: '#3a5536', grade: 'NM', price: 28, pressing: 'mono', label: 'Capitol', tags: ['рок', '1966'], addedAt: Date.now() - 432000000 }),
+    M.createRecord({ id: 'aja', title: 'Aja', artist: 'Steely Dan', year: 1977, color: '#a8632c', grade: 'VG+', price: 24, pressing: 'US', label: 'ABC', tags: ['джаз', '1977'], favorite: true, addedAt: Date.now() - 518400000 }),
+  ];
+
+  const SEED_WISHLIST = [
+    M.createWishlistItem({ id: 'w1', title: 'The Velvet Underground & Nico', artist: 'The Velvet Underground', year: 1967 }),
+    M.createWishlistItem({ id: 'w2', title: 'Marquee Moon', artist: 'Television', year: 1977 }),
+    M.createWishlistItem({ id: 'w3', title: 'Spirit of Eden', artist: 'Talk Talk', year: 1988 }),
+    M.createWishlistItem({ id: 'w4', title: 'Saturn', artist: 'Sun Ra', year: 1972 }),
+  ];
+
+  let data = {
+    profile: M.createProfile({ name: 'Marko', handle: 'marko.collects', since: 2024, avatar: 'M' }),
+    records: [],
+    wishlist: [],
+    collections: [],
+    batchDraft: [],
+    prefs: { shelfFilter: 'all', collLayout: 'shelf', collFilter: 'jazz', showcaseStyle: 0 },
+  };
+
+  const listeners = new Set();
+
+  function emit() {
+    listeners.forEach((fn) => fn(data));
+  }
+
+  function subscribe(fn) {
+    listeners.add(fn);
+    return () => listeners.delete(fn);
+  }
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const p = JSON.parse(raw);
+        data.profile = M.createProfile(p.profile || data.profile);
+        data.records = (p.records || SEED_RECORDS).map((r) => M.createRecord(r));
+        data.wishlist = (p.wishlist || SEED_WISHLIST).map((w) => M.createWishlistItem(w));
+        data.collections = (p.collections || []).map((c) => M.createCollection(c));
+        data.batchDraft = p.batchDraft || [];
+        data.prefs = { ...data.prefs, ...(p.prefs || {}) };
+        return;
+      }
+    } catch (_) { /* migrate from v1 */ }
+    try {
+      const v1 = localStorage.getItem('crate-app-v1');
+      if (v1) {
+        const p = JSON.parse(v1);
+        data.records = (p.records || []).map((r) => M.createRecord(r));
+        data.wishlist = (p.wishlist || []).map((w) => M.createWishlistItem(w));
+        if (p.profile) data.profile = M.createProfile(p.profile);
+        if (p.prefs) data.prefs = { ...data.prefs, ...p.prefs };
+        save();
+        return;
+      }
+    } catch (_) { /* ignore */ }
+    data.records = [...SEED_RECORDS];
+    data.wishlist = [...SEED_WISHLIST];
+    data.collections = [
+      M.createCollection({ id: 'col-jazz', name: 'Джаз-полка', type: 'genre', value: 'джаз' }),
+    ];
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          profile: data.profile,
+          records: data.records,
+          wishlist: data.wishlist,
+          collections: data.collections,
+          batchDraft: data.batchDraft,
+          prefs: data.prefs,
+        })
+      );
+      emit();
+    } catch (e) {
+      if (e.name === 'QuotaExceededError') throw new Error('Память браузера переполнена — удали фото или экспортируй коллекцию');
+      throw e;
+    }
+  }
+
+  function getState() {
+    return data;
+  }
+
+  function getPrefs() {
+    return data.prefs;
+  }
+
+  function setPrefs(patch) {
+    data.prefs = { ...data.prefs, ...patch };
+    save();
+  }
+
+  // ——— Records ———
+  function getRecords() {
+    return data.records;
+  }
+
+  function getRecord(id) {
+    return data.records.find((r) => r.id === id) || null;
+  }
+
+  function latestRecord() {
+    return [...data.records].sort((a, b) => b.addedAt - a.addedAt)[0] || null;
+  }
+
+  function filterRecords(filter) {
+    if (filter?.startsWith('col:')) return recordsForCollection(filter.slice(4));
+    return data.records.filter((r) => M.matchFilter(r, filter));
+  }
+
+  function recordsForCollection(collectionId) {
+    const col = data.collections.find((c) => c.id === collectionId);
+    if (!col) return data.records;
+    return data.records.filter((r) => M.matchCollection(r, col));
+  }
+
+  function findOnShelf(catalogEntry) {
+    return data.records.find((r) => M.slug(r.title, r.artist) === M.slug(catalogEntry.title, catalogEntry.artist));
+  }
+
+  function addRecord(record, { silent } = {}) {
+    data.records.unshift(M.createRecord(record));
+    save();
+    return { record: data.records[0], silent };
+  }
+
+  function updateRecord(id, patch) {
+    const r = getRecord(id);
+    if (!r) return null;
+    Object.assign(r, patch);
+    if (patch.tags) r.tags = [...patch.tags];
+    save();
+    return r;
+  }
+
+  function deleteRecord(id) {
+    data.records = data.records.filter((r) => r.id !== id);
+    save();
+  }
+
+  // ——— Wishlist ———
+  function addWishlist(item) {
+    data.wishlist.unshift(M.createWishlistItem(item));
+    save();
+  }
+
+  function removeWishlist(id) {
+    data.wishlist = data.wishlist.filter((w) => w.id !== id);
+    save();
+  }
+
+  function moveWishlistToShelf(wishId) {
+    const w = data.wishlist.find((x) => x.id === wishId);
+    if (!w) return null;
+    const cat = DEFAULT_CATALOG.find((c) => c.title === w.title && c.artist === w.artist);
+    const entry = cat || { title: w.title, artist: w.artist, year: w.year || 1970, label: '—', pressing: '—', genre: 'rock', color: '#5a4a7a' };
+    if (!findOnShelf(entry)) addRecord(M.fromCatalog(entry));
+    removeWishlist(wishId);
+    return entry;
+  }
+
+  // ——— Collections ———
+  function addCollection(col) {
+    data.collections.push(M.createCollection(col));
+    save();
+    return data.collections[data.collections.length - 1];
+  }
+
+  function removeCollection(id) {
+    data.collections = data.collections.filter((c) => c.id !== id);
+    save();
+  }
+
+  // ——— Batch ———
+  function getBatchDraft() {
+    return data.batchDraft;
+  }
+
+  function setBatchDraft(draft) {
+    data.batchDraft = draft;
+    save();
+  }
+
+  function addToBatch(item) {
+    data.batchDraft.push({ ...item, draftId: M.uid('d') });
+    save();
+  }
+
+  function removeFromBatch(draftId) {
+    data.batchDraft = data.batchDraft.filter((x) => x.draftId !== draftId);
+    save();
+  }
+
+  function commitBatch() {
+    let added = 0;
+    data.batchDraft.forEach((item) => {
+      if (!findOnShelf(item)) {
+        addRecord(M.fromCatalog(item), { silent: true });
+        added++;
+      }
+    });
+    data.batchDraft = [];
+    save();
+    return added;
+  }
+
+  function exportJson() {
+    return JSON.stringify({ profile: data.profile, records: data.records, wishlist: data.wishlist, collections: data.collections }, null, 2);
+  }
+
+  function importJson(json) {
+    const p = JSON.parse(json);
+    if (!Array.isArray(p.records)) throw new Error('Неверный формат');
+    data.profile = M.createProfile(p.profile || data.profile);
+    data.records = p.records.map((r) => M.createRecord(r));
+    data.wishlist = (p.wishlist || []).map((w) => M.createWishlistItem(w));
+    data.collections = (p.collections || []).map((c) => M.createCollection(c));
+    save();
+  }
+
+  function resetAll() {
+    data.records = [];
+    data.wishlist = [];
+    data.collections = [];
+    data.batchDraft = [];
+    save();
+  }
+
+  return {
+    STORAGE_KEY,
+    DEFAULT_CATALOG,
+    load,
+    save,
+    subscribe,
+    getState,
+    getPrefs,
+    setPrefs,
+    getRecords,
+    getRecord,
+    latestRecord,
+    filterRecords,
+    recordsForCollection,
+    findOnShelf,
+    addRecord,
+    updateRecord,
+    deleteRecord,
+    addWishlist,
+    removeWishlist,
+    moveWishlistToShelf,
+    addCollection,
+    removeCollection,
+    getBatchDraft,
+    setBatchDraft,
+    addToBatch,
+    removeFromBatch,
+    commitBatch,
+    exportJson,
+    importJson,
+    resetAll,
+  };
+})();
+
+/** @file Domain services — бизнес-логика без UI */
+const CrateServices = (() => {
+  const M = CrateModels;
+  const S = CrateStore;
+
+  const VIBES = [
+    'А знаешь — этот альбом записали всего за две сессии. Почти всё с первого дубля.',
+    'Классика, которую узнаёшь с первых секунд иглы.',
+    'На блошинке лежал в стопке — чуть не прошёл мимо.',
+    'Прессинг спорный, но звук того стоит.',
+  ];
+
+  const VINYL_COLOR_LABELS = {
+    black: 'чёрный',
+    clear: 'прозрачный',
+    red: 'красный',
+    gold: 'золотой',
+    marble: 'мрамор',
+    splatter: 'сплэттер',
+  };
+
+  const Catalog = {
+    search(query) {
+      const q = (query || '').trim().toLowerCase();
+      if (!q) return [];
+      return S.DEFAULT_CATALOG.filter(
+        (c) => c.title.toLowerCase().includes(q) || c.artist.toLowerCase().includes(q)
+      ).slice(0, 8);
+    },
+    get(key) {
+      return S.DEFAULT_CATALOG.find((c) => M.slug(c.title, c.artist) === key);
+    },
+    random(excludeKeys = []) {
+      const pool = S.DEFAULT_CATALOG.filter((c) => !excludeKeys.includes(M.slug(c.title, c.artist)));
+      return pool[Math.floor(Math.random() * pool.length)] || S.DEFAULT_CATALOG[0];
+    },
+    vibe() {
+      return VIBES[Math.floor(Math.random() * VIBES.length)];
+    },
+  };
+
+  const Stats = {
+    totalInvested(records) {
+      return records.reduce((sum, r) => sum + (Number(r.price) || 0), 0);
+    },
+    uniqueTags(records) {
+      const tags = new Set();
+      records.forEach((r) => (r.tags || []).forEach((t) => tags.add(t)));
+      return tags.size;
+    },
+    decadeChart(records) {
+      const decades = { '50': 0, '60': 0, '70': 0, '80': 0, '90': 0, '00': 0 };
+      records.forEach((r) => {
+        const d = Math.floor((r.year || 1970) / 10) * 10;
+        const key = String(d).slice(2, 4);
+        if (decades[key] !== undefined) decades[key]++;
+      });
+      const max = Math.max(...Object.values(decades), 1);
+      return { decades, max };
+    },
+    collectionSummary(records) {
+      const years = records.map((r) => r.year).filter(Boolean);
+      const yearRange = years.length ? `${Math.min(...years)}–${String(Math.max(...years)).slice(-2)}` : '—';
+      const labels = {};
+      records.forEach((r) => {
+        if (r.label) labels[r.label] = (labels[r.label] || 0) + 1;
+      });
+      const topLabel = Object.entries(labels).sort((a, b) => b[1] - a[1])[0]?.[0] || '—';
+      return { count: records.length, yearRange, topLabel };
+    },
+  };
+
+  /** Автопредложения коллекций (MVP: 5 типов) */
+  const Suggestions = {
+    MIN_PATTERN = 3,
+
+    compute(records, existingCollections) {
+      const out = [];
+      const hasCol = (type, value) =>
+        existingCollections.some((c) => c.type === type && String(c.value).toLowerCase() === String(value).toLowerCase());
+
+      // 1. Жанр
+      const jazz = records.filter((r) => r.tags?.some((t) => t.toLowerCase().includes('джаз')));
+      if (jazz.length >= this.MIN_PATTERN && !hasCol('genre', 'джаз')) {
+        out.push({
+          id: 'sug-jazz',
+          type: 'genre',
+          value: 'джаз',
+          title: 'Джаз-полка',
+          body: `${jazz.length} пластинок с тегом «джаз» — оформить коллекцию?`,
+          count: jazz.length,
+        });
+      }
+
+      // 2. Исполнитель
+      const byArtist = {};
+      records.forEach((r) => {
+        byArtist[r.artist] = (byArtist[r.artist] || 0) + 1;
+      });
+      const topArtist = Object.entries(byArtist).filter(([, n]) => n >= this.MIN_PATTERN).sort((a, b) => b[1] - a[1])[0];
+      if (topArtist && !hasCol('artist', topArtist[0])) {
+        out.push({
+          id: `sug-artist-${topArtist[0]}`,
+          type: 'artist',
+          value: topArtist[0],
+          title: topArtist[0],
+          body: `${topArtist[1]} пластинок этого исполнителя — собрать на полку?`,
+          count: topArtist[1],
+        });
+      }
+
+      // 3. Десятилетие
+      const byDecade = {};
+      records.forEach((r) => {
+        const d = Math.floor(r.year / 10) * 10;
+        byDecade[d] = (byDecade[d] || 0) + 1;
+      });
+      const topDecade = Object.entries(byDecade).filter(([, n]) => n >= this.MIN_PATTERN).sort((a, b) => b[1] - a[1])[0];
+      if (topDecade && !hasCol('decade', topDecade[0])) {
+        out.push({
+          id: `sug-decade-${topDecade[0]}`,
+          type: 'decade',
+          value: topDecade[0],
+          title: `${topDecade[0]}-е`,
+          body: `${topDecade[1]} пластинок из ${topDecade[0]}-х — сохранить подборку?`,
+          count: topDecade[1],
+        });
+      }
+
+      // 4. Недавние приобретения (30 дней)
+      const monthAgo = Date.now() - 30 * 86400000;
+      const recent = records.filter((r) => r.addedAt >= monthAgo);
+      if (recent.length >= this.MIN_PATTERN && !hasCol('tag', 'недавние')) {
+        out.push({
+          id: 'sug-recent',
+          type: 'tag',
+          value: 'недавние',
+          title: 'Свежие находки',
+          body: `${recent.length} пластинок за последний месяц`,
+          count: recent.length,
+          tagRecords: true,
+        });
+      }
+
+      // 5. Цвет винила
+      const byColor = {};
+      records.forEach((r) => {
+        if (r.vinylColor && r.vinylColor !== 'black') byColor[r.vinylColor] = (byColor[r.vinylColor] || 0) + 1;
+      });
+      const topColor = Object.entries(byColor).filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1])[0];
+      if (topColor && !hasCol('tag', `винил:${topColor[0]}`)) {
+        out.push({
+          id: `sug-vinyl-${topColor[0]}`,
+          type: 'tag',
+          value: `винил:${topColor[0]}`,
+          title: `Винил: ${VINYL_COLOR_LABELS[topColor[0]] || topColor[0]}`,
+          body: `${topColor[1]} цветных пластинок в коллекции`,
+          count: topColor[1],
+        });
+      }
+
+      return out.slice(0, 3);
+    },
+
+    apply(suggestion) {
+      if (suggestion.tagRecords && suggestion.id === 'sug-recent') {
+        const monthAgo = Date.now() - 30 * 86400000;
+        S.getRecords()
+          .filter((r) => r.addedAt >= monthAgo)
+          .forEach((r) => {
+            if (!r.tags.includes('недавние')) {
+              S.updateRecord(r.id, { tags: [...r.tags, 'недавние'] });
+            }
+          });
+      }
+      return S.addCollection({
+        name: suggestion.title,
+        type: suggestion.type,
+        value: suggestion.value,
+      });
+    },
+  };
+
+  const Photos = {
+    async compress(file, maxW = 480, quality = 0.72) {
+      const bmp = await createImageBitmap(file);
+      const scale = Math.min(1, maxW / bmp.width);
+      const w = Math.round(bmp.width * scale);
+      const h = Math.round(bmp.height * scale);
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext('2d').drawImage(bmp, 0, 0, w, h);
+      return canvas.toDataURL('image/jpeg', quality);
+    },
+    async attachToRecord(recordId, file) {
+      const dataUrl = await this.compress(file);
+      S.updateRecord(recordId, { photo: dataUrl });
+      return dataUrl;
+    },
+  };
+
+  return { Catalog, Stats, Suggestions, Photos, VINYL_COLOR_LABELS };
+})();
+
+/** @file UI — рендер и DOM (без бизнес-логики) */
+const CrateUI = (() => {
+  const M = CrateModels;
+  const S = CrateStore;
+  const { Catalog, Stats, Suggestions, Photos } = CrateServices;
+
+  const VIEWS = {
+    shelf: 'view-shelf',
+    empty: 'view-empty',
+    record: 'view-record',
+    'add-single': 'view-add-single',
+    'add-batch': 'view-add-batch',
+    wishlist: 'view-wishlist',
+    showcase: 'view-showcase',
+    'showcase-record': 'view-showcase-record',
+    'showcase-collection': 'view-showcase-collection',
+    profile: 'view-profile',
+    map: 'view-map',
+  };
+  const TAB_VIEWS = new Set(['shelf', 'wishlist', 'showcase']);
+
+  let els = {};
+  let navState = { currentView: 'shelf', activeTab: 'shelf', history: [], selectedRecordId: null, selectedCatalogKey: null, showcaseRecordId: null, addTarget: 'shelf', showcaseCollectionId: null };
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function pluralize(n, one, few, many) {
+    const m10 = n % 10;
+    const m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return one;
+    if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few;
+    return many;
+  }
+
+  function toast(msg, ms = 2400) {
+    if (!els.toastRoot) return;
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = msg;
+    els.toastRoot.appendChild(el);
+    requestAnimationFrame(() => el.classList.add('toast--show'));
+    setTimeout(() => {
+      el.classList.remove('toast--show');
+      setTimeout(() => el.remove(), 300);
+    }, ms);
+  }
+
+  function cacheElements() {
+    els = {
+      nav: document.getElementById('main-nav'),
+      shelfList: document.getElementById('shelf-list'),
+      wishlistList: document.getElementById('wishlist-list'),
+      batchList: document.getElementById('batch-list'),
+      discogsResults: document.getElementById('discogs-results'),
+      discogsSelected: document.getElementById('discogs-selected'),
+      addSearch: document.getElementById('add-search'),
+      toastRoot: document.getElementById('toast-root'),
+      modalRoot: document.getElementById('modal-root'),
+      filterSheet: document.getElementById('filter-sheet'),
+      suggestions: document.getElementById('suggestions-list'),
+      collectionTabs: document.getElementById('collection-tabs'),
+      photoInput: document.getElementById('photo-input'),
+      showcaseRecent: document.getElementById('showcase-recent'),
+    };
+  }
+
+  function renderShelf() {
+    const records = S.getRecords();
+    const prefs = S.getPrefs();
+    const countEl = document.getElementById('shelf-count');
+    const latest = S.latestRecord();
+    if (countEl) countEl.textContent = String(records.length);
+
+    const albumEl = document.querySelector('.felt-album');
+    const metaEl = document.querySelector('.felt-meta');
+    if (latest) {
+      if (albumEl) albumEl.textContent = latest.title;
+      if (metaEl) metaEl.textContent = `${latest.artist} · ${latest.year}${M.formatPrice(latest) ? ` · ${M.formatPrice(latest)}` : ''}`;
+    }
+
+    renderCollectionTabs(prefs.shelfFilter);
+    const items = S.filterRecords(prefs.shelfFilter);
+    if (els.shelfList) {
+      els.shelfList.innerHTML = items.length
+        ? items
+            .map(
+              (r, i) => `
+        <button type="button" class="row row--btn${i === items.length - 1 ? ' row--last' : ''}" data-record="${r.id}">
+          <div class="sleeve" style="width:44px;height:44px;${r.photo ? `background-image:url(${r.photo});background-size:cover;` : `background:${r.color};`}"></div>
+          <div class="row-main">
+            <div class="row-title">${escapeHtml(r.title)}</div>
+            <div class="row-sub">${escapeHtml(r.artist)} · ${r.year}</div>
+          </div>
+          <span class="grade">${r.grade}</span>
+        </button>`
+            )
+            .join('')
+        : `<p class="list-empty">Ничего по этому фильтру.</p>`;
+    }
+    renderSuggestions();
+  }
+
+  function renderCollectionTabs(activeFilter) {
+    if (!els.collectionTabs) return;
+    const cols = S.getState().collections;
+    const builtins = [
+      { id: 'all', label: 'всё', filter: 'all' },
+      { id: 'jazz', label: 'джаз', filter: 'jazz' },
+      { id: 'rock', label: 'рок', filter: 'rock' },
+      { id: 'fav', label: 'любимое', filter: 'fav' },
+    ];
+    const saved = cols.map((c) => ({
+      id: c.id,
+      label: c.name,
+      filter: `col:${c.id}`,
+    }));
+    const tabs = [...builtins, ...saved];
+    els.collectionTabs.innerHTML = tabs
+      .map((t) => `<button type="button" class="tab${activeFilter === t.filter ? ' tab--on' : ''}" data-filter="${t.filter}">${escapeHtml(t.label)}</button>`)
+      .join('');
+  }
+
+  function renderSuggestions() {
+    if (!els.suggestions) return;
+    const sugs = Suggestions.compute(S.getRecords(), S.getState().collections);
+    if (!sugs.length) {
+      els.suggestions.innerHTML = '';
+      return;
+    }
+    els.suggestions.innerHTML = `
+      <div class="sec-h"><h3>подсказки</h3></div>
+      ${sugs
+        .map(
+          (s) => `
+        <div class="suggestion-card">
+          <div class="suggestion-card__title">${escapeHtml(s.title)}</div>
+          <div class="suggestion-card__body">${escapeHtml(s.body)}</div>
+          <button type="button" class="btn btn-gold btn-sm" data-apply-suggestion="${s.id}">сохранить коллекцию</button>
+        </div>`
+        )
+        .join('')}`;
+    els.suggestions.dataset.suggestions = JSON.stringify(sugs);
+  }
+
+  function renderWishlist() {
+    const list = S.getState().wishlist;
+    const countEl = document.getElementById('wishlist-count');
+    if (countEl) countEl.textContent = String(list.length);
+    if (!els.wishlistList) return;
+    els.wishlistList.innerHTML = list.length
+      ? list
+          .map(
+            (w, i) => `
+      <div class="row${i === list.length - 1 ? ' row--last' : ''}">
+        <div class="sleeve sleeve--wish"></div>
+        <div class="row-main">
+          <div class="row-title">${escapeHtml(w.title)}</div>
+          <div class="row-sub">${escapeHtml(w.artist)}${w.year ? ` · ${w.year}` : ''}</div>
+        </div>
+        <button type="button" class="wish-heart" data-wish-shelf="${w.id}" title="На полку">♥</button>
+        <button type="button" class="row-action" data-wish-remove="${w.id}">✕</button>
+      </div>`
+          )
+          .join('')
+      : `<p class="list-empty">Вишлист пуст</p>`;
+  }
+
+  function renderRecord(id) {
+    const r = S.getRecord(id);
+    if (!r) return;
+    navState.selectedRecordId = id;
+    const cover = document.getElementById('record-cover');
+    if (cover) {
+      if (r.photo) {
+        cover.style.backgroundImage = `url(${r.photo})`;
+        cover.style.backgroundSize = 'cover';
+        cover.style.backgroundColor = r.color;
+      } else {
+        cover.style.backgroundImage = '';
+        cover.style.background = r.color;
+      }
+    }
+    document.getElementById('record-title').textContent = r.title;
+    document.getElementById('record-artist').textContent = r.artist;
+    document.getElementById('btn-toggle-fav').textContent = r.favorite ? '♥ в любимом' : '♡ в любимое';
+    const tags = document.getElementById('record-tags');
+    const list = [...(r.tags || [])];
+    if (r.favorite && !list.includes('любимое')) list.push('любимое');
+    tags.innerHTML = list.map((t) => `<span class="tab">${escapeHtml(t)}</span>`).join('');
+    document.getElementById('record-meta').innerHTML = `
+      <div class="meta-row"><dt>Прессинг</dt><dd>${escapeHtml(r.pressing)}</dd></div>
+      <div class="meta-row"><dt>Состояние</dt><dd><span class="grade">${r.grade}</span></dd></div>
+      <div class="meta-row"><dt>Цвет винила</dt><dd>${escapeHtml(CrateServices.VINYL_COLOR_LABELS[r.vinylColor] || r.vinylColor)}</dd></div>
+      <div class="meta-row"><dt>Цена</dt><dd class="price">${M.formatPrice(r) ? `${M.formatPrice(r)} · приватно` : '—'}</dd></div>`;
+    document.getElementById('record-story').textContent = r.story || 'История пока не добавлена.';
+  }
+
+  function renderDiscogsSearch() {
+    const q = els.addSearch?.value || '';
+    const results = Catalog.search(q);
+    if (!els.discogsResults) return;
+    if (!q.trim()) {
+      els.discogsResults.innerHTML = `<p class="discogs-hint">Введи артиста или альбом</p>`;
+      els.discogsSelected?.classList.add('hidden');
+      navState.selectedCatalogKey = null;
+      return;
+    }
+    if (!results.length) {
+      els.discogsResults.innerHTML = `<p class="discogs-hint">Не нашли. <button type="button" class="link-btn" id="btn-manual-inline">добавить вручную</button></p>`;
+      return;
+    }
+    els.discogsResults.innerHTML = results
+      .map((c) => {
+        const key = M.slug(c.title, c.artist);
+        const dup = S.findOnShelf(c);
+        return `
+        <button type="button" class="discogs-card discogs-pick${navState.selectedCatalogKey === key ? ' discogs-card--selected' : ''}" data-catalog="${key}">
+          <div class="discogs-card__row">
+            <div class="sleeve" style="width:54px;height:54px;background:${c.color}"></div>
+            <div>
+              <div class="row-title">${escapeHtml(c.title)}</div>
+              <div class="row-sub">${escapeHtml(c.artist)} · ${c.year}</div>
+              ${dup ? '<div class="row-flag row-flag--dup">⚠ на полке</div>' : ''}
+            </div>
+          </div>
+        </button>`;
+      })
+      .join('');
+    if (navState.selectedCatalogKey) renderDiscogsSelected();
+  }
+
+  function renderDiscogsSelected() {
+    const c = Catalog.get(navState.selectedCatalogKey);
+    if (!c || !els.discogsSelected) return;
+    els.discogsSelected.classList.remove('hidden');
+    els.discogsSelected.innerHTML = `
+      <div class="discogs-card discogs-card--selected">
+        <div class="discogs-card__row">
+          <div class="sleeve" style="width:54px;height:54px;background:${c.color}"></div>
+          <div>
+            <div class="row-title">${escapeHtml(c.title)}</div>
+            <div class="row-sub">${escapeHtml(c.artist)} · ${c.year}</div>
+          </div>
+        </div>
+        <p class="vibe-line">${Catalog.vibe()}</p>
+      </div>`;
+    const btn = document.getElementById('btn-add-one');
+    if (btn) btn.disabled = !!S.findOnShelf(c);
+  }
+
+  function renderBatch() {
+    const draft = S.getBatchDraft();
+    document.getElementById('batch-count').textContent = String(draft.length);
+    if (!els.batchList) return;
+    els.batchList.innerHTML =
+      draft
+        .map(
+          (item) => `
+      <div class="row">
+        <div class="sleeve" style="width:38px;height:38px;background:${item.color}"></div>
+        <div class="row-main">
+          <div class="row-title">${escapeHtml(item.title)}</div>
+          <div class="row-sub">${escapeHtml(item.artist)}</div>
+          ${item.flag === 'check' ? '<div class="row-flag row-flag--warn">⚑ проверь прессинг</div>' : ''}
+          ${item.flag === 'dup' ? '<div class="row-flag row-flag--dup">⚠ возможно на полке</div>' : ''}
+        </div>
+        <button type="button" class="row-action" data-batch-remove="${item.draftId}">✕</button>
+      </div>`
+        )
+        .join('') +
+      `<button type="button" class="row row--btn row--last" id="batch-add-manual">
+        <div class="sleeve sleeve--dashed">+</div>
+        <div class="row-main"><div class="row-sub">добавить вручную</div></div>
+      </button>`;
+    const saveBtn = document.getElementById('btn-save-batch');
+    if (saveBtn) {
+      saveBtn.textContent = draft.length ? `сохранить ${draft.length} ${pluralize(draft.length, 'пластинку', 'пластинки', 'пластинок')}` : 'сохранить';
+      saveBtn.disabled = !draft.length;
+    }
+  }
+
+  function renderShowcaseRecord(id) {
+    const r = S.getRecord(id || navState.showcaseRecordId || navState.selectedRecordId) || S.latestRecord();
+    if (!r) return;
+    navState.showcaseRecordId = r.id;
+    const card = document.getElementById('share-record-card');
+    if (!card) return;
+    const sleeve = card.querySelector('.sleeve');
+    if (r.photo) {
+      sleeve.style.backgroundImage = `url(${r.photo})`;
+      sleeve.style.backgroundSize = 'cover';
+    } else {
+      sleeve.style.backgroundImage = '';
+      sleeve.style.background = r.color;
+    }
+    card.querySelector('.share-card__title').textContent = r.title;
+    card.querySelector('.share-card__artist').textContent = r.artist;
+    const stats = card.querySelectorAll('.stat-v');
+    stats[0].textContent = String(r.year);
+    stats[1].textContent = (r.pressing || '—').split('·')[0].trim();
+    stats[2].textContent = r.label || '—';
+    const quote = card.querySelector('.share-card__quote');
+    quote.textContent = r.story ? r.story.replace(/^«|»$/g, '') : '';
+    card.querySelector('.share-card__foot span:first-child').textContent = `@${S.getState().profile.handle}`;
+  }
+
+  function renderShowcaseCollection() {
+    const prefs = S.getPrefs();
+    const colId = navState.showcaseCollectionId || S.getState().collections[0]?.id;
+    const records = colId ? S.recordsForCollection(colId) : S.filterRecords(prefs.collFilter);
+    const col = S.getState().collections.find((c) => c.id === colId);
+    const titleEl = document.getElementById('coll-showcase-title');
+    if (titleEl) titleEl.textContent = col?.name || 'Коллекция';
+    const grid = document.getElementById('coll-grid');
+    if (grid) {
+      grid.className = prefs.collLayout === 'grid' ? 'coll-grid' : 'coll-grid coll-grid--list';
+      const covers = records.slice(0, 8);
+      while (covers.length < 8 && records.length) covers.push(records[covers.length % records.length]);
+      grid.innerHTML = (covers.length ? covers : [{ color: '#333' }])
+        .slice(0, 8)
+        .map((r) => `<div class="sleeve" style="${r.photo ? `background-image:url(${r.photo});background-size:cover;` : `background:${r.color || '#333'}`}"></div>`)
+        .join('');
+    }
+    const sum = Stats.collectionSummary(records);
+    const statN = document.querySelectorAll('#collection-share-card .coll-stat-n');
+    if (statN[0]) statN[0].textContent = String(sum.count);
+    if (statN[1]) statN[1].textContent = sum.yearRange;
+    if (statN[2]) statN[2].textContent = sum.topLabel;
+    document.querySelector('#collection-share-card .share-card__foot span:first-child').textContent =
+      `@${S.getState().profile.handle}`;
+    document.querySelectorAll('#view-showcase-collection .tabs .tab').forEach((btn) => {
+      btn.classList.toggle('tab--on', btn.dataset.layout === prefs.collLayout);
+    });
+    const picker = document.getElementById('coll-picker');
+    if (picker) {
+      picker.innerHTML = S.getState().collections
+        .map((c) => `<option value="${c.id}"${c.id === colId ? ' selected' : ''}>${escapeHtml(c.name)}</option>`)
+        .join('');
+    }
+  }
+
+  function renderProfile() {
+    const p = S.getState().profile;
+    const records = S.getRecords();
+    document.querySelector('.profile-avatar').textContent = p.avatar;
+    document.querySelector('.profile-name').textContent = p.name;
+    document.querySelector('.profile-handle').textContent = `@${p.handle} · с ${p.since}`;
+    const stats = document.querySelectorAll('.stat-box__n');
+    stats[0].textContent = String(records.length);
+    stats[1].textContent = `€${Stats.totalInvested(records).toLocaleString('ru-RU')}`;
+    stats[2].textContent = String(S.getState().collections.length);
+    const { decades, max } = Stats.decadeChart(records);
+    const bars = document.querySelector('.chart-bars');
+    if (bars) {
+      bars.innerHTML = ['50', '60', '70', '80', '90', '00']
+        .map((k) => `<div style="height:${Math.round((decades[k] / max) * 100) || 4}%"></div>`)
+        .join('');
+    }
+  }
+
+  function renderShowcaseHub() {
+    const latest = S.latestRecord();
+    if (!els.showcaseRecent || !latest) return;
+    const cols = S.getState().collections[0];
+    els.showcaseRecent.innerHTML = `
+      <button type="button" class="row row--btn" data-nav="showcase-record" data-record-id="${latest.id}">
+        <div class="sleeve" style="width:44px;height:44px;background:${latest.color}"></div>
+        <div class="row-main"><div class="row-title">${escapeHtml(latest.title)}</div><div class="row-sub">последняя · базовый стиль</div></div>
+        <span class="row-chevron">›</span>
+      </button>
+      ${
+        cols
+          ? `<button type="button" class="row row--btn row--last" data-nav="showcase-collection" data-collection-id="${cols.id}">
+        <div class="row-main"><div class="row-title">${escapeHtml(cols.name)}</div><div class="row-sub">коллекция</div></div>
+        <span class="row-chevron">›</span>
+      </button>`
+          : ''
+      }`;
+  }
+
+  function renderAll() {
+    renderShelf();
+    renderWishlist();
+    renderProfile();
+    renderBatch();
+    renderDiscogsSearch();
+    renderShowcaseHub();
+    if (navState.selectedRecordId) renderRecord(navState.selectedRecordId);
+    renderShowcaseRecord();
+    renderShowcaseCollection();
+  }
+
+  function isEmptyShelf() {
+    return S.getRecords().length === 0;
+  }
+
+  function updateNavVisibility(viewKey) {
+    const onShelf = viewKey === 'shelf' && !isEmptyShelf();
+    const onEmpty = viewKey === 'empty' || (viewKey === 'shelf' && isEmptyShelf());
+    const showNav = TAB_VIEWS.has(viewKey) && !isEmptyShelf() || onEmpty;
+    els.nav?.classList.toggle('nav--hidden', !showNav);
+    document.querySelectorAll('.fab').forEach((f) => {
+      f.style.display = onShelf ? '' : 'none';
+    });
+  }
+
+  function updateTabNav(tab) {
+    document.querySelectorAll('[data-tab-nav]').forEach((btn) => {
+      btn.classList.toggle('ni--on', btn.dataset.tabNav === tab);
+    });
+  }
+
+  function showView(viewKey, opts = {}) {
+    const { pushHistory = true, fromHash = false, replaceTab = false } = opts;
+    if (viewKey === 'shelf' && isEmptyShelf()) viewKey = 'empty';
+    if (viewKey === 'empty' && !isEmptyShelf()) viewKey = 'shelf';
+    if (!VIEWS[viewKey]) return;
+
+    if (pushHistory && navState.currentView !== viewKey) navState.history.push(navState.currentView);
+    if (TAB_VIEWS.has(viewKey)) {
+      navState.activeTab = viewKey === 'empty' ? 'shelf' : viewKey;
+      if (replaceTab) navState.history = navState.history.filter((h) => !TAB_VIEWS.has(h) && h !== 'empty');
+    }
+    navState.currentView = viewKey;
+
+    document.querySelectorAll('.view').forEach((el) => el.classList.remove('view--active'));
+    if (viewKey === 'shelf' || viewKey === 'empty') {
+      document.getElementById('view-shelf')?.classList.toggle('view--active', viewKey === 'shelf');
+      document.getElementById('view-empty')?.classList.toggle('view--active', viewKey === 'empty');
+    } else {
+      document.getElementById(VIEWS[viewKey])?.classList.add('view--active');
+    }
+
+    updateNavVisibility(viewKey);
+    if (TAB_VIEWS.has(viewKey) || viewKey === 'empty') updateTabNav(navState.activeTab);
+    if (viewKey === 'record') renderRecord(navState.selectedRecordId);
+    if (viewKey === 'add-single') renderDiscogsSearch();
+    if (viewKey === 'add-batch') renderBatch();
+    if (viewKey === 'showcase-record') renderShowcaseRecord();
+    if (viewKey === 'showcase-collection') renderShowcaseCollection();
+    if (viewKey === 'profile') renderProfile();
+    if (viewKey === 'showcase') renderShowcaseHub();
+
+    if (!fromHash) {
+      const params = {};
+      if (viewKey === 'record' && navState.selectedRecordId) params.id = navState.selectedRecordId;
+      if (viewKey === 'showcase-record' && navState.showcaseRecordId) params.id = navState.showcaseRecordId;
+      if (window.CrateApp) CrateApp.setHash(viewKey === 'empty' ? 'shelf' : viewKey, params, replaceTab);
+    }
+  }
+
+  function goBack() {
+    closeModal();
+    closeFilterSheet();
+    const prev = navState.history.pop();
+    showView(prev || navState.activeTab, { pushHistory: false });
+  }
+
+  function navigate(viewKey, params = {}) {
+    if (params.id) {
+      if (viewKey === 'record') navState.selectedRecordId = params.id;
+      if (viewKey === 'showcase-record') navState.showcaseRecordId = params.id;
+    } else if (viewKey === 'showcase-record' && navState.selectedRecordId) {
+      navState.showcaseRecordId = navState.selectedRecordId;
+    } else if (viewKey === 'showcase-collection' && params.collectionId) {
+      navState.showcaseCollectionId = params.collectionId;
+    } else if (viewKey === 'add-single') {
+      navState.addTarget = 'shelf';
+    }
+    showView(viewKey, { pushHistory: !TAB_VIEWS.has(viewKey), replaceTab: TAB_VIEWS.has(viewKey) });
+  }
+
+  function closeModal() {
+    els.modalRoot?.classList.remove('modal-root--open');
+    if (els.modalRoot) els.modalRoot.innerHTML = '';
+  }
+
+  function closeFilterSheet() {
+    els.filterSheet?.classList.remove('sheet--open');
+  }
+
+  function openFilterSheet() {
+    const prefs = S.getPrefs();
+    const cols = S.getState().collections;
+    if (!els.filterSheet) return;
+    els.filterSheet.innerHTML = `
+      <div class="sheet-backdrop" data-close-filter></div>
+      <div class="sheet panel">
+        <h3 class="sheet-title">Фильтр</h3>
+        ${['all', 'jazz', 'rock', 'fav']
+          .map(
+            (f) => `
+          <button type="button" class="sheet-opt${prefs.shelfFilter === f ? ' sheet-opt--on' : ''}" data-filter-pick="${f}">
+            ${f === 'all' ? 'всё' : f === 'jazz' ? 'джаз' : f === 'rock' ? 'рок' : 'любимое'}
+          </button>`
+          )
+          .join('')}
+        ${cols.map((c) => `<button type="button" class="sheet-opt${prefs.shelfFilter === `col:${c.id}` ? ' sheet-opt--on' : ''}" data-filter-pick="col:${c.id}">${escapeHtml(c.name)}</button>`).join('')}
+      </div>`;
+    els.filterSheet.classList.add('sheet--open');
+  }
+
+  function openEditModal(id) {
+    const r = S.getRecord(id);
+    if (!r) return;
+    els.modalRoot.innerHTML = `
+      <div class="modal-backdrop" data-close-modal></div>
+      <div class="modal sheet">
+        <h2 class="modal-title">Редактировать</h2>
+        <label class="form-field"><span class="field-l">альбом</span><input id="f-title" value="${escapeHtml(r.title)}"></label>
+        <label class="form-field"><span class="field-l">артист</span><input id="f-artist" value="${escapeHtml(r.artist)}"></label>
+        <label class="form-field"><span class="field-l">год</span><input id="f-year" type="number" value="${r.year}"></label>
+        <label class="form-field"><span class="field-l">состояние</span><select id="f-grade">${M.GRADES.map((g) => `<option${g === r.grade ? ' selected' : ''}>${g}</option>`).join('')}</select></label>
+        <label class="form-field"><span class="field-l">цена €</span><input id="f-price" type="number" value="${r.price || ''}"></label>
+        <label class="form-field"><span class="field-l">цвет винила</span><select id="f-vinyl">${M.VINYL_COLORS.map((v) => `<option value="${v}"${v === r.vinylColor ? ' selected' : ''}>${CrateServices.VINYL_COLOR_LABELS[v]}</option>`).join('')}</select></label>
+        <label class="form-field"><span class="field-l">теги (через запятую)</span><input id="f-tags" value="${escapeHtml((r.tags || []).join(', '))}"></label>
+        <label class="form-field"><span class="field-l">история</span><textarea id="f-story" rows="3">${escapeHtml(r.story || '')}</textarea></label>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-close-modal>отмена</button>
+          <button type="button" class="btn btn-gold" id="modal-save">сохранить</button>
+        </div>
+      </div>`;
+    els.modalRoot.classList.add('modal-root--open');
+    document.getElementById('modal-save').onclick = () => {
+      S.updateRecord(id, {
+        title: document.getElementById('f-title').value.trim(),
+        artist: document.getElementById('f-artist').value.trim(),
+        year: Number(document.getElementById('f-year').value),
+        grade: document.getElementById('f-grade').value,
+        price: Number(document.getElementById('f-price').value),
+        vinylColor: document.getElementById('f-vinyl').value,
+        tags: document.getElementById('f-tags').value.split(',').map((t) => t.trim()).filter(Boolean),
+        story: document.getElementById('f-story').value.trim(),
+      });
+      renderAll();
+      renderRecord(id);
+      closeModal();
+      toast('Сохранено');
+    };
+  }
+
+  function openManualModal(target = 'shelf') {
+    els.modalRoot.innerHTML = `
+      <div class="modal-backdrop" data-close-modal></div>
+      <div class="modal sheet">
+        <h2 class="modal-title">Вручную</h2>
+        <label class="form-field"><span class="field-l">альбом</span><input id="m-title"></label>
+        <label class="form-field"><span class="field-l">артист</span><input id="m-artist"></label>
+        <label class="form-field"><span class="field-l">год</span><input id="m-year" type="number" value="1975"></label>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-close-modal>отмена</button>
+          <button type="button" class="btn btn-gold" id="m-save">добавить</button>
+        </div>
+      </div>`;
+    els.modalRoot.classList.add('modal-root--open');
+    document.getElementById('m-save').onclick = () => {
+      const title = document.getElementById('m-title').value.trim();
+      const artist = document.getElementById('m-artist').value.trim();
+      if (!title || !artist) return toast('Заполни альбом и артиста');
+      if (target === 'wish') {
+        S.addWishlist({ title, artist, year: Number(document.getElementById('m-year').value) });
+        toast('В вишлисте');
+      } else {
+        S.addRecord(M.createRecord({ title, artist, year: Number(document.getElementById('m-year').value) }));
+        toast('На полке');
+        navigate('shelf');
+      }
+      closeModal();
+      renderAll();
+    };
+  }
+
+  function openProfileModal() {
+    const p = S.getState().profile;
+    els.modalRoot.innerHTML = `
+      <div class="modal-backdrop" data-close-modal></div>
+      <div class="modal sheet">
+        <h2 class="modal-title">Профиль</h2>
+        <label class="form-field"><span class="field-l">имя</span><input id="f-name" value="${escapeHtml(p.name)}"></label>
+        <label class="form-field"><span class="field-l">ник</span><input id="f-handle" value="${escapeHtml(p.handle)}"></label>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-close-modal>отмена</button>
+          <button type="button" class="btn btn-gold" id="modal-save-p">сохранить</button>
+        </div>
+      </div>`;
+    els.modalRoot.classList.add('modal-root--open');
+    document.getElementById('modal-save-p').onclick = () => {
+      const name = document.getElementById('f-name').value.trim();
+      const handle = document.getElementById('f-handle').value.trim().replace(/^@/, '');
+      S.getState().profile.name = name || p.name;
+      S.getState().profile.handle = handle || p.handle;
+      S.getState().profile.avatar = (name[0] || 'K').toUpperCase();
+      S.save();
+      renderProfile();
+      closeModal();
+      toast('Профиль обновлён');
+    };
+  }
+
+  function applyFilter(filter) {
+    if (filter.startsWith('col:')) {
+      const colId = filter.slice(4);
+      S.setPrefs({ shelfFilter: filter });
+      const col = S.getState().collections.find((c) => c.id === colId);
+      document.querySelector('.felt-t').textContent = col?.name || 'На столе';
+    } else {
+      S.setPrefs({ shelfFilter: filter });
+      document.querySelector('.felt-t').textContent = filter === 'all' ? 'На столе' : filter === 'fav' ? 'Любимое' : filter;
+    }
+    renderShelf();
+    closeFilterSheet();
+  }
+
+  return {
+    VIEWS,
+    TAB_VIEWS,
+    navState,
+    els,
+    cacheElements,
+    renderAll,
+    showView,
+    goBack,
+    navigate,
+    toast,
+    openFilterSheet,
+    closeFilterSheet,
+    openEditModal,
+    openManualModal,
+    openProfileModal,
+    closeModal,
+    applyFilter,
+    renderDiscogsSearch,
+    renderDiscogsSelected,
+    isEmptyShelf,
+  };
+})();
+
+/** @file CrateApp — точка входа, роутер, события */
+const CrateApp = (() => {
+  const S = CrateStore;
+  const UI = CrateUI;
+  const { Catalog, Suggestions, Photos } = CrateServices;
+  const M = CrateModels;
+
+  function setHash(view, params = {}, replace = false) {
+    let path = `#/${view}`;
+    if (params.id) path += `/${params.id}`;
+    const q = Object.entries(params)
+      .filter(([k, v]) => k !== 'id' && v)
+      .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
+      .join('&');
+    if (q) path += `?${q}`;
+    if (replace) history.replaceState(null, '', path);
+    else location.hash = path;
+  }
+
+  function parseHash() {
+    const raw = (location.hash || '#/shelf').replace(/^#/, '');
+    const [path, query] = raw.split('?');
+    const parts = path.split('/').filter(Boolean);
+    const view = parts[0] || 'shelf';
+    const params = {};
+    if (parts[1]) params.id = parts[1];
+    if (query) query.split('&').forEach((p) => { const [k, v] = p.split('='); params[k] = decodeURIComponent(v || ''); });
+    return { view, params };
+  }
+
+  function syncFromHash() {
+    const { view, params } = parseHash();
+    if (params.id) {
+      if (view === 'record') UI.navState.selectedRecordId = params.id;
+      if (view === 'showcase-record') UI.navState.showcaseRecordId = params.id;
+    }
+    if (params.collectionId) UI.navState.showcaseCollectionId = params.collectionId;
+    UI.showView(view in UI.VIEWS ? view : 'shelf', { pushHistory: false, fromHash: true });
+  }
+
+  function bindEvents() {
+    window.addEventListener('hashchange', syncFromHash);
+
+    document.body.addEventListener('click', (e) => {
+      if (e.target.closest('[data-close-modal]')) return UI.closeModal();
+      if (e.target.closest('[data-close-filter]')) return UI.closeFilterSheet();
+
+      const nav = e.target.closest('[data-nav]');
+      if (nav) {
+        e.preventDefault();
+        const p = {};
+        if (nav.dataset.recordId) p.id = nav.dataset.recordId;
+        if (nav.dataset.collectionId) p.collectionId = nav.dataset.collectionId;
+        return UI.navigate(nav.dataset.nav, p);
+      }
+
+      const tabNav = e.target.closest('[data-tab-nav]');
+      if (tabNav) {
+        e.preventDefault();
+        UI.navState.history = [];
+        return UI.navigate(tabNav.dataset.tabNav);
+      }
+
+      const record = e.target.closest('[data-record]');
+      if (record) {
+        e.preventDefault();
+        UI.navState.selectedRecordId = record.dataset.record;
+        return UI.navigate('record', { id: record.dataset.record });
+      }
+
+      if (e.target.closest('[data-back]')) {
+        e.preventDefault();
+        return UI.goBack();
+      }
+
+      const catalog = e.target.closest('[data-catalog]');
+      if (catalog) {
+        UI.navState.selectedCatalogKey = catalog.dataset.catalog;
+        UI.renderDiscogsSearch();
+        UI.renderDiscogsSelected();
+        return;
+      }
+
+      const batchRm = e.target.closest('[data-batch-remove]');
+      if (batchRm) {
+        S.removeFromBatch(batchRm.dataset.batchRemove);
+        UI.renderBatch();
+        return;
+      }
+
+      const wishRm = e.target.closest('[data-wish-remove]');
+      if (wishRm) {
+        S.removeWishlist(wishRm.dataset.wishRemove);
+        UI.renderWishlist();
+        UI.toast('Убрано');
+        return;
+      }
+
+      const wishShelf = e.target.closest('[data-wish-shelf]');
+      if (wishShelf) {
+        S.moveWishlistToShelf(wishShelf.dataset.wishShelf);
+        UI.renderAll();
+        UI.toast('На полке');
+        return;
+      }
+
+      const filterPick = e.target.closest('[data-filter-pick]');
+      if (filterPick) return UI.applyFilter(filterPick.dataset.filterPick);
+
+      const tab = e.target.closest('#collection-tabs .tab, #view-shelf .tabs .tab');
+      if (tab?.dataset.filter) return UI.applyFilter(tab.dataset.filter);
+
+      const sug = e.target.closest('[data-apply-suggestion]');
+      if (sug && elsSuggestions()) {
+        const list = JSON.parse(elsSuggestions().dataset.suggestions || '[]');
+        const s = list.find((x) => x.id === sug.dataset.applySuggestion);
+        if (s) {
+          Suggestions.apply(s);
+          UI.renderAll();
+          UI.toast(`Коллекция «${s.title}» сохранена`);
+        }
+        return;
+      }
+
+      if (e.target.closest('#batch-add-manual') || e.target.closest('#btn-manual-inline') || e.target.closest('#btn-manual-add')) {
+        return UI.openManualModal(UI.navState.addTarget);
+      }
+    });
+
+    function elsSuggestions() {
+      return document.getElementById('suggestions-list');
+    }
+
+    document.getElementById('btn-open-filter')?.addEventListener('click', () => UI.openFilterSheet());
+    document.getElementById('btn-add-one')?.addEventListener('click', () => {
+      const key = UI.navState.selectedCatalogKey;
+      const c = Catalog.get(key);
+      if (!c) return UI.toast('Выбери релиз из списка');
+      if (UI.navState.addTarget === 'wish') {
+        if (S.getState().wishlist.some((w) => M.slug(w.title, w.artist) === key)) return UI.toast('Уже в вишлисте');
+        S.addWishlist({ title: c.title, artist: c.artist, year: c.year });
+        UI.renderWishlist();
+        UI.toast('В вишлисте');
+        return;
+      }
+      if (S.findOnShelf(c)) return UI.toast('Уже на полке');
+      S.addRecord(M.fromCatalog(c));
+      UI.navState.selectedCatalogKey = null;
+      if (UI.els?.addSearch) UI.els.addSearch.value = '';
+      UI.renderAll();
+      UI.toast(`«${c.title}» на полке`);
+      UI.navigate('shelf');
+    });
+
+    document.getElementById('btn-save-batch')?.addEventListener('click', () => {
+      const n = S.commitBatch();
+      UI.renderAll();
+      UI.toast(n ? `Сохранено: ${n}` : 'Нечего добавлять');
+      UI.navigate('shelf');
+    });
+
+    document.getElementById('btn-simulate-scan')?.addEventListener('click', () => {
+      const draft = S.getBatchDraft();
+      const keys = draft.map((d) => M.slug(d.title, d.artist));
+      const c = Catalog.random(keys);
+      const onShelf = !!S.findOnShelf(c);
+      S.addToBatch({ ...c, flag: onShelf ? 'dup' : Math.random() > 0.8 ? 'check' : null });
+      UI.renderBatch();
+      UI.toast(`Скан: ${c.title}`);
+    });
+
+    document.querySelector('.scan-zone')?.addEventListener('click', () => {
+      const c = Catalog.random();
+      UI.navState.selectedCatalogKey = M.slug(c.title, c.artist);
+      if (UI.els?.addSearch) UI.els.addSearch.value = c.title;
+      UI.renderDiscogsSearch();
+      UI.renderDiscogsSelected();
+      UI.toast('Штрихкод распознан');
+    });
+
+    UI.els = UI.els || {};
+    document.getElementById('add-search')?.addEventListener('input', () => {
+      UI.navState.selectedCatalogKey = null;
+      UI.renderDiscogsSearch();
+      document.getElementById('discogs-selected')?.classList.add('hidden');
+    });
+
+    document.getElementById('btn-edit-record')?.addEventListener('click', () => UI.openEditModal(UI.navState.selectedRecordId));
+    document.getElementById('btn-delete-record')?.addEventListener('click', () => {
+      if (confirm('Убрать с полки?')) {
+        S.deleteRecord(UI.navState.selectedRecordId);
+        UI.renderAll();
+        UI.toast('Удалено');
+        UI.navigate('shelf');
+      }
+    });
+    document.getElementById('btn-toggle-fav')?.addEventListener('click', () => {
+      const r = S.getRecord(UI.navState.selectedRecordId);
+      if (!r) return;
+      S.updateRecord(r.id, { favorite: !r.favorite });
+      UI.renderRecord(r.id);
+      UI.renderShelf();
+      UI.toast(r.favorite ? 'В любимом' : 'Снято');
+    });
+    document.getElementById('btn-to-wishlist')?.addEventListener('click', () => {
+      const r = S.getRecord(UI.navState.selectedRecordId);
+      if (!r) return;
+      S.addWishlist({ title: r.title, artist: r.artist, year: r.year });
+      UI.toast('Добавлено в вишлист');
+    });
+
+    document.getElementById('btn-share-record')?.addEventListener('click', () => share('Crate — пластинка'));
+    document.getElementById('btn-share-coll')?.addEventListener('click', () => share('Crate — коллекция'));
+
+    document.getElementById('btn-profile-edit')?.addEventListener('click', () => UI.openProfileModal());
+    document.getElementById('btn-export')?.addEventListener('click', () => {
+      const blob = new Blob([S.exportJson()], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `crate-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      UI.toast('Копия скачана');
+    });
+    document.getElementById('import-file')?.addEventListener('change', (e) => {
+      const f = e.target.files?.[0];
+      if (!f) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          S.importJson(reader.result);
+          UI.renderAll();
+          UI.toast('Импорт готов');
+          UI.navigate('shelf');
+        } catch (err) {
+          UI.toast(err.message || 'Ошибка импорта');
+        }
+      };
+      reader.readAsText(f);
+      e.target.value = '';
+    });
+    document.getElementById('btn-reset')?.addEventListener('click', () => {
+      if (confirm('Удалить всю коллекцию?')) {
+        S.resetAll();
+        UI.renderAll();
+        UI.navigate('shelf');
+        UI.toast('Полка пуста');
+      }
+    });
+
+    document.getElementById('btn-add-wish')?.addEventListener('click', () => {
+      UI.navState.addTarget = 'wish';
+      UI.navigate('add-single');
+      const lbl = document.getElementById('add-mode-label');
+      const btn = document.getElementById('btn-add-one');
+      lbl?.classList.remove('hidden');
+      if (lbl) lbl.textContent = 'режим: вишлист';
+      if (btn) btn.textContent = '♡ в вишлист';
+    });
+
+    document.querySelectorAll('[data-nav="add-single"]').forEach((el) => {
+      el.addEventListener('click', () => {
+        if (!el.closest('#btn-add-wish')) {
+          setTimeout(() => {
+            UI.navState.addTarget = 'shelf';
+            document.getElementById('add-mode-label')?.classList.add('hidden');
+            const btn = document.getElementById('btn-add-one');
+            if (btn) btn.textContent = '＋ добавить на полку';
+          }, 0);
+        }
+      });
+    });
+
+    document.getElementById('photo-input')?.addEventListener('change', async (e) => {
+      const file = e.target.files?.[0];
+      if (!file || !UI.navState.selectedRecordId) return;
+      try {
+        await Photos.attachToRecord(UI.navState.selectedRecordId, file);
+        UI.renderRecord(UI.navState.selectedRecordId);
+        UI.renderShelf();
+        UI.toast('Фото сохранено');
+      } catch (err) {
+        UI.toast(err.message || 'Не удалось сохранить фото');
+      }
+      e.target.value = '';
+    });
+
+    document.getElementById('coll-picker')?.addEventListener('change', (e) => {
+      UI.navState.showcaseCollectionId = e.target.value;
+      UI.renderShowcaseCollection();
+    });
+
+    document.querySelectorAll('#view-showcase-collection .tabs .tab').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        S.setPrefs({ collLayout: btn.dataset.layout });
+        UI.renderShowcaseCollection();
+      });
+    });
+
+    document.querySelectorAll('.style-swatch').forEach((sw, i) => {
+      sw.addEventListener('click', () => {
+        if (sw.classList.contains('style-swatch--pro')) return UI.toast('PRO — в полной версии');
+        document.querySelectorAll('.style-swatch').forEach((s) => s.classList.remove('style-swatch--on'));
+        sw.classList.add('style-swatch--on');
+        S.setPrefs({ showcaseStyle: i });
+      });
+    });
+  }
+
+  function share(text) {
+    if (navigator.share) navigator.share({ title: 'Crate', text, url: location.href }).catch(() => {});
+    else {
+      navigator.clipboard?.writeText(`${text} ${location.href}`);
+      UI.toast('Ссылка скопирована');
+    }
+  }
+
+  function init() {
+    S.load();
+    UI.cacheElements();
+    UI.els = {
+      nav: document.getElementById('main-nav'),
+      shelfList: document.getElementById('shelf-list'),
+      wishlistList: document.getElementById('wishlist-list'),
+      batchList: document.getElementById('batch-list'),
+      discogsResults: document.getElementById('discogs-results'),
+      discogsSelected: document.getElementById('discogs-selected'),
+      addSearch: document.getElementById('add-search'),
+      toastRoot: document.getElementById('toast-root'),
+      modalRoot: document.getElementById('modal-root'),
+      filterSheet: document.getElementById('filter-sheet'),
+      suggestions: document.getElementById('suggestions-list'),
+      collectionTabs: document.getElementById('collection-tabs'),
+      photoInput: document.getElementById('photo-input'),
+      showcaseRecent: document.getElementById('showcase-recent'),
+    };
+    const latest = S.latestRecord();
+    if (latest) UI.navState.selectedRecordId = latest.id;
+    bindEvents();
+    S.subscribe(() => UI.renderAll());
+    UI.renderAll();
+    syncFromHash();
+    if (!location.hash) setHash('shelf', {}, true);
+    console.info('Crate v2 — application model ready');
+  }
+
+  return { init, setHash, parseHash, syncFromHash };
+})();
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => CrateApp.init());
+else CrateApp.init();
+
+</script>
+</body>
+</html>

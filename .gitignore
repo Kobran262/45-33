@@ -1,0 +1,32 @@
+## macOS
+.DS_Store
+
+## Xcode
+build/
+DerivedData/
+Crate/DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.swp
+*.swo
+
+## SwiftPM
+.swiftpm/
+.build/
+Package.resolved
+
+## CocoaPods
+Pods/
+
+## Secrets — НИКОГДА НЕ КОММИТИТЬ
+Secrets.plist
+Crate/Resources/Secrets.plist
+Crate/Config/Secrets.plist
+
+## Прототип
+src/
+app-full.js
+app.js
+build.py
+body.fragment.html

@@ -49,6 +49,21 @@ actor DiscogsService {
         return decoded.results
     }
 
+    func searchArtist(name: String) async throws -> [DiscogsSearchResult] {
+        guard AppSecrets.hasDiscogsToken else { throw DiscogsError.missingToken }
+        var components = URLComponents(url: baseURL.appendingPathComponent("database/search"), resolvingAgainstBaseURL: false)!
+        components.queryItems = [
+            URLQueryItem(name: "artist", value: name),
+            URLQueryItem(name: "type", value: "release"),
+            URLQueryItem(name: "format", value: "Vinyl"),
+            URLQueryItem(name: "per_page", value: "12"),
+            URLQueryItem(name: "page", value: "1"),
+        ]
+        let data = try await request(url: components.url!)
+        let decoded = try JSONDecoder().decode(DiscogsSearchResponse.self, from: data)
+        return decoded.results
+    }
+
     func fetchRelease(id: Int) async throws -> DiscogsRelease {
         guard AppSecrets.hasDiscogsToken else { throw DiscogsError.missingToken }
         let url = baseURL.appendingPathComponent("releases/\(id)")

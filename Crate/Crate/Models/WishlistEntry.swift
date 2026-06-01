@@ -3,12 +3,13 @@ import SwiftData
 
 @Model
 final class WishlistEntry {
-    @Attribute(.unique) var id: UUID
-    var title: String
-    var artist: String
+    var id: UUID = UUID()
+    var title: String = ""
+    var artist: String = ""
     var year: Int?
-    var note: String
-    var addedAt: Date
+    var note: String = ""
+    var priority: Int = 0
+    var addedAt: Date = Date()
 
     init(
         id: UUID = UUID(),
@@ -16,6 +17,7 @@ final class WishlistEntry {
         artist: String,
         year: Int? = nil,
         note: String = "",
+        priority: Int = 0,
         addedAt: Date = .now
     ) {
         self.id = id
@@ -23,6 +25,7 @@ final class WishlistEntry {
         self.artist = artist
         self.year = year
         self.note = note
+        self.priority = priority
         self.addedAt = addedAt
     }
 }

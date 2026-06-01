@@ -7,6 +7,8 @@ import UIKit
 struct AddBatchView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Query(sort: \VinylRecord.addedAt, order: .reverse) private var shelfRecords: [VinylRecord]
+    @Query(sort: \Achievement.unlockedAt, order: .reverse) private var achievements: [Achievement]
 
     @State private var draft: [BatchItem] = []
     @State private var showScanner = false
@@ -14,6 +16,7 @@ struct AddBatchView: View {
     @State private var isLoading = false
     @State private var lastError: String?
     @State private var showManualAdd = false
+    @State private var saveStatus: String?
 
     struct BatchItem: Identifiable, Hashable {
         let id = UUID()
@@ -77,6 +80,14 @@ struct AddBatchView: View {
                         .font(.callout)
                         .foregroundStyle(AppTheme.red)
                         .padding()
+                }
+
+                if let saveStatus {
+                    Text(saveStatus)
+                        .font(.system(size: 10, design: .monospaced))
+                        .foregroundStyle(AppTheme.inkFaint)
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 8)
                 }
 
                 List {
@@ -225,6 +236,7 @@ struct AddBatchView: View {
     @MainActor
     private func commit() async {
         isLoading = true
+        saveStatus = "Сохранение…"
         defer { isLoading = false }
 
         for item in draft where item.flag != .duplicate {
@@ -242,14 +254,26 @@ struct AddBatchView: View {
                 )
                 modelContext.insert(record)
             } else if let releaseResult = item.release {
-                if let release = try? await DiscogsService.shared.fetchRelease(id: releaseResult.id) {
-                    let record = DiscogsService.shared.mapToRecord(release)
-                    modelContext.insert(record)
-                }
+                let record = DiscogsService.shared.mapSearchResult(releaseResult)
+                modelContext.insert(record)
+                downloadCoverInBackground(for: record, urlString: releaseResult.cover_image ?? releaseResult.thumb)
             }
         }
         try? modelContext.save()
+        _ = AchievementService.evaluate(records: shelfRecords, existing: achievements, context: modelContext)
+        try? modelContext.save()
+        WidgetSnapshotService.update(records: shelfRecords)
         dismiss()
+    }
+
+    @MainActor
+    private func downloadCoverInBackground(for record: VinylRecord, urlString: String?) {
+        Task {
+            guard let data = try? await DiscogsService.shared.fetchImageData(urlString: urlString) else { return }
+            record.photoData = ImageDataTools.compressedJPEG(from: data)
+            try? modelContext.save()
+            WidgetSnapshotService.update(records: shelfRecords)
+        }
     }
 }
 

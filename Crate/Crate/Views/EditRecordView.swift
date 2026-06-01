@@ -15,6 +15,9 @@ struct EditRecordView: View {
     @State private var story: String = ""
     @State private var tagsString: String = ""
     @State private var priceString: String = ""
+    @State private var hasPurchaseDate = false
+    @State private var purchasedAt: Date = .now
+    @State private var purchaseLocation: String = ""
 
     var body: some View {
         Form {
@@ -42,6 +45,14 @@ struct EditRecordView: View {
             Section("Цена") {
                 TextField("Цена (€)", text: $priceString)
                     .keyboardType(.decimalPad)
+            }
+
+            Section("Покупка") {
+                Toggle("Помню месяц покупки", isOn: $hasPurchaseDate)
+                if hasPurchaseDate {
+                    DatePicker("Когда куплено", selection: $purchasedAt, displayedComponents: .date)
+                }
+                TextField("Где куплено", text: $purchaseLocation)
             }
 
             Section("Теги") {
@@ -75,6 +86,9 @@ struct EditRecordView: View {
             story = record.story
             tagsString = record.tags.joined(separator: ", ")
             priceString = record.price > 0 ? String(Int(record.price)) : ""
+            hasPurchaseDate = record.purchasedAt != nil
+            purchasedAt = record.purchasedAt ?? .now
+            purchaseLocation = record.purchaseLocation
         }
     }
 
@@ -87,6 +101,8 @@ struct EditRecordView: View {
         record.gradeRaw = gradeRaw
         record.vinylColorRaw = vinylColorRaw
         record.price = Double(priceString.replacingOccurrences(of: ",", with: ".")) ?? 0
+        record.purchasedAt = hasPurchaseDate ? purchasedAt : nil
+        record.purchaseLocation = purchaseLocation.trimmingCharacters(in: .whitespacesAndNewlines)
         record.tags = tagsString.split(separator: ",")
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }

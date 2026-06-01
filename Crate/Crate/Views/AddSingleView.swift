@@ -9,6 +9,8 @@ struct AddSingleView: View {
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Query(sort: \VinylRecord.addedAt, order: .reverse) private var shelfRecords: [VinylRecord]
+    @Query(sort: \Achievement.unlockedAt, order: .reverse) private var achievements: [Achievement]
 
     @State private var query: String = ""
     @State private var isLoading = false
@@ -18,6 +20,10 @@ struct AddSingleView: View {
     @State private var scannerError: String?
     @State private var previewResult: DiscogsSearchResult?
     @State private var showManualAdd = false
+    @State private var saveStatus: String?
+    @State private var coverRecognitionItem: PhotosPickerItem?
+    @State private var showCoverCamera = false
+    @State private var recognizedCoverText = ""
 
     init(mode: Mode = .shelf) { self.mode = mode }
 
@@ -35,6 +41,11 @@ struct AddSingleView: View {
                                 .frame(maxWidth: .infinity)
                         }
 
+                        PhotosPicker(selection: $coverRecognitionItem, matching: .images) {
+                            Label("Фото", systemImage: "camera.viewfinder")
+                                .frame(maxWidth: .infinity)
+                        }
+
                         Button {
                             showManualAdd = true
                         } label: {
@@ -47,10 +58,41 @@ struct AddSingleView: View {
                     .tint(AppTheme.gold)
                     .padding(.horizontal, 20)
 
+                    Button {
+                        showCoverCamera = true
+                    } label: {
+                        Label("Найти по фото обложки с камеры", systemImage: "camera")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .font(.system(size: 12, design: .monospaced))
+                    .buttonStyle(.bordered)
+                    .tint(AppTheme.gold)
+                    .padding(.horizontal, 20)
+
+                    if !recognizedCoverText.isEmpty {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("на обложке распознано".uppercased())
+                                .font(.system(size: 9, design: .monospaced))
+                                .tracking(1.5)
+                                .foregroundStyle(AppTheme.inkFaint)
+                            Text(recognizedCoverText)
+                                .font(.callout)
+                                .foregroundStyle(AppTheme.inkMuted)
+                        }
+                        .padding(.horizontal, 20)
+                    }
+
                     if let errorText {
                         Text(errorText)
                             .font(.callout)
                             .foregroundStyle(AppTheme.red)
+                            .padding(.horizontal, 20)
+                    }
+
+                    if let saveStatus {
+                        Text(saveStatus)
+                            .font(.system(size: 10, design: .monospaced))
+                            .foregroundStyle(AppTheme.inkFaint)
                             .padding(.horizontal, 20)
                     }
 
@@ -119,6 +161,15 @@ struct AddSingleView: View {
                     dismiss()
                 }
             }
+            .sheet(isPresented: $showCoverCamera) {
+                CameraView { image in
+                    showCoverCamera = false
+                    Task { await recognizeCover(image: image) }
+                }
+            }
+            .onChange(of: coverRecognitionItem) { _, item in
+                Task { await recognizeCover(item: item) }
+            }
             .alert("Сканер", isPresented: Binding(get: { scannerError != nil }, set: { if !$0 { scannerError = nil } })) {
                 Button("Ок", role: .cancel) {}
             } message: {
@@ -150,6 +201,30 @@ struct AddSingleView: View {
     }
 
     @MainActor
+    private func recognizeCover(item: PhotosPickerItem?) async {
+        guard let item, let data = try? await item.loadTransferable(type: Data.self) else { return }
+        let text = await CoverRecognitionService.recognizeText(from: data)
+        applyRecognizedCoverText(text)
+    }
+
+    @MainActor
+    private func recognizeCover(image: UIImage) async {
+        let text = await CoverRecognitionService.recognizeText(from: image)
+        applyRecognizedCoverText(text)
+    }
+
+    @MainActor
+    private func applyRecognizedCoverText(_ text: String) {
+        let clean = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if clean.isEmpty {
+            errorText = "Не удалось прочитать текст на обложке. Можно ввести руками."
+        } else {
+            recognizedCoverText = clean
+            query = clean
+        }
+    }
+
+    @MainActor
     private func runSearch(barcode: String? = nil) async {
         errorText = nil
         isLoading = true
@@ -178,10 +253,20 @@ struct AddSingleView: View {
             switch mode {
             case .shelf:
                 let record = DiscogsService.shared.mapToRecord(release)
-                if shouldDownloadCover, let data = try await DiscogsService.shared.fetchImageData(urlString: release.primaryImageURL) {
-                    record.photoData = ImageDataTools.compressedJPEG(from: data)
-                }
                 modelContext.insert(record)
+                try modelContext.save()
+                _ = AchievementService.evaluate(
+                    records: [record] + shelfRecords,
+                    existing: achievements,
+                    context: modelContext,
+                    triggerRecord: record
+                )
+                try? modelContext.save()
+                WidgetSnapshotService.update(records: [record] + shelfRecords)
+                if shouldDownloadCover {
+                    saveStatus = "Тянем обложку…"
+                    downloadCoverInBackground(for: record, urlString: release.primaryImageURL)
+                }
             case .wishlist:
                 let entry = WishlistEntry(
                     title: release.title,
@@ -189,11 +274,21 @@ struct AddSingleView: View {
                     year: release.year
                 )
                 modelContext.insert(entry)
+                try modelContext.save()
             }
-            try modelContext.save()
             dismiss()
         } catch {
             errorText = friendlyError(error)
+        }
+    }
+
+    @MainActor
+    private func downloadCoverInBackground(for record: VinylRecord, urlString: String?) {
+        Task {
+            guard let data = try? await DiscogsService.shared.fetchImageData(urlString: urlString) else { return }
+            record.photoData = ImageDataTools.compressedJPEG(from: data)
+            try? modelContext.save()
+            WidgetSnapshotService.update(records: shelfRecords)
         }
     }
 

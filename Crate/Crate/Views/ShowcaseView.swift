@@ -198,11 +198,14 @@ struct MiniGrid: View {
 struct ShowcaseCollectionView: View {
     let collection: SavedCollection?
 
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Query(sort: \VinylRecord.addedAt, order: .reverse) private var allRecords: [VinylRecord]
     @Query private var profiles: [UserProfile]
 
     @State private var showSharePreview = false
+    @State private var recordPendingRemoval: VinylRecord?
+    @State private var showDeleteCollectionConfirm = false
 
     private var records: [VinylRecord] {
         if let collection {
@@ -223,7 +226,10 @@ struct ShowcaseCollectionView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 20)
 
-                AdaptiveRecordGrid(records: records)
+                AdaptiveRecordGrid(records: records) { record in
+                    guard collection != nil else { return }
+                    recordPendingRemoval = record
+                }
                     .padding(.horizontal, 16)
             }
             .padding(.top, 12)
@@ -235,7 +241,16 @@ struct ShowcaseCollectionView: View {
             ToolbarItem(placement: .topBarLeading) {
                 Button("Закрыть") { dismiss() }.tint(AppTheme.gold)
             }
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                if collection != nil {
+                    Button(role: .destructive) {
+                        showDeleteCollectionConfirm = true
+                    } label: {
+                        Image(systemName: "trash")
+                    }
+                    .tint(AppTheme.red)
+                }
+
                 Button {
                     showSharePreview = true
                 } label: {
@@ -251,6 +266,36 @@ struct ShowcaseCollectionView: View {
                 handle: profileHandle,
                 captionTag: collection?.filterValue
             )
+        }
+        .confirmationDialog(
+            "Убрать пластинку из коллекции?",
+            isPresented: Binding(
+                get: { recordPendingRemoval != nil },
+                set: { if !$0 { recordPendingRemoval = nil } }
+            ),
+            titleVisibility: .visible,
+            presenting: recordPendingRemoval
+        ) { record in
+            Button("Убрать из коллекции", role: .destructive) {
+                removeFromCollection(record)
+            }
+            Button("Отмена", role: .cancel) {
+                recordPendingRemoval = nil
+            }
+        } message: { record in
+            Text("«\(record.artist) — \(record.title)» останется на общей полке.")
+        }
+        .confirmationDialog(
+            "Удалить коллекцию?",
+            isPresented: $showDeleteCollectionConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("Удалить коллекцию", role: .destructive) {
+                deleteCollection()
+            }
+            Button("Отмена", role: .cancel) {}
+        } message: {
+            Text("Пластинки останутся на полке. Удалится только сохранённая подборка.")
         }
     }
 
@@ -294,6 +339,19 @@ struct ShowcaseCollectionView: View {
         let raw = profiles.first?.handle.trimmingCharacters(in: .whitespacesAndNewlines)
         let fallback = "collector"
         return (raw?.isEmpty == false ? raw! : fallback).replacingOccurrences(of: "@", with: "")
+    }
+
+    private func removeFromCollection(_ record: VinylRecord) {
+        collection?.exclude(record)
+        try? modelContext.save()
+        recordPendingRemoval = nil
+    }
+
+    private func deleteCollection() {
+        guard let collection else { return }
+        modelContext.delete(collection)
+        try? modelContext.save()
+        dismiss()
     }
 }
 
@@ -576,6 +634,12 @@ struct AdaptiveCollectionCoverGrid: View {
 
 struct AdaptiveRecordGrid: View {
     let records: [VinylRecord]
+    var onRemove: ((VinylRecord) -> Void)?
+
+    init(records: [VinylRecord], onRemove: ((VinylRecord) -> Void)? = nil) {
+        self.records = records
+        self.onRemove = onRemove
+    }
 
     var body: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 92, maximum: 140), spacing: 10)], spacing: 12) {
@@ -597,6 +661,15 @@ struct AdaptiveRecordGrid: View {
                     }
                 }
                 .buttonStyle(.plain)
+                .contextMenu {
+                    if let onRemove {
+                        Button(role: .destructive) {
+                            onRemove(record)
+                        } label: {
+                            Label("Убрать из коллекции", systemImage: "minus.circle")
+                        }
+                    }
+                }
             }
         }
     }

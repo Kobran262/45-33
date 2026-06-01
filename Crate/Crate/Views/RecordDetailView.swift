@@ -5,10 +5,16 @@ import PhotosUI
 struct RecordDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @AppStorage("privateModeEnabled") private var privateModeEnabled = false
 
     @Bindable var record: VinylRecord
+    @Query(sort: \VinylRecord.addedAt, order: .reverse) private var shelfRecords: [VinylRecord]
+    @Query(sort: \WishlistEntry.addedAt, order: .reverse) private var wishlist: [WishlistEntry]
     @State private var photoItem: PhotosPickerItem?
     @State private var showCameraSheet = false
+    @State private var showShowcaseSheet = false
+    @State private var artistReleases: [DiscogsSearchResult] = []
+    @State private var isLoadingArtistReleases = false
 
     var body: some View {
         ScrollView {
@@ -30,6 +36,7 @@ struct RecordDetailView: View {
 
                 metaPanel
                 storyBlock
+                artistDiscographyBlock
                 actionButtons
             }
             .padding(.vertical, 16)
@@ -38,7 +45,14 @@ struct RecordDetailView: View {
         .navigationTitle("Карточка")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                Button {
+                    showShowcaseSheet = true
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                }
+                .tint(AppTheme.gold)
+
                 NavigationLink {
                     EditRecordView(record: record)
                 } label: {
@@ -58,6 +72,12 @@ struct RecordDetailView: View {
                 }
                 showCameraSheet = false
             }
+        }
+        .sheet(isPresented: $showShowcaseSheet) {
+            ShowcaseRecordView(record: record)
+        }
+        .task(id: record.artist) {
+            await loadArtistReleases()
         }
     }
 
@@ -117,8 +137,16 @@ struct RecordDetailView: View {
             row(label: "Цвет винила", value: record.vinylColor.label)
             divider
             row(label: "Цена покупки") {
-                Text(record.formattedPrice.isEmpty ? "—" : "\(record.formattedPrice) · приватно")
+                Text(priceText)
                     .foregroundStyle(AppTheme.gold)
+            }
+            if let purchasedAtText {
+                divider
+                row(label: "Куплено", value: purchasedAtText)
+            }
+            if !record.purchaseLocation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                divider
+                row(label: "Где куплено", value: record.purchaseLocation)
             }
         }
         .padding(.horizontal, 14)
@@ -136,6 +164,14 @@ struct RecordDetailView: View {
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty && $0 != "—" && $0.localizedCaseInsensitiveCompare("любимое") != .orderedSame }
         return values.isEmpty ? "—" : values.joined(separator: ", ")
+    }
+
+    private var purchasedAtText: String? {
+        guard let date = record.purchasedAt else { return nil }
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.dateFormat = "LLLL yyyy"
+        return formatter.string(from: date)
     }
 
     private func row(label: String, value: String) -> some View {
@@ -164,7 +200,12 @@ struct RecordDetailView: View {
                 .font(.system(size: 9, design: .monospaced))
                 .tracking(1.5)
                 .foregroundStyle(AppTheme.inkFaint)
-            if record.story.isEmpty {
+            if privateModeEnabled {
+                Text("история скрыта")
+                    .italic()
+                    .foregroundStyle(AppTheme.inkMuted)
+                    .font(.system(.callout, design: .serif))
+            } else if record.story.isEmpty {
                 Text("История пока не добавлена.")
                     .italic()
                     .foregroundStyle(AppTheme.inkMuted)
@@ -178,6 +219,85 @@ struct RecordDetailView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 20)
+    }
+
+    private var priceText: String {
+        guard !record.formattedPrice.isEmpty else { return "—" }
+        return privateModeEnabled ? "\(record.currency)••• приватно" : "\(record.formattedPrice) · приватно"
+    }
+
+    private var artistDiscographyBlock: some View {
+        Group {
+            if isLoadingArtistReleases {
+                ProgressView()
+                    .tint(AppTheme.gold)
+                    .padding(.vertical, 10)
+            } else if artistReleases.count >= 3 {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(discographyTitle.uppercased())
+                        .font(.system(size: 9, design: .monospaced))
+                        .tracking(1.5)
+                        .foregroundStyle(AppTheme.inkFaint)
+
+                    ForEach(artistReleases.prefix(12)) { release in
+                        HStack(spacing: 10) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(release.parsedAlbum)
+                                    .font(.system(.subheadline, design: .serif).weight(.semibold))
+                                    .foregroundStyle(AppTheme.ink)
+                                    .lineLimit(1)
+                                Text(release.yearInt.map(String.init) ?? "год неизвестен")
+                                    .font(.caption)
+                                    .foregroundStyle(AppTheme.inkMuted)
+                            }
+                            Spacer()
+                            discographyStatus(for: release)
+                        }
+                    }
+                }
+                .padding(14)
+                .background(AppTheme.panel)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12).stroke(AppTheme.panelLine, lineWidth: 1)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .padding(.horizontal, 20)
+            }
+        }
+    }
+
+    private var discographyTitle: String {
+        discographyCompletion >= 0.7 ? "Почти полная дискография" : "Что ещё есть у артиста"
+    }
+
+    private var discographyCompletion: Double {
+        guard !artistReleases.isEmpty else { return 0 }
+        let owned = artistReleases.filter { isOnShelf($0) }.count
+        return Double(owned) / Double(artistReleases.count)
+    }
+
+    @ViewBuilder
+    private func discographyStatus(for release: DiscogsSearchResult) -> some View {
+        if isOnShelf(release) {
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundStyle(AppTheme.green)
+        } else if isInWishlist(release) {
+            Image(systemName: "heart.fill")
+                .foregroundStyle(AppTheme.gold)
+        } else {
+            Button {
+                modelContext.insert(WishlistEntry(
+                    title: release.parsedAlbum,
+                    artist: release.parsedArtist,
+                    year: release.yearInt
+                ))
+                try? modelContext.save()
+            } label: {
+                Image(systemName: "heart")
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(AppTheme.inkMuted)
+        }
     }
 
     private var actionButtons: some View {
@@ -213,6 +333,28 @@ struct RecordDetailView: View {
         }
         .padding(.horizontal, 20)
         .buttonStyle(.bordered)
+    }
+
+    @MainActor
+    private func loadArtistReleases() async {
+        guard artistReleases.isEmpty else { return }
+        isLoadingArtistReleases = true
+        defer { isLoadingArtistReleases = false }
+        artistReleases = (try? await DiscogsService.shared.searchArtist(name: record.artist)) ?? []
+    }
+
+    private func isOnShelf(_ release: DiscogsSearchResult) -> Bool {
+        shelfRecords.contains {
+            $0.artist.localizedCaseInsensitiveCompare(release.parsedArtist) == .orderedSame &&
+            $0.title.localizedCaseInsensitiveCompare(release.parsedAlbum) == .orderedSame
+        }
+    }
+
+    private func isInWishlist(_ release: DiscogsSearchResult) -> Bool {
+        wishlist.contains {
+            $0.artist.localizedCaseInsensitiveCompare(release.parsedArtist) == .orderedSame &&
+            $0.title.localizedCaseInsensitiveCompare(release.parsedAlbum) == .orderedSame
+        }
     }
 
     @MainActor

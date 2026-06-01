@@ -14,7 +14,26 @@ struct CrateVinylApp: App {
             SavedCollection.self,
             UserProfile.self,
             UserVinylStore.self,
+            Achievement.self,
         ])
+
+        let iCloudSyncEnabled = UserDefaults.standard.bool(forKey: "iCloudSyncEnabled")
+
+        if iCloudSyncEnabled {
+            do {
+                container = try ModelContainer(
+                    for: schema,
+                    configurations: ModelConfiguration(
+                        schema: schema,
+                        isStoredInMemoryOnly: false,
+                        cloudKitDatabase: .private("iCloud.crate.45-33")
+                    )
+                )
+                return
+            } catch {
+                print("SwiftData CloudKit store failed, fallback to local store: \(error)")
+            }
+        }
 
         do {
             container = try ModelContainer(
@@ -22,7 +41,7 @@ struct CrateVinylApp: App {
                 configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
             )
         } catch {
-            print("SwiftData persistent store failed, fallback to in-memory: \(error)")
+            print("SwiftData local store failed, fallback to in-memory: \(error)")
             container = try! ModelContainer(
                 for: schema,
                 configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)

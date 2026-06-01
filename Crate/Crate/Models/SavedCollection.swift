@@ -7,11 +7,12 @@ enum CollectionFilterType: String, Codable, CaseIterable {
 
 @Model
 final class SavedCollection {
-    @Attribute(.unique) var id: UUID
-    var name: String
-    var filterTypeRaw: String
-    var filterValue: String
-    var createdAt: Date
+    var id: UUID = UUID()
+    var name: String = ""
+    var filterTypeRaw: String = CollectionFilterType.tag.rawValue
+    var filterValue: String = ""
+    var excludedRecordIDs: [String] = []
+    var createdAt: Date = Date()
 
     var filterType: CollectionFilterType {
         get { CollectionFilterType(rawValue: filterTypeRaw) ?? .tag }
@@ -29,10 +30,13 @@ final class SavedCollection {
         self.name = name
         self.filterTypeRaw = filterType.rawValue
         self.filterValue = filterValue
+        self.excludedRecordIDs = []
         self.createdAt = createdAt
     }
 
     func matches(_ record: VinylRecord) -> Bool {
+        guard !excludedRecordIDs.contains(record.id.uuidString) else { return false }
+
         switch filterType {
         case .favorite:
             return record.isFavorite
@@ -51,6 +55,13 @@ final class SavedCollection {
         case .decade:
             let decade = (record.year / 10) * 10
             return String(decade) == filterValue
+        }
+    }
+
+    func exclude(_ record: VinylRecord) {
+        let id = record.id.uuidString
+        if !excludedRecordIDs.contains(id) {
+            excludedRecordIDs.append(id)
         }
     }
 }

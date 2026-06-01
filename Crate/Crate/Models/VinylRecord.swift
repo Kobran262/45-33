@@ -24,22 +24,24 @@ enum RecordGrade: String, Codable, CaseIterable {
 
 @Model
 final class VinylRecord {
-    @Attribute(.unique) var id: UUID
-    var title: String
-    var artist: String
-    var year: Int
-    var coverColorHex: String
+    var id: UUID = UUID()
+    var title: String = ""
+    var artist: String = ""
+    var year: Int = 0
+    var coverColorHex: String = "#5a4a7a"
     @Attribute(.externalStorage) var photoData: Data?
-    var vinylColorRaw: String
-    var gradeRaw: String
-    var price: Double
-    var currency: String
-    var pressing: String
-    var label: String
-    var tags: [String]
-    var isFavorite: Bool
-    var story: String
-    var addedAt: Date
+    var vinylColorRaw: String = VinylColor.black.rawValue
+    var gradeRaw: String = RecordGrade.VGPlus.rawValue
+    var price: Double = 0
+    var currency: String = "€"
+    var pressing: String = "—"
+    var label: String = "—"
+    var tags: [String] = []
+    var isFavorite: Bool = false
+    var story: String = ""
+    var purchasedAt: Date?
+    var purchaseLocation: String = ""
+    var addedAt: Date = Date()
     /// ID релиза в Discogs (если добавлено через API)
     var discogsReleaseId: Int?
 
@@ -69,6 +71,8 @@ final class VinylRecord {
         tags: [String] = [],
         isFavorite: Bool = false,
         story: String = "",
+        purchasedAt: Date? = nil,
+        purchaseLocation: String = "",
         addedAt: Date = .now,
         discogsReleaseId: Int? = nil
     ) {
@@ -87,6 +91,8 @@ final class VinylRecord {
         self.tags = tags
         self.isFavorite = isFavorite
         self.story = story
+        self.purchasedAt = purchasedAt
+        self.purchaseLocation = purchaseLocation
         self.addedAt = addedAt
         self.discogsReleaseId = discogsReleaseId
     }

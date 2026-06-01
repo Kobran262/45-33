@@ -36,3 +36,20 @@ targets:
         TARGETED_DEVICE_FAMILY: "1,2"
         SWIFT_EMIT_LOC_STRINGS: YES
         CODE_SIGN_STYLE: Automatic
+    dependencies:
+      - target: CrateWidget
+        embed: true
+  CrateWidget:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: CrateWidget
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.crate.vinyl.widget
+        INFOPLIST_FILE: CrateWidget/Info.plist
+        SKIP_INSTALL: YES
+        SWIFT_VERSION: "5.9"
+        IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+        CODE_SIGN_STYLE: Automatic

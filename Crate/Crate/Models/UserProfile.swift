@@ -3,13 +3,13 @@ import SwiftData
 
 @Model
 final class UserProfile {
-    @Attribute(.unique) var id: UUID
-    var name: String
-    var handle: String
-    var memberSince: Int
-    var avatarLetter: String
-    var isPremium: Bool
-    var defaultShowcaseStyle: Int
+    var id: UUID = UUID()
+    var name: String = "Коллекционер"
+    var handle: String = "collector"
+    var memberSince: Int = Calendar.current.component(.year, from: .now)
+    var avatarLetter: String = "K"
+    var isPremium: Bool = false
+    var defaultShowcaseStyle: Int = 0
 
     init(
         id: UUID = UUID(),

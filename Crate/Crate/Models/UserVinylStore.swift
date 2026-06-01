@@ -11,19 +11,19 @@ enum VinylStoreSyncStatus: String, Codable, CaseIterable {
 
 @Model
 final class UserVinylStore {
-    @Attribute(.unique) var id: UUID
-    @Attribute(.unique) var syncID: String
-    var name: String
-    var latitude: Double
-    var longitude: Double
-    var address: String
-    var note: String
-    var sourceRaw: String
-    var syncStatusRaw: String
-    var createdByDeviceID: String
-    var createdAt: Date
-    var updatedAt: Date
-    var isDeleted: Bool
+    var id: UUID = UUID()
+    var syncID: String = UUID().uuidString
+    var name: String = ""
+    var latitude: Double = 0
+    var longitude: Double = 0
+    var address: String = ""
+    var note: String = ""
+    var sourceRaw: String = "user"
+    var syncStatusRaw: String = VinylStoreSyncStatus.pendingUpload.rawValue
+    var createdByDeviceID: String = DeviceIdentity.current
+    var createdAt: Date = Date()
+    var updatedAt: Date = Date()
+    var isDeleted: Bool = false
 
     var syncStatus: VinylStoreSyncStatus {
         get { VinylStoreSyncStatus(rawValue: syncStatusRaw) ?? .localOnly }

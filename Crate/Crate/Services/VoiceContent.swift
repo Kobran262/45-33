@@ -9,6 +9,7 @@ enum VoiceKey: String {
     case errorGeneric
     case warnDuplicate
     case warnAmbiguousBarcode
+    case confirmBulkDelete
     case suggestGenre
     case suggestArtist
     case suggestDecade
@@ -16,6 +17,8 @@ enum VoiceKey: String {
     case suggestColored
     case vitrinaCaptionCollection
     case vitrinaCaptionRecord
+    case importCSVProgress
+    case importCSVSummary
 }
 
 @MainActor
@@ -180,6 +183,11 @@ enum VoiceContent {
             "Не уверены, какое именно — {N} совпадений.",
             "{N} версий этой пластинки. Какая из них у тебя?"
         ],
+        .confirmBulkDelete: [
+            "Снять с полки {N} пластинок? Это действие нельзя будет быстро откатить.",
+            "{N} пластинок уйдут с полки. Проверь стопку перед тем, как нажать.",
+            "Удаляем {N} записей из коллекции? Винил останется дома, но в приложении его больше не будет."
+        ],
         .suggestGenre: [
             "{N} пластинок жанра «{GENRE}» — собрать в коллекцию?",
             "У тебя уже {N} пластинок «{GENRE}». Может, отдельная полка?",
@@ -224,6 +232,16 @@ enum VoiceContent {
             "Не самая дорогая, но самая любимая",
             "Долгожданная",
             "Сегодня вертится у меня"
+        ],
+        .importCSVProgress: [
+            "Импортируем стопку: {DONE} / {TOTAL}",
+            "Переносим пластинки: {DONE} / {TOTAL}",
+            "Разбираем CSV: {DONE} / {TOTAL}"
+        ],
+        .importCSVSummary: [
+            "Импортировано: {IMPORTED}, пропущено как дубликаты: {SKIPPED}.",
+            "Готово. На полке +{IMPORTED}, дублей не трогали: {SKIPPED}.",
+            "CSV разобран: {IMPORTED} новых, {SKIPPED} уже были на полке."
         ]
     ]
 

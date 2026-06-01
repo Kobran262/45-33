@@ -10,6 +10,7 @@
 		0EA55A5D7CDF89B49DEBD415 /* EditRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5409DE94B1F380CC5AB9966 /* EditRecordView.swift */; };
 		0FE4BEED812D0A9929058386 /* OverpassService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AD4D23386A56662F5F16460 /* OverpassService.swift */; };
 		105C98D2FDFCBDF2C5E12C4D /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAC2B920AB7309003EB612A /* UserProfile.swift */; };
+		10629A94DD9F6237661142B7 /* Achievement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D0FA51C72605F3FEE6D83C /* Achievement.swift */; };
 		18A5A56DFD9529EE9D2B9046 /* Secrets.plist in Resources */ = {isa = PBXBuildFile; fileRef = D7A963054023C25D6E4AF073 /* Secrets.plist */; };
 		1BE8D42154A40B2DC2EF0023 /* ShowcaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C88B9FCFB383542634348A4 /* ShowcaseView.swift */; };
 		2053BDC4E87D1BC565A47EEC /* VinylStoreSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3727E6211B6AA476E667F08A /* VinylStoreSyncService.swift */; };
@@ -18,17 +19,25 @@
 		374CF63D1E6F4B2768CABAE1 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C11CE165262F399FA2847554 /* LocationService.swift */; };
 		3B12C66CA9791710568CD34A /* WishlistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA52FC076E60D230A9AF238 /* WishlistView.swift */; };
 		3BC8A37CD26556771F299B9E /* UserVinylStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9D9013FC13D067D8729471 /* UserVinylStore.swift */; };
+		3EB5EC3835936D504573AF6D /* BackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787EDC0724BDB8D3DCD71313 /* BackupService.swift */; };
+		3F9B9AE4BF3147E29BB575BE /* WidgetSnapshotService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3EBB5263A82B451D5380EB /* WidgetSnapshotService.swift */; };
 		46A83906DCF68A29A974F3E2 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C888EA375FCF3F3FAC8A588 /* ProfileView.swift */; };
 		4FCEE7B3E552D55F6C9B1E4B /* CrateVinylApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B69514F959D78CD4C54817C /* CrateVinylApp.swift */; };
+		56E781DD546263AF73DA1673 /* AchievementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04304D64B08D3DEA5DBE7CA0 /* AchievementService.swift */; };
 		60F38EA6445B998444AECE7B /* VinylRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12389EB1A4FF46103D2A7EA5 /* VinylRecord.swift */; };
 		68D269B97ECE2623D3085365 /* AddBatchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87DE5E0632DA2C1E3A303586 /* AddBatchView.swift */; };
+		6F8090C82211E32A2CB81351 /* CoverRecognitionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD06CE13E4C1372D835702DC /* CoverRecognitionService.swift */; };
 		797BE53CB89D7436D4D97DE5 /* VoiceContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF33A9843F653913128DD91 /* VoiceContent.swift */; };
 		7D3E86C7A05B0D8576F79613 /* WishlistEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F24A0795BE2A555E2EF8338 /* WishlistEntry.swift */; };
 		7FDDC2D4E6CC4EFBD73F5A62 /* SuggestionsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B448D4F61AB48EA6E71BBA /* SuggestionsEngine.swift */; };
+		8137D8AEF90106C9443B3E0B /* CrateWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B400E17A620F2C9EE3D31A /* CrateWidget.swift */; };
+		86B8C4EE3E5E644E2CF6D322 /* TagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4739156CAF9ECA62275BE29F /* TagsView.swift */; };
 		8B3A1142E6D82226052648BD /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B43C0B3AD3D86F0D56FDE8 /* Theme.swift */; };
 		8F6A406FA9E2C187941F1614 /* ImageDataTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0E38A130414A2548154D2A /* ImageDataTools.swift */; };
+		9317747DBD3DDA0AB0E61A0B /* CSVImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4407C7CD1F58990A2FE13AED /* CSVImportService.swift */; };
 		983AEB799756EAB97A556785 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB0E183FD8BB4B9FBD1C9AC9 /* Assets.xcassets */; };
 		9C5613974063A7FAD0F242A8 /* RecordDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4269576C19C49E86267A457 /* RecordDetailView.swift */; };
+		9DEE950D040784C3F84CAC8D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = BB54AF3AEE3A96DE09B71A03 /* Localizable.xcstrings */; };
 		A5EC7AE7921C995FE9C572EB /* AppSecrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2859E2144AA02D35EDAE5A53 /* AppSecrets.swift */; };
 		AAA474CE09CEF82A7D7CF847 /* SharePNGExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23DC20B83FA70B06C29424A3 /* SharePNGExporter.swift */; };
 		AE563B52FE7ECD5A3B5786F1 /* ShowcaseRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E747EA0DD350E36A128C73 /* ShowcaseRecordView.swift */; };
@@ -36,15 +45,45 @@
 		B41D91C7436F5D1B43CEF1C5 /* SavedCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F77451838576A7A27BFA72E /* SavedCollection.swift */; };
 		D1C9690CF1217E54CA7BA1A0 /* RecordCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6B4B50DDA3E7240806368D /* RecordCover.swift */; };
 		D60682EC7C2A9F58548F92CD /* DiscogsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82444B2C19293AF968E1ADE5 /* DiscogsService.swift */; };
+		D8F97D2A1E31F5B1F4E14579 /* PrivacyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F611307741490E68828D193E /* PrivacyService.swift */; };
 		E258CCD45FBFA7C679C40C70 /* DiscogsModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8441ED32578A9AB316D3533 /* DiscogsModels.swift */; };
+		E3A65CD6FFC6DA27A5C17373 /* CrateWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = FA649F9BD56BF3E03DC16E40 /* CrateWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E49FA85AAE8BE392647DD1B2 /* DiscogsBarcodeSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D118B9129A3175ADF038129 /* DiscogsBarcodeSearch.swift */; };
 		E552751DA0482F3FE3D730DA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B325EF2DA9B8B79A3F25ACB2 /* ContentView.swift */; };
 		E59080885D09A22667C2B91A /* AddSingleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F51D601D4FCAE124F619FD /* AddSingleView.swift */; };
+		F058A3D7988FF3D56C9AEAD5 /* CrateAppIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F88E8349E1911EBCF933C40 /* CrateAppIntents.swift */; };
+		F99796BF2E66CF614BE83E43 /* Secrets.example.plist in Resources */ = {isa = PBXBuildFile; fileRef = 508545A9433796FC37E5E715 /* Secrets.example.plist */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		D3F8FDC08FAC524F5C77CB17 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9ADFF5926EAD9B59D340BCC7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 73336A4703E55D5899492AF2;
+			remoteInfo = CrateWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		106CE530FF565ACD4A3FCB40 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				E3A65CD6FFC6DA27A5C17373 /* CrateWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		04304D64B08D3DEA5DBE7CA0 /* AchievementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementService.swift; sourceTree = "<group>"; };
 		12389EB1A4FF46103D2A7EA5 /* VinylRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VinylRecord.swift; sourceTree = "<group>"; };
 		1527999A4B3AF85FFEAA508F /* Crate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Crate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1768D02D3F02889E2068DEE4 /* CrateWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CrateWidget.entitlements; sourceTree = "<group>"; };
 		1C888EA375FCF3F3FAC8A588 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		23DC20B83FA70B06C29424A3 /* SharePNGExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePNGExporter.swift; sourceTree = "<group>"; };
 		24F51D601D4FCAE124F619FD /* AddSingleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSingleView.swift; sourceTree = "<group>"; };
@@ -53,28 +92,41 @@
 		3727E6211B6AA476E667F08A /* VinylStoreSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VinylStoreSyncService.swift; sourceTree = "<group>"; };
 		3BF33A9843F653913128DD91 /* VoiceContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceContent.swift; sourceTree = "<group>"; };
 		3F77451838576A7A27BFA72E /* SavedCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedCollection.swift; sourceTree = "<group>"; };
+		4407C7CD1F58990A2FE13AED /* CSVImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVImportService.swift; sourceTree = "<group>"; };
+		45B400E17A620F2C9EE3D31A /* CrateWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrateWidget.swift; sourceTree = "<group>"; };
+		4739156CAF9ECA62275BE29F /* TagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsView.swift; sourceTree = "<group>"; };
 		4B69514F959D78CD4C54817C /* CrateVinylApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrateVinylApp.swift; sourceTree = "<group>"; };
+		508545A9433796FC37E5E715 /* Secrets.example.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Secrets.example.plist; sourceTree = "<group>"; };
 		52E747EA0DD350E36A128C73 /* ShowcaseRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowcaseRecordView.swift; sourceTree = "<group>"; };
 		5AD4D23386A56662F5F16460 /* OverpassService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassService.swift; sourceTree = "<group>"; };
 		5DA52FC076E60D230A9AF238 /* WishlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishlistView.swift; sourceTree = "<group>"; };
 		6D118B9129A3175ADF038129 /* DiscogsBarcodeSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscogsBarcodeSearch.swift; sourceTree = "<group>"; };
 		6F24A0795BE2A555E2EF8338 /* WishlistEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishlistEntry.swift; sourceTree = "<group>"; };
+		77D0FA51C72605F3FEE6D83C /* Achievement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Achievement.swift; sourceTree = "<group>"; };
+		787EDC0724BDB8D3DCD71313 /* BackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupService.swift; sourceTree = "<group>"; };
 		82444B2C19293AF968E1ADE5 /* DiscogsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscogsService.swift; sourceTree = "<group>"; };
 		87DE5E0632DA2C1E3A303586 /* AddBatchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBatchView.swift; sourceTree = "<group>"; };
 		8C88B9FCFB383542634348A4 /* ShowcaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowcaseView.swift; sourceTree = "<group>"; };
 		99B448D4F61AB48EA6E71BBA /* SuggestionsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsEngine.swift; sourceTree = "<group>"; };
+		9F88E8349E1911EBCF933C40 /* CrateAppIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrateAppIntents.swift; sourceTree = "<group>"; };
+		A48AD29517400517D4E50F17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A5409DE94B1F380CC5AB9966 /* EditRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRecordView.swift; sourceTree = "<group>"; };
 		B325EF2DA9B8B79A3F25ACB2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		BB54AF3AEE3A96DE09B71A03 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		BCAC2B920AB7309003EB612A /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		BF3EBB5263A82B451D5380EB /* WidgetSnapshotService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshotService.swift; sourceTree = "<group>"; };
 		BF6B4B50DDA3E7240806368D /* RecordCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordCover.swift; sourceTree = "<group>"; };
 		C11CE165262F399FA2847554 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		CA9D9013FC13D067D8729471 /* UserVinylStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserVinylStore.swift; sourceTree = "<group>"; };
+		CD06CE13E4C1372D835702DC /* CoverRecognitionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverRecognitionService.swift; sourceTree = "<group>"; };
 		D7A963054023C25D6E4AF073 /* Secrets.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Secrets.plist; sourceTree = "<group>"; };
 		D85083F7FCFE82359E799904 /* ShelfView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShelfView.swift; sourceTree = "<group>"; };
 		EB2AB21246A2F0E9D647B150 /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
 		EE0E38A130414A2548154D2A /* ImageDataTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDataTools.swift; sourceTree = "<group>"; };
 		F4269576C19C49E86267A457 /* RecordDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordDetailView.swift; sourceTree = "<group>"; };
+		F611307741490E68828D193E /* PrivacyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyService.swift; sourceTree = "<group>"; };
 		F8441ED32578A9AB316D3533 /* DiscogsModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscogsModels.swift; sourceTree = "<group>"; };
+		FA649F9BD56BF3E03DC16E40 /* CrateWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CrateWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB0E183FD8BB4B9FBD1C9AC9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FB73496FE89BB39C2D7C7B9D /* VinylShopsMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VinylShopsMapView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -85,6 +137,7 @@
 			children = (
 				03B7C5FBF4ED74ABFB851099 /* App */,
 				6D58E9CC42E39E636FD6F91C /* Config */,
+				22A006ABF0B355846443DA6A /* Intents */,
 				A423C5756A13CD7CD5B26A75 /* Models */,
 				E01EBAC3E70D0E285DD9172F /* Services */,
 				74C492DD680407A698EEBED7 /* Views */,
@@ -112,9 +165,29 @@
 			isa = PBXGroup;
 			children = (
 				FB0E183FD8BB4B9FBD1C9AC9 /* Assets.xcassets */,
+				BB54AF3AEE3A96DE09B71A03 /* Localizable.xcstrings */,
+				508545A9433796FC37E5E715 /* Secrets.example.plist */,
 				D7A963054023C25D6E4AF073 /* Secrets.plist */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		22A006ABF0B355846443DA6A /* Intents */ = {
+			isa = PBXGroup;
+			children = (
+				9F88E8349E1911EBCF933C40 /* CrateAppIntents.swift */,
+			);
+			path = Intents;
+			sourceTree = "<group>";
+		};
+		315DA929473663F523D8B6D2 /* CrateWidget */ = {
+			isa = PBXGroup;
+			children = (
+				1768D02D3F02889E2068DEE4 /* CrateWidget.entitlements */,
+				45B400E17A620F2C9EE3D31A /* CrateWidget.swift */,
+				A48AD29517400517D4E50F17 /* Info.plist */,
+			);
+			path = CrateWidget;
 			sourceTree = "<group>";
 		};
 		618F94E6ECF6177B2B0F882C /* Components */ = {
@@ -147,6 +220,7 @@
 				D85083F7FCFE82359E799904 /* ShelfView.swift */,
 				52E747EA0DD350E36A128C73 /* ShowcaseRecordView.swift */,
 				8C88B9FCFB383542634348A4 /* ShowcaseView.swift */,
+				4739156CAF9ECA62275BE29F /* TagsView.swift */,
 				5DA52FC076E60D230A9AF238 /* WishlistView.swift */,
 				618F94E6ECF6177B2B0F882C /* Components */,
 				DC9EC6CCB023DD12101A7186 /* Map */,
@@ -166,6 +240,7 @@
 		A423C5756A13CD7CD5B26A75 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				77D0FA51C72605F3FEE6D83C /* Achievement.swift */,
 				3F77451838576A7A27BFA72E /* SavedCollection.swift */,
 				BCAC2B920AB7309003EB612A /* UserProfile.swift */,
 				CA9D9013FC13D067D8729471 /* UserVinylStore.swift */,
@@ -189,6 +264,7 @@
 			isa = PBXGroup;
 			children = (
 				02790D8819E7AD3A85DE90BB /* Crate */,
+				315DA929473663F523D8B6D2 /* CrateWidget */,
 				19DB9D77D6EF32723F181F56 /* Resources */,
 				DB93F282A8026B470F1903D5 /* Products */,
 			);
@@ -198,6 +274,7 @@
 			isa = PBXGroup;
 			children = (
 				1527999A4B3AF85FFEAA508F /* Crate.app */,
+				FA649F9BD56BF3E03DC16E40 /* CrateWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -213,10 +290,16 @@
 		E01EBAC3E70D0E285DD9172F /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				04304D64B08D3DEA5DBE7CA0 /* AchievementService.swift */,
+				787EDC0724BDB8D3DCD71313 /* BackupService.swift */,
+				CD06CE13E4C1372D835702DC /* CoverRecognitionService.swift */,
+				4407C7CD1F58990A2FE13AED /* CSVImportService.swift */,
 				EE0E38A130414A2548154D2A /* ImageDataTools.swift */,
+				F611307741490E68828D193E /* PrivacyService.swift */,
 				23DC20B83FA70B06C29424A3 /* SharePNGExporter.swift */,
 				99B448D4F61AB48EA6E71BBA /* SuggestionsEngine.swift */,
 				3BF33A9843F653913128DD91 /* VoiceContent.swift */,
+				BF3EBB5263A82B451D5380EB /* WidgetSnapshotService.swift */,
 				ACD5A121DEB7703FD8B03477 /* Discogs */,
 				94B6F723AB29E753B22EE56D /* Map */,
 				1561654D16ED3C4229584CC0 /* Stores */,
@@ -227,16 +310,35 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		73336A4703E55D5899492AF2 /* CrateWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7B5C93A0E629AE63C68AE842 /* Build configuration list for PBXNativeTarget "CrateWidget" */;
+			buildPhases = (
+				F7439BE3B9649FF73F6456EB /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CrateWidget;
+			packageProductDependencies = (
+			);
+			productName = CrateWidget;
+			productReference = FA649F9BD56BF3E03DC16E40 /* CrateWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		DB32D7965F23950826673C7C /* Crate */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CF113867DAD3E077F927D94A /* Build configuration list for PBXNativeTarget "Crate" */;
 			buildPhases = (
 				FFC58C82188F931AB9A473BA /* Sources */,
 				64BB92204370EAE280FCD6F8 /* Resources */,
+				106CE530FF565ACD4A3FCB40 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				E9FC48801A952737E6542C42 /* PBXTargetDependency */,
 			);
 			name = Crate;
 			packageProductDependencies = (
@@ -254,6 +356,9 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					73336A4703E55D5899492AF2 = {
+						ProvisioningStyle = Automatic;
+					};
 					DB32D7965F23950826673C7C = {
 						ProvisioningStyle = Automatic;
 					};
@@ -265,7 +370,9 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				Base,
+				en,
 				ru,
+				"sr-Latn",
 			);
 			mainGroup = C79DB4467C20A8488B8B447B;
 			minimizedProjectReferenceProxies = 1;
@@ -273,6 +380,7 @@
 			projectRoot = "";
 			targets = (
 				DB32D7965F23950826673C7C /* Crate */,
+				73336A4703E55D5899492AF2 /* CrateWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -283,6 +391,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				983AEB799756EAB97A556785 /* Assets.xcassets in Resources */,
+				9DEE950D040784C3F84CAC8D /* Localizable.xcstrings in Resources */,
+				F99796BF2E66CF614BE83E43 /* Secrets.example.plist in Resources */,
 				18A5A56DFD9529EE9D2B9046 /* Secrets.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -290,15 +400,29 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		F7439BE3B9649FF73F6456EB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8137D8AEF90106C9443B3E0B /* CrateWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FFC58C82188F931AB9A473BA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				10629A94DD9F6237661142B7 /* Achievement.swift in Sources */,
+				56E781DD546263AF73DA1673 /* AchievementService.swift in Sources */,
 				68D269B97ECE2623D3085365 /* AddBatchView.swift in Sources */,
 				E59080885D09A22667C2B91A /* AddSingleView.swift in Sources */,
 				A5EC7AE7921C995FE9C572EB /* AppSecrets.swift in Sources */,
+				3EB5EC3835936D504573AF6D /* BackupService.swift in Sources */,
 				259A72ECEBF5010A31AFD483 /* BarcodeScannerView.swift in Sources */,
+				9317747DBD3DDA0AB0E61A0B /* CSVImportService.swift in Sources */,
 				E552751DA0482F3FE3D730DA /* ContentView.swift in Sources */,
+				6F8090C82211E32A2CB81351 /* CoverRecognitionService.swift in Sources */,
+				F058A3D7988FF3D56C9AEAD5 /* CrateAppIntents.swift in Sources */,
 				4FCEE7B3E552D55F6C9B1E4B /* CrateVinylApp.swift in Sources */,
 				E49FA85AAE8BE392647DD1B2 /* DiscogsBarcodeSearch.swift in Sources */,
 				E258CCD45FBFA7C679C40C70 /* DiscogsModels.swift in Sources */,
@@ -307,6 +431,7 @@
 				8F6A406FA9E2C187941F1614 /* ImageDataTools.swift in Sources */,
 				374CF63D1E6F4B2768CABAE1 /* LocationService.swift in Sources */,
 				0FE4BEED812D0A9929058386 /* OverpassService.swift in Sources */,
+				D8F97D2A1E31F5B1F4E14579 /* PrivacyService.swift in Sources */,
 				46A83906DCF68A29A974F3E2 /* ProfileView.swift in Sources */,
 				D1C9690CF1217E54CA7BA1A0 /* RecordCover.swift in Sources */,
 				9C5613974063A7FAD0F242A8 /* RecordDetailView.swift in Sources */,
@@ -316,6 +441,7 @@
 				AE563B52FE7ECD5A3B5786F1 /* ShowcaseRecordView.swift in Sources */,
 				1BE8D42154A40B2DC2EF0023 /* ShowcaseView.swift in Sources */,
 				7FDDC2D4E6CC4EFBD73F5A62 /* SuggestionsEngine.swift in Sources */,
+				86B8C4EE3E5E644E2CF6D322 /* TagsView.swift in Sources */,
 				8B3A1142E6D82226052648BD /* Theme.swift in Sources */,
 				105C98D2FDFCBDF2C5E12C4D /* UserProfile.swift in Sources */,
 				3BC8A37CD26556771F299B9E /* UserVinylStore.swift in Sources */,
@@ -323,12 +449,21 @@
 				B01363CA142207F6F39967EA /* VinylShopsMapView.swift in Sources */,
 				2053BDC4E87D1BC565A47EEC /* VinylStoreSyncService.swift in Sources */,
 				797BE53CB89D7436D4D97DE5 /* VoiceContent.swift in Sources */,
+				3F9B9AE4BF3147E29BB575BE /* WidgetSnapshotService.swift in Sources */,
 				7D3E86C7A05B0D8576F79613 /* WishlistEntry.swift in Sources */,
 				3B12C66CA9791710568CD34A /* WishlistView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E9FC48801A952737E6542C42 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 73336A4703E55D5899492AF2 /* CrateWidget */;
+			targetProxy = D3F8FDC08FAC524F5C77CB17 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		35AE90157023590ADEF3BB9A /* Release */ = {
@@ -388,6 +523,46 @@
 				SWIFT_VERSION = 5.9;
 			};
 			name = Release;
+		};
+		6A15C5FD1936EDAA8694867B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 54VMCQN8D8;
+				INFOPLIST_FILE = CrateWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.crate.vinyl.widget;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		6FCCD846575087AD46F55655 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 54VMCQN8D8;
+				INFOPLIST_FILE = CrateWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.crate.vinyl.widget;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
 		};
 		B42788AECDEA3AF851EA467E /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -499,6 +674,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		7B5C93A0E629AE63C68AE842 /* Build configuration list for PBXNativeTarget "CrateWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6FCCD846575087AD46F55655 /* Debug */,
+				6A15C5FD1936EDAA8694867B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		CE718F41822762418C79AB24 /* Build configuration list for PBXProject "Crate" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

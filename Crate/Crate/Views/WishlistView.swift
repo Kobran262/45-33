@@ -56,11 +56,14 @@ struct WishlistView: View {
                         .padding(.top, 40)
                 } else {
                     LazyVStack(spacing: 0) {
-                        ForEach(wishlist) { item in
+                        ForEach(sortedWishlist) { item in
                             WishlistRow(item: item) {
                                 moveToShelf(item)
                             } onRemove: {
                                 modelContext.delete(item)
+                                try? modelContext.save()
+                            } onPriority: { priority in
+                                item.priority = priority
                                 try? modelContext.save()
                             }
                             Rectangle().fill(AppTheme.rowLine).frame(height: 1).padding(.leading, 60)
@@ -78,6 +81,15 @@ struct WishlistView: View {
         .toolbar(.hidden, for: .navigationBar)
         .sheet(isPresented: $showAdd) {
             AddSingleView(mode: .wishlist)
+        }
+    }
+
+    private var sortedWishlist: [WishlistEntry] {
+        wishlist.sorted {
+            if $0.priority == $1.priority {
+                return $0.addedAt > $1.addedAt
+            }
+            return $0.priority > $1.priority
         }
     }
 
@@ -99,12 +111,26 @@ struct WishlistRow: View {
     let item: WishlistEntry
     let onMove: () -> Void
     let onRemove: () -> Void
+    let onPriority: (Int) -> Void
 
     var body: some View {
         HStack(spacing: 12) {
-            RoundedRectangle(cornerRadius: 3)
-                .stroke(AppTheme.panelLine, style: StrokeStyle(lineWidth: 1, dash: [3]))
-                .frame(width: 44, height: 44)
+            ZStack(alignment: .leading) {
+                RoundedRectangle(cornerRadius: 3)
+                    .stroke(AppTheme.panelLine, style: StrokeStyle(lineWidth: 1, dash: [3]))
+                    .frame(width: 44, height: 44)
+                if item.priority == 1 {
+                    Circle()
+                        .fill(AppTheme.gold)
+                        .frame(width: 8, height: 8)
+                        .offset(x: -4)
+                } else if item.priority >= 2 {
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(AppTheme.gold)
+                        .frame(width: 4, height: 44)
+                        .offset(x: -6)
+                }
+            }
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.title)
@@ -125,5 +151,10 @@ struct WishlistRow: View {
             }
         }
         .padding(.vertical, 10)
+        .contextMenu {
+            Button("обычная охота") { onPriority(0) }
+            Button("охочусь активно") { onPriority(1) }
+            Button("срочно, видел в продаже") { onPriority(2) }
+        }
     }
 }

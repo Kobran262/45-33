@@ -50,6 +50,7 @@ struct ProfileView: View {
     @AppStorage("iCloudSyncEnabled") private var iCloudSyncEnabled = true
     @AppStorage("appThemeMode") private var appThemeMode = "system"
     @AppStorage("privateModeEnabled") private var privateModeEnabled = false
+    @State private var showClearConfirm = false
 
     var body: some View {
         NavigationStack {
@@ -59,6 +60,7 @@ struct ProfileView: View {
                     statsTrio
                     chart
                     achievementsBlock
+                    yearlyRecapCard
                     if isImportingCSV || !csvImportSummary.isEmpty {
                         importStatus
                     }
@@ -96,6 +98,12 @@ struct ProfileView: View {
             }
             .fileImporter(isPresented: $showBackupImporter, allowedContentTypes: [.json]) { result in
                 handleBackupImport(result)
+            }
+            .alert("Удалить ВСЕ данные?", isPresented: $showClearConfirm) {
+                Button("Удалить", role: .destructive) { clearAll() }
+                Button("Отмена", role: .cancel) {}
+            } message: {
+                Text("Это удалит всю коллекцию, вишлист, все теги, профиль и достижения. Действие необратимо.")
             }
             .alert("восстановить копию?", isPresented: $showRestoreConfirm) {
                 Button("Заменить данные", role: .destructive) {
@@ -240,6 +248,30 @@ struct ProfileView: View {
         .padding(.horizontal, 20)
     }
 
+    private var yearlyRecapCard: some View {
+        NavigationLink {
+            YearlyRecapView()
+        } label: {
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Год в виниле")
+                    .font(.system(.headline, design: .serif).weight(.semibold))
+                    .foregroundStyle(AppTheme.ink)
+                Text("сводка за период")
+                    .font(.system(size: 11, design: .monospaced))
+                    .foregroundStyle(AppTheme.inkFaint)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(14)
+            .background(AppTheme.panel)
+            .overlay(
+                RoundedRectangle(cornerRadius: 12).stroke(AppTheme.panelLine, lineWidth: 1)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(.plain)
+        .padding(.horizontal, 20)
+    }
+
     private var settings: some View {
         VStack(spacing: 0) {
             settingsRow("О приложении", icon: "chevron.right")
@@ -305,7 +337,7 @@ struct ProfileView: View {
                 .padding(.vertical, 12)
                 .padding(.horizontal, 14)
             Rectangle().fill(AppTheme.rowLine).frame(height: 1)
-            settingsRow("Очистить все данные", icon: "trash", color: AppTheme.red, onTap: clearAll)
+            settingsRow("Очистить все данные", icon: "trash", color: AppTheme.red, onTap: { showClearConfirm = true })
         }
         .background(AppTheme.panel)
         .overlay(

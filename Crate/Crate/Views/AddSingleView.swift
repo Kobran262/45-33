@@ -24,6 +24,9 @@ struct AddSingleView: View {
     @State private var coverRecognitionItem: PhotosPickerItem?
     @State private var showCoverCamera = false
     @State private var recognizedCoverText = ""
+    @State private var pendingAchievements: [Achievement] = []
+    @State private var achievementIndex = 0
+    @State private var showAchievementSheet = false
 
     init(mode: Mode = .shelf) { self.mode = mode }
 
@@ -152,7 +155,11 @@ struct AddSingleView: View {
                 }
             }
             .sheet(item: $previewResult) { result in
-                DiscogsReleasePreviewView(result: result, mode: mode) { release, shouldDownloadCover in
+                DiscogsReleasePreviewView(
+                    result: result,
+                    mode: mode,
+                    shelfCount: shelfRecords.count
+                ) { release, shouldDownloadCover in
                     await commit(release: release, shouldDownloadCover: shouldDownloadCover)
                 }
             }
@@ -169,6 +176,19 @@ struct AddSingleView: View {
             }
             .onChange(of: coverRecognitionItem) { _, item in
                 Task { await recognizeCover(item: item) }
+            }
+            .sheet(isPresented: $showAchievementSheet) {
+                AchievementUnlockedSheet(
+                    achievements: pendingAchievements,
+                    records: shelfRecords,
+                    index: $achievementIndex,
+                    onDismissAll: {
+                        pendingAchievements = []
+                        achievementIndex = 0
+                        showAchievementSheet = false
+                        dismiss()
+                    }
+                )
             }
             .alert("Сканер", isPresented: Binding(get: { scannerError != nil }, set: { if !$0 { scannerError = nil } })) {
                 Button("Ок", role: .cancel) {}
@@ -255,7 +275,7 @@ struct AddSingleView: View {
                 let record = DiscogsService.shared.mapToRecord(release)
                 modelContext.insert(record)
                 try modelContext.save()
-                _ = AchievementService.evaluate(
+                let unlocked = AchievementService.evaluate(
                     records: [record] + shelfRecords,
                     existing: achievements,
                     context: modelContext,
@@ -266,6 +286,12 @@ struct AddSingleView: View {
                 if shouldDownloadCover {
                     saveStatus = "Тянем обложку…"
                     downloadCoverInBackground(for: record, urlString: release.primaryImageURL)
+                }
+                if !unlocked.isEmpty {
+                    pendingAchievements = unlocked
+                    achievementIndex = 0
+                    showAchievementSheet = true
+                    return
                 }
             case .wishlist:
                 let entry = WishlistEntry(
@@ -359,6 +385,7 @@ struct DiscogsResultCard: View {
 struct DiscogsReleasePreviewView: View {
     let result: DiscogsSearchResult
     let mode: AddSingleView.Mode
+    let shelfCount: Int
     let onCommit: (DiscogsRelease, Bool) async -> Void
 
     @Environment(\.dismiss) private var dismiss
@@ -552,7 +579,7 @@ struct DiscogsReleasePreviewView: View {
         defer { isLoading = false }
         do {
             release = try await DiscogsService.shared.fetchRelease(id: result.id)
-            if let release, Int.random(in: 0..<10) < 6 {
+            if let release, VoiceContent.shouldShowFactWhenAdding(shelfCount: shelfCount) {
                 factText = VoiceContent.fact(for: release, fallbackResult: result)
             }
         } catch {

@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 63;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01B9F15148E5DBC79DCCED73 /* VoiceContentMilestones.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D3BEDDCF4AF8E91DD4D2F28 /* VoiceContentMilestones.swift */; };
 		0EA55A5D7CDF89B49DEBD415 /* EditRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5409DE94B1F380CC5AB9966 /* EditRecordView.swift */; };
 		0FE4BEED812D0A9929058386 /* OverpassService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AD4D23386A56662F5F16460 /* OverpassService.swift */; };
 		105C98D2FDFCBDF2C5E12C4D /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAC2B920AB7309003EB612A /* UserProfile.swift */; };
@@ -24,11 +25,13 @@
 		46A83906DCF68A29A974F3E2 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C888EA375FCF3F3FAC8A588 /* ProfileView.swift */; };
 		4FCEE7B3E552D55F6C9B1E4B /* CrateVinylApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B69514F959D78CD4C54817C /* CrateVinylApp.swift */; };
 		56E781DD546263AF73DA1673 /* AchievementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04304D64B08D3DEA5DBE7CA0 /* AchievementService.swift */; };
+		5FD17AA4F052FE69A7CB45C7 /* VoiceContentFactPhrases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3908C88BCEC207C1D229A599 /* VoiceContentFactPhrases.swift */; };
 		60F38EA6445B998444AECE7B /* VinylRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12389EB1A4FF46103D2A7EA5 /* VinylRecord.swift */; };
 		68D269B97ECE2623D3085365 /* AddBatchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87DE5E0632DA2C1E3A303586 /* AddBatchView.swift */; };
 		6F8090C82211E32A2CB81351 /* CoverRecognitionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD06CE13E4C1372D835702DC /* CoverRecognitionService.swift */; };
 		797BE53CB89D7436D4D97DE5 /* VoiceContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF33A9843F653913128DD91 /* VoiceContent.swift */; };
 		7D3E86C7A05B0D8576F79613 /* WishlistEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F24A0795BE2A555E2EF8338 /* WishlistEntry.swift */; };
+		7D86135F9F7C23F2680D384F /* VoiceContentRecordFacts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A91B5FE5966FA73138F9553 /* VoiceContentRecordFacts.swift */; };
 		7FDDC2D4E6CC4EFBD73F5A62 /* SuggestionsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B448D4F61AB48EA6E71BBA /* SuggestionsEngine.swift */; };
 		8137D8AEF90106C9443B3E0B /* CrateWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B400E17A620F2C9EE3D31A /* CrateWidget.swift */; };
 		86B8C4EE3E5E644E2CF6D322 /* TagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4739156CAF9ECA62275BE29F /* TagsView.swift */; };
@@ -38,8 +41,11 @@
 		983AEB799756EAB97A556785 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB0E183FD8BB4B9FBD1C9AC9 /* Assets.xcassets */; };
 		9C5613974063A7FAD0F242A8 /* RecordDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4269576C19C49E86267A457 /* RecordDetailView.swift */; };
 		9DEE950D040784C3F84CAC8D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = BB54AF3AEE3A96DE09B71A03 /* Localizable.xcstrings */; };
+		A1A22AEBA5CA9049452382EC /* YearlyRecapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53FE3BEDA7A1107589C2BF11 /* YearlyRecapView.swift */; };
 		A5EC7AE7921C995FE9C572EB /* AppSecrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2859E2144AA02D35EDAE5A53 /* AppSecrets.swift */; };
+		A9890EF6F03B5F43FD8BE8D8 /* AchievementUnlockedSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC1B4CF0F01CC63957FDCFE /* AchievementUnlockedSheet.swift */; };
 		AAA474CE09CEF82A7D7CF847 /* SharePNGExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23DC20B83FA70B06C29424A3 /* SharePNGExporter.swift */; };
+		ACA826545FFC64084105B5CF /* YearlyRecapService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 875C39E2F8E313F1F55C5811 /* YearlyRecapService.swift */; };
 		AE563B52FE7ECD5A3B5786F1 /* ShowcaseRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E747EA0DD350E36A128C73 /* ShowcaseRecordView.swift */; };
 		B01363CA142207F6F39967EA /* VinylShopsMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB73496FE89BB39C2D7C7B9D /* VinylShopsMapView.swift */; };
 		B41D91C7436F5D1B43CEF1C5 /* SavedCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F77451838576A7A27BFA72E /* SavedCollection.swift */; };
@@ -53,6 +59,7 @@
 		E59080885D09A22667C2B91A /* AddSingleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F51D601D4FCAE124F619FD /* AddSingleView.swift */; };
 		F058A3D7988FF3D56C9AEAD5 /* CrateAppIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F88E8349E1911EBCF933C40 /* CrateAppIntents.swift */; };
 		F99796BF2E66CF614BE83E43 /* Secrets.example.plist in Resources */ = {isa = PBXBuildFile; fileRef = 508545A9433796FC37E5E715 /* Secrets.example.plist */; };
+		FDBE1AED9ECEFD2917069D7F /* RecapNotificationStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7BE6C6433C15C1A8A512F6A /* RecapNotificationStub.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,7 +89,7 @@
 /* Begin PBXFileReference section */
 		04304D64B08D3DEA5DBE7CA0 /* AchievementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementService.swift; sourceTree = "<group>"; };
 		12389EB1A4FF46103D2A7EA5 /* VinylRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VinylRecord.swift; sourceTree = "<group>"; };
-		1527999A4B3AF85FFEAA508F /* Crate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Crate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1527999A4B3AF85FFEAA508F /* Crate.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Crate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1768D02D3F02889E2068DEE4 /* CrateWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CrateWidget.entitlements; sourceTree = "<group>"; };
 		1C888EA375FCF3F3FAC8A588 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		23DC20B83FA70B06C29424A3 /* SharePNGExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePNGExporter.swift; sourceTree = "<group>"; };
@@ -90,7 +97,9 @@
 		2859E2144AA02D35EDAE5A53 /* AppSecrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSecrets.swift; sourceTree = "<group>"; };
 		34B43C0B3AD3D86F0D56FDE8 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		3727E6211B6AA476E667F08A /* VinylStoreSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VinylStoreSyncService.swift; sourceTree = "<group>"; };
+		3908C88BCEC207C1D229A599 /* VoiceContentFactPhrases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceContentFactPhrases.swift; sourceTree = "<group>"; };
 		3BF33A9843F653913128DD91 /* VoiceContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceContent.swift; sourceTree = "<group>"; };
+		3D3BEDDCF4AF8E91DD4D2F28 /* VoiceContentMilestones.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceContentMilestones.swift; sourceTree = "<group>"; };
 		3F77451838576A7A27BFA72E /* SavedCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedCollection.swift; sourceTree = "<group>"; };
 		4407C7CD1F58990A2FE13AED /* CSVImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVImportService.swift; sourceTree = "<group>"; };
 		45B400E17A620F2C9EE3D31A /* CrateWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrateWidget.swift; sourceTree = "<group>"; };
@@ -98,13 +107,17 @@
 		4B69514F959D78CD4C54817C /* CrateVinylApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrateVinylApp.swift; sourceTree = "<group>"; };
 		508545A9433796FC37E5E715 /* Secrets.example.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Secrets.example.plist; sourceTree = "<group>"; };
 		52E747EA0DD350E36A128C73 /* ShowcaseRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowcaseRecordView.swift; sourceTree = "<group>"; };
+		53FE3BEDA7A1107589C2BF11 /* YearlyRecapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearlyRecapView.swift; sourceTree = "<group>"; };
 		5AD4D23386A56662F5F16460 /* OverpassService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassService.swift; sourceTree = "<group>"; };
 		5DA52FC076E60D230A9AF238 /* WishlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishlistView.swift; sourceTree = "<group>"; };
 		6D118B9129A3175ADF038129 /* DiscogsBarcodeSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscogsBarcodeSearch.swift; sourceTree = "<group>"; };
+		6DC1B4CF0F01CC63957FDCFE /* AchievementUnlockedSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementUnlockedSheet.swift; sourceTree = "<group>"; };
 		6F24A0795BE2A555E2EF8338 /* WishlistEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishlistEntry.swift; sourceTree = "<group>"; };
 		77D0FA51C72605F3FEE6D83C /* Achievement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Achievement.swift; sourceTree = "<group>"; };
 		787EDC0724BDB8D3DCD71313 /* BackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupService.swift; sourceTree = "<group>"; };
+		7A91B5FE5966FA73138F9553 /* VoiceContentRecordFacts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceContentRecordFacts.swift; sourceTree = "<group>"; };
 		82444B2C19293AF968E1ADE5 /* DiscogsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscogsService.swift; sourceTree = "<group>"; };
+		875C39E2F8E313F1F55C5811 /* YearlyRecapService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearlyRecapService.swift; sourceTree = "<group>"; };
 		87DE5E0632DA2C1E3A303586 /* AddBatchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBatchView.swift; sourceTree = "<group>"; };
 		8C88B9FCFB383542634348A4 /* ShowcaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowcaseView.swift; sourceTree = "<group>"; };
 		99B448D4F61AB48EA6E71BBA /* SuggestionsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsEngine.swift; sourceTree = "<group>"; };
@@ -112,6 +125,7 @@
 		A48AD29517400517D4E50F17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A5409DE94B1F380CC5AB9966 /* EditRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRecordView.swift; sourceTree = "<group>"; };
 		B325EF2DA9B8B79A3F25ACB2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		B7BE6C6433C15C1A8A512F6A /* RecapNotificationStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecapNotificationStub.swift; sourceTree = "<group>"; };
 		BB54AF3AEE3A96DE09B71A03 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		BCAC2B920AB7309003EB612A /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		BF3EBB5263A82B451D5380EB /* WidgetSnapshotService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshotService.swift; sourceTree = "<group>"; };
@@ -126,7 +140,7 @@
 		F4269576C19C49E86267A457 /* RecordDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordDetailView.swift; sourceTree = "<group>"; };
 		F611307741490E68828D193E /* PrivacyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyService.swift; sourceTree = "<group>"; };
 		F8441ED32578A9AB316D3533 /* DiscogsModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscogsModels.swift; sourceTree = "<group>"; };
-		FA649F9BD56BF3E03DC16E40 /* CrateWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CrateWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA649F9BD56BF3E03DC16E40 /* CrateWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = CrateWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB0E183FD8BB4B9FBD1C9AC9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FB73496FE89BB39C2D7C7B9D /* VinylShopsMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VinylShopsMapView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -211,6 +225,7 @@
 		74C492DD680407A698EEBED7 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6DC1B4CF0F01CC63957FDCFE /* AchievementUnlockedSheet.swift */,
 				87DE5E0632DA2C1E3A303586 /* AddBatchView.swift */,
 				24F51D601D4FCAE124F619FD /* AddSingleView.swift */,
 				B325EF2DA9B8B79A3F25ACB2 /* ContentView.swift */,
@@ -222,6 +237,7 @@
 				8C88B9FCFB383542634348A4 /* ShowcaseView.swift */,
 				4739156CAF9ECA62275BE29F /* TagsView.swift */,
 				5DA52FC076E60D230A9AF238 /* WishlistView.swift */,
+				53FE3BEDA7A1107589C2BF11 /* YearlyRecapView.swift */,
 				618F94E6ECF6177B2B0F882C /* Components */,
 				DC9EC6CCB023DD12101A7186 /* Map */,
 			);
@@ -296,10 +312,15 @@
 				4407C7CD1F58990A2FE13AED /* CSVImportService.swift */,
 				EE0E38A130414A2548154D2A /* ImageDataTools.swift */,
 				F611307741490E68828D193E /* PrivacyService.swift */,
+				B7BE6C6433C15C1A8A512F6A /* RecapNotificationStub.swift */,
 				23DC20B83FA70B06C29424A3 /* SharePNGExporter.swift */,
 				99B448D4F61AB48EA6E71BBA /* SuggestionsEngine.swift */,
 				3BF33A9843F653913128DD91 /* VoiceContent.swift */,
+				3908C88BCEC207C1D229A599 /* VoiceContentFactPhrases.swift */,
+				3D3BEDDCF4AF8E91DD4D2F28 /* VoiceContentMilestones.swift */,
+				7A91B5FE5966FA73138F9553 /* VoiceContentRecordFacts.swift */,
 				BF3EBB5263A82B451D5380EB /* WidgetSnapshotService.swift */,
+				875C39E2F8E313F1F55C5811 /* YearlyRecapService.swift */,
 				ACD5A121DEB7703FD8B03477 /* Discogs */,
 				94B6F723AB29E753B22EE56D /* Map */,
 				1561654D16ED3C4229584CC0 /* Stores */,
@@ -376,6 +397,7 @@
 			);
 			mainGroup = C79DB4467C20A8488B8B447B;
 			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -414,6 +436,7 @@
 			files = (
 				10629A94DD9F6237661142B7 /* Achievement.swift in Sources */,
 				56E781DD546263AF73DA1673 /* AchievementService.swift in Sources */,
+				A9890EF6F03B5F43FD8BE8D8 /* AchievementUnlockedSheet.swift in Sources */,
 				68D269B97ECE2623D3085365 /* AddBatchView.swift in Sources */,
 				E59080885D09A22667C2B91A /* AddSingleView.swift in Sources */,
 				A5EC7AE7921C995FE9C572EB /* AppSecrets.swift in Sources */,
@@ -433,6 +456,7 @@
 				0FE4BEED812D0A9929058386 /* OverpassService.swift in Sources */,
 				D8F97D2A1E31F5B1F4E14579 /* PrivacyService.swift in Sources */,
 				46A83906DCF68A29A974F3E2 /* ProfileView.swift in Sources */,
+				FDBE1AED9ECEFD2917069D7F /* RecapNotificationStub.swift in Sources */,
 				D1C9690CF1217E54CA7BA1A0 /* RecordCover.swift in Sources */,
 				9C5613974063A7FAD0F242A8 /* RecordDetailView.swift in Sources */,
 				B41D91C7436F5D1B43CEF1C5 /* SavedCollection.swift in Sources */,
@@ -449,9 +473,14 @@
 				B01363CA142207F6F39967EA /* VinylShopsMapView.swift in Sources */,
 				2053BDC4E87D1BC565A47EEC /* VinylStoreSyncService.swift in Sources */,
 				797BE53CB89D7436D4D97DE5 /* VoiceContent.swift in Sources */,
+				5FD17AA4F052FE69A7CB45C7 /* VoiceContentFactPhrases.swift in Sources */,
+				01B9F15148E5DBC79DCCED73 /* VoiceContentMilestones.swift in Sources */,
+				7D86135F9F7C23F2680D384F /* VoiceContentRecordFacts.swift in Sources */,
 				3F9B9AE4BF3147E29BB575BE /* WidgetSnapshotService.swift in Sources */,
 				7D3E86C7A05B0D8576F79613 /* WishlistEntry.swift in Sources */,
 				3B12C66CA9791710568CD34A /* WishlistView.swift in Sources */,
+				ACA826545FFC64084105B5CF /* YearlyRecapService.swift in Sources */,
+				A1A22AEBA5CA9049452382EC /* YearlyRecapView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -528,7 +557,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 54VMCQN8D8;
 				INFOPLIST_FILE = CrateWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -548,7 +576,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 54VMCQN8D8;
 				INFOPLIST_FILE = CrateWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -571,7 +598,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 54VMCQN8D8;
 				INFOPLIST_FILE = Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -657,7 +683,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 54VMCQN8D8;
 				INFOPLIST_FILE = Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (

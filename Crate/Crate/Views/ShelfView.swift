@@ -107,21 +107,23 @@ struct ShelfView: View {
                 emptyState
             } else {
                 shelfContent
-            }
-
-            if !records.isEmpty && !isSelectionMode {
-                Button {
-                    showAddMenu = true
-                } label: {
-                    Image(systemName: "plus")
-                        .font(.system(size: 22, weight: .semibold))
-                        .foregroundStyle(AppTheme.bg)
-                        .frame(width: 56, height: 56)
-                        .background(AppTheme.gold)
-                        .clipShape(Circle())
-                        .shadow(color: AppTheme.gold.opacity(0.4), radius: 12, y: 6)
-                }
-                .position(x: UIScreen.main.bounds.width - 50, y: UIScreen.main.bounds.height - 200)
+                    .overlay(alignment: .bottomTrailing) {
+                        if !isSelectionMode {
+                            Button {
+                                showAddMenu = true
+                            } label: {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 22, weight: .semibold))
+                                    .foregroundStyle(AppTheme.bg)
+                                    .frame(width: 56, height: 56)
+                                    .background(AppTheme.gold)
+                                    .clipShape(Circle())
+                                    .shadow(color: AppTheme.gold.opacity(0.4), radius: 12, y: 6)
+                            }
+                            .padding(.trailing, 18)
+                            .padding(.bottom, 24)
+                        }
+                    }
             }
         }
     }

@@ -17,6 +17,9 @@ struct AddBatchView: View {
     @State private var lastError: String?
     @State private var showManualAdd = false
     @State private var saveStatus: String?
+    @State private var pendingAchievements: [Achievement] = []
+    @State private var achievementIndex = 0
+    @State private var showAchievementSheet = false
 
     struct BatchItem: Identifiable, Hashable {
         let id = UUID()
@@ -149,6 +152,19 @@ struct AddBatchView: View {
             } message: {
                 Text(scannerError ?? "")
             }
+            .sheet(isPresented: $showAchievementSheet) {
+                AchievementUnlockedSheet(
+                    achievements: pendingAchievements,
+                    records: shelfRecords,
+                    index: $achievementIndex,
+                    onDismissAll: {
+                        pendingAchievements = []
+                        achievementIndex = 0
+                        showAchievementSheet = false
+                        dismiss()
+                    }
+                )
+            }
         }
     }
 
@@ -239,6 +255,7 @@ struct AddBatchView: View {
         saveStatus = "Сохранение…"
         defer { isLoading = false }
 
+        var lastInserted: VinylRecord?
         for item in draft where item.flag != .duplicate {
             if let manual = item.manual {
                 let record = VinylRecord(
@@ -253,16 +270,29 @@ struct AddBatchView: View {
                     story: manual.story
                 )
                 modelContext.insert(record)
+                lastInserted = record
             } else if let releaseResult = item.release {
                 let record = DiscogsService.shared.mapSearchResult(releaseResult)
                 modelContext.insert(record)
+                lastInserted = record
                 downloadCoverInBackground(for: record, urlString: releaseResult.cover_image ?? releaseResult.thumb)
             }
         }
         try? modelContext.save()
-        _ = AchievementService.evaluate(records: shelfRecords, existing: achievements, context: modelContext)
+        let unlocked = AchievementService.evaluate(
+            records: shelfRecords,
+            existing: achievements,
+            context: modelContext,
+            triggerRecord: lastInserted
+        )
         try? modelContext.save()
         WidgetSnapshotService.update(records: shelfRecords)
+        if !unlocked.isEmpty {
+            pendingAchievements = unlocked
+            achievementIndex = 0
+            showAchievementSheet = true
+            return
+        }
         dismiss()
     }
 

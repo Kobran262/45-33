@@ -6,7 +6,7 @@ enum SharePNGExporter {
     static func temporaryPNGURL<Content: View>(
         filename: String,
         width: CGFloat,
-        scale: CGFloat = UIScreen.main.scale,
+        scale: CGFloat = 3,
         @ViewBuilder content: () -> Content
     ) -> URL? {
         let renderer = ImageRenderer(content: content().frame(width: width))

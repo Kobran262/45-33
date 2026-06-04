@@ -45,24 +45,108 @@ enum VoiceContent {
     }
 
     static func fact(for release: DiscogsRelease, fallbackResult: DiscogsSearchResult? = nil) -> String {
+        pickFact(for: release, fallbackResult: fallbackResult)
+    }
+
+    /// v3: факт в ~60% добавлений; для первой пластинки — всегда.
+    static func shouldShowFactWhenAdding(shelfCount: Int) -> Bool {
+        if shelfCount == 0 { return true }
+        return Int.random(in: 0..<10) < 6
+    }
+
+    static func milestoneBody(for kind: String) -> String {
+        guard kind.hasPrefix("milestone"),
+              let count = Int(kind.replacingOccurrences(of: "milestone", with: "")),
+              let phrases = milestonePhrases[count], !phrases.isEmpty else {
+            return "Юбилей на полке. Запомни этот момент."
+        }
+        return phrases.randomElement() ?? phrases[0]
+    }
+
+    static func achievementBody(for kind: String) -> String {
+        if kind.hasPrefix("firstGenre.") {
+            let tag = kind.replacingOccurrences(of: "firstGenre.", with: "")
+            return phraseAchievement(.achievementFirstGenre, tag: tag)
+        }
+        if kind.hasPrefix("genre10.") {
+            let tag = kind.replacingOccurrences(of: "genre10.", with: "")
+            return phraseAchievement(.achievementGenre10, tag: tag)
+        }
+        if kind.hasPrefix("label5.") {
+            let labelName = kind.replacingOccurrences(of: "label5.", with: "")
+            return phraseAchievement(.achievementLabel5, label: labelName)
+        }
+        if kind == "fiveDecades" {
+            return achievementPhrases[.achievementFiveDecades]?.randomElement()
+                ?? "Пять эпох на одной полке. Кто-то тут серьёзно копает."
+        }
+        return milestoneBody(for: kind)
+    }
+
+    static func summaryTotalSpent(sum: String, amount: Double) -> String {
+        let key: VoiceRecapKey
+        if amount < 500 { key = .summarySpentLow }
+        else if amount <= 1500 { key = .summarySpentMid }
+        else { key = .summarySpentHigh }
+        return recapPhrase(key).replacingOccurrences(of: "{SUM}", with: sum)
+    }
+
+    static func recapHero(count: Int) -> String {
+        let key: VoiceRecapKey
+        switch count {
+        case 0: key = .recapHeroEmpty
+        case 1...5: key = .recapHeroFew
+        case 6...30: key = .recapHeroNormal
+        default: key = .recapHeroHeavy
+        }
+        return recapPhrase(key)
+            .replacingOccurrences(of: "{N}", with: "\(count)")
+    }
+
+    static func recapPhrase(_ key: VoiceRecapKey) -> String {
+        let values = recapPhrases[key, default: []]
+        guard !values.isEmpty else { return "" }
+        return values.randomElement() ?? values[0]
+    }
+
+    private static func phraseAchievement(_ key: VoiceAchievementKey, tag: String = "", label: String = "") -> String {
+        let values = achievementPhrases[key, default: []]
+        guard !values.isEmpty else { return "" }
+        let raw = values.randomElement() ?? values[0]
+        return raw
+            .replacingOccurrences(of: "{GENRE}", with: tag.capitalized)
+            .replacingOccurrences(of: "{LABEL}", with: label.capitalized)
+    }
+
+    private struct FactCandidate {
+        let text: String
+        let id: String
+        let weight: Int
+    }
+
+    private static let recentFactIDsKey = "recentFactIDs"
+
+    private static func pickFact(for release: DiscogsRelease, fallbackResult: DiscogsSearchResult?) -> String {
+        var pool: [FactCandidate] = []
         let artist = release.primaryArtist.lowercased()
         let title = release.title.components(separatedBy: " - ").last?.lowercased() ?? release.title.lowercased()
 
-        if let matched = recordFacts.first(where: { fact in
-            artist.contains(fact.artist.lowercased()) && title.contains(fact.album.lowercased())
+        if let matched = VoiceContentRecordFacts.all.first(where: { fact in
+            artist.contains(fact.artist) && title.contains(fact.album)
         }) {
-            return matched.text
+            for (index, text) in matched.texts.enumerated() {
+                pool.append(FactCandidate(
+                    text: text,
+                    id: "record:\(matched.artist):\(matched.album):\(index)",
+                    weight: 5
+                ))
+            }
         }
 
         let label = release.primaryLabel.lowercased()
-        if label.contains("blue note") { return phraseText(.labelBlueNote) }
-        if label.contains("ecm") { return phraseText(.labelECM) }
-        if label.contains("motown") { return phraseText(.labelMotown) }
-        if label.contains("stax") { return phraseText(.labelStax) }
-        if label.contains("atlantic") { return phraseText(.labelAtlantic) }
-        if label.contains("verve") { return phraseText(.labelVerve) }
-        if label.contains("columbia") { return phraseText(.labelColumbia) }
-        if label.contains("impulse") { return phraseText(.labelImpulse) }
+        labelGroups(for: label).forEach { group in
+            addGroupPhrases(group, weight: 3, to: &pool)
+        }
 
         var genreParts: [String] = []
         genreParts.append(contentsOf: release.genres ?? [])
@@ -70,35 +154,135 @@ enum VoiceContent {
         genreParts.append(contentsOf: fallbackResult?.genre ?? [])
         genreParts.append(contentsOf: fallbackResult?.style ?? [])
         let genres = genreParts.joined(separator: " ").lowercased()
-        if genres.contains("jazz") { return phraseText(.genreJazz) }
-        if genres.contains("rock") { return phraseText(.genreRock) }
-        if genres.contains("classical") { return phraseText(.genreClassical) }
-        if genres.contains("electronic") { return phraseText(.genreElectronic) }
-        if genres.contains("hip") { return phraseText(.genreHipHop) }
-        if genres.contains("funk") { return phraseText(.genreFunk) }
-        if genres.contains("soul") { return phraseText(.genreSoul) }
-
-        let format = release.formatDescription.lowercased()
-        if format.contains("mono") { return phraseText(.pressMono) }
-        if format.contains("180") { return phraseText(.press180g) }
-        if format.contains("half-speed") || format.contains("half speed") { return phraseText(.pressHalfSpeed) }
+        genreGroups(for: genres).forEach { group in
+            addGroupPhrases(group, weight: 2, to: &pool)
+        }
 
         let year = release.year ?? fallbackResult?.yearInt ?? 0
-        switch year {
-        case 1950..<1960: return phraseText(.decade1950)
-        case 1960..<1970: return phraseText(.decade1960)
-        case 1970..<1980: return phraseText(.decade1970)
-        case 1980..<1990: return phraseText(.decade1980)
-        case 1990..<2000: return phraseText(.decade1990)
-        case 2000...: return phraseText(.decade2000)
-        default: return phraseText(.genericFact)
+        if let decadeGroup = decadeGroup(for: year) {
+            addGroupPhrases(decadeGroup, weight: 2, to: &pool)
+        }
+
+        let format = release.formatDescription.lowercased()
+        pressingGroups(for: format).forEach { group in
+            addGroupPhrases(group, weight: 2, to: &pool)
+        }
+
+        let generic = factPhrases[.genericFact, default: []]
+        for text in generic.shuffled().prefix(3) {
+            pool.append(FactCandidate(text: text, id: factID(group: .genericFact, text: text), weight: 1))
+        }
+
+        if pool.isEmpty {
+            addGroupPhrases(.genericFact, weight: 1, to: &pool)
+        }
+
+        return selectWeighted(from: pool)
+    }
+
+    private static func addGroupPhrases(_ group: FactGroup, weight: Int, to pool: inout [FactCandidate]) {
+        for text in factPhrases[group, default: []] {
+            pool.append(FactCandidate(text: text, id: factID(group: group, text: text), weight: weight))
         }
     }
 
-    private static func phraseText(_ group: FactGroup) -> String {
-        let values = factPhrases[group, default: factPhrases[.genericFact, default: []]]
-        guard !values.isEmpty else { return "" }
-        return values.randomElement() ?? values[0]
+    private static func factID(group: FactGroup, text: String) -> String {
+        "\(group.rawValue):\(text.hashValue)"
+    }
+
+    private static func selectWeighted(from pool: [FactCandidate]) -> String {
+        var recent = UserDefaults.standard.stringArray(forKey: recentFactIDsKey) ?? []
+        var available = pool.filter { !recent.contains($0.id) }
+        if available.isEmpty {
+            recent = []
+            UserDefaults.standard.set(recent, forKey: recentFactIDsKey)
+            available = pool
+        }
+
+        let totalWeight = available.reduce(0) { $0 + $1.weight }
+        guard totalWeight > 0, let chosen = weightedPick(available, totalWeight: totalWeight) else {
+            return pool.first?.text ?? ""
+        }
+
+        recent.insert(chosen.id, at: 0)
+        if recent.count > 20 { recent = Array(recent.prefix(20)) }
+        UserDefaults.standard.set(recent, forKey: recentFactIDsKey)
+        return chosen.text
+    }
+
+    private static func weightedPick(_ pool: [FactCandidate], totalWeight: Int) -> FactCandidate? {
+        var roll = Int.random(in: 0..<totalWeight)
+        for candidate in pool {
+            roll -= candidate.weight
+            if roll < 0 { return candidate }
+        }
+        return pool.last
+    }
+
+    private static func labelGroups(for label: String) -> [FactGroup] {
+        var groups: [FactGroup] = []
+        if label.contains("blue note") { groups.append(.labelBlueNote) }
+        if label.contains("ecm") { groups.append(.labelECM) }
+        if label.contains("motown") { groups.append(.labelMotown) }
+        if label.contains("stax") { groups.append(.labelStax) }
+        if label.contains("atlantic") { groups.append(.labelAtlantic) }
+        if label.contains("verve") { groups.append(.labelVerve) }
+        if label.contains("columbia") { groups.append(.labelColumbia) }
+        if label.contains("impulse") { groups.append(.labelImpulse) }
+        if label.contains("riverside") { groups.append(.labelRiverside) }
+        if label.contains("4ad") { groups.append(.label4AD) }
+        if label.contains("factory") { groups.append(.labelFactory) }
+        if label.contains("def jam") { groups.append(.labelDefJam) }
+        if label.contains("sub pop") { groups.append(.labelSubPop) }
+        if label.contains("apple") { groups.append(.labelApple) }
+        return groups
+    }
+
+    private static func genreGroups(for genres: String) -> [FactGroup] {
+        var groups: [FactGroup] = []
+        if genres.contains("indie folk") || genres.contains("indie-folk") { groups.append(.genreIndieFolk) }
+        if genres.contains("krautrock") || genres.contains("kraut") { groups.append(.genreKrautrock) }
+        if genres.contains("experimental") || genres.contains("avant") { groups.append(.genreExperimental) }
+        if genres.contains("world") || genres.contains("afrobeat") || genres.contains("latin") { groups.append(.genreWorld) }
+        if genres.contains("ambient") || genres.contains("drone") { groups.append(.genreAmbient) }
+        if genres.contains("reggae") || genres.contains("dub") || genres.contains("ska") { groups.append(.genreReggae) }
+        if genres.contains("metal") || genres.contains("heavy") { groups.append(.genreMetal) }
+        if genres.contains("blues") { groups.append(.genreBlues) }
+        if genres.contains("country") || genres.contains("americana") { groups.append(.genreCountry) }
+        if genres.contains("jazz") { groups.append(.genreJazz) }
+        if genres.contains("classical") { groups.append(.genreClassical) }
+        if genres.contains("electronic") || genres.contains("techno") || genres.contains("house") { groups.append(.genreElectronic) }
+        if genres.contains("hip") || genres.contains("rap") { groups.append(.genreHipHop) }
+        if genres.contains("funk") { groups.append(.genreFunk) }
+        if genres.contains("soul") || genres.contains("r&b") || genres.contains("rnb") { groups.append(.genreSoul) }
+        if genres.contains("folk") && !groups.contains(.genreIndieFolk) { groups.append(.genreIndieFolk) }
+        if genres.contains("rock") || genres.contains("punk") || genres.contains("grunge") { groups.append(.genreRock) }
+        return groups
+    }
+
+    private static func decadeGroup(for year: Int) -> FactGroup? {
+        switch year {
+        case 1950..<1960: return .decade1950
+        case 1960..<1970: return .decade1960
+        case 1970..<1980: return .decade1970
+        case 1980..<1990: return .decade1980
+        case 1990..<2000: return .decade1990
+        case 2000...: return .decade2000
+        default: return nil
+        }
+    }
+
+    private static func pressingGroups(for format: String) -> [FactGroup] {
+        var groups: [FactGroup] = []
+        if format.contains("mono") { groups.append(.pressMono) }
+        if format.contains("180") { groups.append(.press180g) }
+        if format.contains("half-speed") || format.contains("half speed") { groups.append(.pressHalfSpeed) }
+        if format.contains("japan") { groups.append(.pressJapanese) }
+        if format.contains("colored") || format.contains("colour") || format.contains("red") || format.contains("clear") {
+            groups.append(.pressColored)
+        }
+        if format.contains("first press") || format.contains("1st press") { groups.append(.pressFirst) }
+        return groups
     }
 
     private static let phrases: [VoiceKey: [String]] = [
@@ -245,161 +429,125 @@ enum VoiceContent {
         ]
     ]
 
-    private enum FactGroup {
-        case genericFact
-        case decade1950
-        case decade1960
-        case decade1970
-        case decade1980
-        case decade1990
-        case decade2000
-        case labelBlueNote
-        case labelECM
-        case labelMotown
-        case labelStax
-        case labelAtlantic
-        case labelVerve
-        case labelColumbia
-        case labelImpulse
-        case genreJazz
-        case genreRock
-        case genreClassical
-        case genreElectronic
-        case genreHipHop
-        case genreFunk
-        case genreSoul
-        case pressMono
-        case press180g
-        case pressHalfSpeed
+    enum VoiceAchievementKey {
+        case achievementFirstGenre
+        case achievementGenre10
+        case achievementLabel5
+        case achievementFiveDecades
     }
 
-    private static let factPhrases: [FactGroup: [String]] = [
-        .genericFact: [
-            "А знаешь — это одна из тех пластинок, которые становятся лучше с возрастом.",
-            "Эта вертится у людей десятилетиями. Видимо, не зря.",
-            "Если эта попала к тебе — у тебя хороший вкус.",
-            "Эта пластинка пережила пять поколений виниловых проигрывателей.",
-            "Эту берут осознанно — случайно она в коллекцию не попадает."
+    enum VoiceRecapKey {
+        case recapHeroEmpty
+        case recapHeroFew
+        case recapHeroNormal
+        case recapHeroHeavy
+        case recapTopGenreIntro
+        case recapTopArtistIntro
+        case recapTopLabelIntro
+        case recapMostExpensive
+        case recapOldestPress
+        case recapMonthlyTitle
+        case summarySpentLow
+        case summarySpentMid
+        case summarySpentHigh
+    }
+
+    private static let achievementPhrases: [VoiceAchievementKey: [String]] = [
+        .achievementFirstGenre: [
+            "Первый след жанра «{GENRE}» на полке. Начало ветки.",
+            "Жанр «{GENRE}» зашёл. Посмотрим, приживётся ли.",
+            "«{GENRE}» появился на полке. Пока одна пластинка — но это старт.",
+            "Новый жанровый след: {GENRE}. Полка расширяется.",
         ],
-        .decade1950: [
-            "Пятидесятые. Винил тогда был не форматом, а единственным способом.",
-            "Эпоха mono. Если попался стерео — значит, переиздание.",
-            "50-е. Эра рождения LP-формата — раньше были только 78-е."
+        .achievementGenre10: [
+            "Десять пластинок «{GENRE}». Жанр явно прижился.",
+            "«{GENRE}» — уже не эксперимент, а привычка.",
+            "10 штук «{GENRE}». Это уже отдельная история на полке.",
+            "Жанр «{GENRE}» занял место. Десятая пластинка это подтвердила.",
         ],
-        .decade1960: [
-            "Шестидесятые. Лучшее десятилетие винила, если спросить старших.",
-            "Эпоха, когда обложки стали важны не меньше музыки.",
-            "60-е. Тогда альбом перестал быть сборником синглов и стал высказыванием."
+        .achievementLabel5: [
+            "Этот лейбл прижился — уже пятая на полке.",
+            "Пять пластинок одного лейбла. Знакомый звук.",
+            "Лейбл «{LABEL}» — уже не случайность.",
+            "Пятая с одного лейбла. Кто-то явно копает в одном месте.",
         ],
-        .decade1970: [
-            "Семидесятые. Тяжёлые конверты, толстый винил, серьёзные лица.",
-            "Эпоха «концептуальных альбомов» — слушать надо целиком.",
-            "В 70-х появились первые «аудиофильские» прессинги. Многие из них живы до сих пор."
+        .achievementFiveDecades: [
+            "Пять эпох на одной полке. Кто-то тут серьёзно копает.",
+            "Пять десятилетий в одной коллекции. Временная линия сложилась.",
+            "От 50-х до сегодня — полка пересекла пять эпох.",
+            "Пять разных десятилетий. Полка стала музеем времени.",
         ],
-        .decade1980: [
-            "Восьмидесятые. Винил уже знал, что скоро придёт CD, и старался напоследок.",
-            "80-е — последнее десятилетие, когда винил был основным форматом.",
-            "Сейчас за этими прессингами идёт охота — их выпускали меньше, чем 70-е."
-        ],
-        .decade1990: [
-            "Девяностые на виниле — редкость. Многое тогда выходило только на CD.",
-            "Винил в 90-х был для верных. Тех, кто не сдался под натиском CD.",
-            "Эпоха, когда виниловые тиражи были маленькими — что хорошо для редкости."
-        ],
-        .decade2000: [
-            "Современный прессинг. 180 грамм, скорее всего — тяжелее старых.",
-            "Реиссью часто звучат не хуже оригиналов. Иногда — лучше.",
-            "Эта пластинка — часть «винилового ренессанса». Спасибо хипстерам."
-        ],
-        .labelBlueNote: [
-            "Blue Note. Самый узнаваемый лейбл в джазе.",
-            "Blue Note. Это уже не «лейбл», это часть джазовой ДНК.",
-            "Обложки Рида Майлза. До сих пор копируют."
-        ],
-        .labelECM: [
-            "ECM. «The most beautiful sound next to silence» — так у них на бумаге написано.",
-            "Лейбл, который сделал тишину частью музыки.",
-            "ECM. Манфред Айхер пишет звук так, будто записывает воздух между нотами."
-        ],
-        .labelMotown: [
-            "Motown. Главная фабрика поп-музыки шестидесятых.",
-            "Motown — про танец. Это слышно с первой секунды."
-        ],
-        .labelStax: [
-            "Stax. Memphis Sound — грязнее и горячее, чем Motown.",
-            "Stax записывал не глянец, а правду."
-        ],
-        .labelAtlantic: [
-            "Atlantic. Лейбл, который умел делать всё — джаз, соул, рок, ритм-н-блюз.",
-            "Atlantic — один из немногих лейблов, переживший всё."
-        ],
-        .labelVerve: [
-            "Verve. Создан, чтобы записывать Элу Фитцджеральд так, как она того заслуживала.",
-            "Verve — главный конкурент Blue Note. Только звук теплее и глянцевее."
-        ],
-        .labelColumbia: [
-            "Columbia. Один из старейших лейблов в мире — основан в 1888 году.",
-            "Columbia первой массово начала выпускать LP-формат в 1948 году."
-        ],
-        .labelImpulse: [
-            "Impulse! Лейбл, на котором Coltrane выпускал свои самые смелые вещи.",
-            "Оранжево-чёрные конверты Impulse — узнаваемые с любого расстояния."
-        ],
-        .genreJazz: [
-            "Джаз на виниле — это, кажется, единственный честный способ его слушать.",
-            "Джаз был придуман для аналогового звука. На цифре он немного теряет."
-        ],
-        .genreRock: [
-            "Классика жанра. Эту до сих пор переиздают каждые пару лет.",
-            "Рок-альбомы делали для виниловых сторон по 20 минут — отсюда и структура."
-        ],
-        .genreClassical: [
-            "Классика на виниле — отдельная религия. С аудиофилами не спорь.",
-            "Классика и джаз — два жанра, которые продали винил аудиофилам."
-        ],
-        .genreElectronic: [
-            "Электроника на виниле — отдельный мир. Тут даже промахи звучат красиво.",
-            "Винил для электроники — носитель для диджеев. Многие треки изначально делались под него."
-        ],
-        .genreHipHop: [
-            "Хип-хоп вырос из винила. Без поворотников и баттлов диджеев его бы не было.",
-            "Сэмплы в хип-хопе — это, по сути, кусочки чужих пластинок. Эта могла стать одним из них."
-        ],
-        .genreFunk: [
-            "Фанк. Если бы у винила был жанр-родитель, был бы фанк.",
-            "Тяжёлый бас на этих пластинках — отдельный аттракцион."
-        ],
-        .genreSoul: [
-            "Соул. Голос важнее всего, и винил эту тёплость не съедает.",
-            "Соул на виниле звучит так, как должен — мягко и в лицо."
-        ],
-        .pressMono: [
-            "Mono-прессинг. Многие считают, что джаз и блюз надо слушать только так.",
-            "Mono — это не «хуже стерео», это другой звук. Запомни."
-        ],
-        .press180g: [
-            "180 грамм. Тяжёлый винил — стандарт современных переизданий.",
-            "180g не делает звук автоматически лучше — но снижает резонансы."
-        ],
-        .pressHalfSpeed: [
-            "Half-speed master. Запись делалась на пониженной скорости — это даёт больше деталей.",
-            "Half-speed — премиальная техника мастеринга. Не на каждой пластинке."
-        ]
     ]
 
-    private struct RecordFact {
-        let artist: String
-        let album: String
-        let text: String
-    }
-
-    private static let recordFacts: [RecordFact] = [
-        .init(artist: "miles davis", album: "kind of blue", text: "Записан за две сессии. Почти всё с первого дубля. Считается самой продаваемой джазовой пластинкой в истории."),
-        .init(artist: "john coltrane", album: "a love supreme", text: "Coltrane подал это как духовное приношение. Записал с классическим квартетом за одну сессию."),
-        .init(artist: "pink floyd", album: "the dark side of the moon", text: "Альбом, который продаётся непрерывно с 1973 года. Концепт про время, безумие, деньги."),
-        .init(artist: "joy division", album: "unknown pleasures", text: "Обложка с пульсаром — самый растиражированный графический мотив в музыке."),
-        .init(artist: "radiohead", album: "ok computer", text: "Альбом про будущее, написанный в 1997 году. Сейчас он звучит ещё актуальнее."),
-        .init(artist: "nirvana", album: "nevermind", text: "Альбом, который убил глэм-метал и принёс гранж в мейнстрим."),
-        .init(artist: "amy winehouse", album: "back to black", text: "Соул в современной упаковке. Винехаус не успела дожить до зрелости — это её зенит.")
+    private static let recapPhrases: [VoiceRecapKey: [String]] = [
+        .recapHeroEmpty: [
+            "Тихий год. С полкой ничего не случилось.",
+            "Ноль новых пластинок за период. Полка отдыхала.",
+            "Пустой отрезок. Иногда так и надо.",
+            "За этот период — тишина. Полка не менялась.",
+        ],
+        .recapHeroFew: [
+            "Аккуратное начало. {N} пластинок за год — это уже что-то.",
+            "{N} пластинок за период. Небольшой, но честный прирост.",
+            "Немного, но осознанно: {N} за период.",
+            "{N} новых — скромно, зато каждая на счету.",
+        ],
+        .recapHeroNormal: [
+            "{N} пластинок прижились за год. Полка заметно потяжелела.",
+            "{N} за период — полка жила активной жизнью.",
+            "За период +{N}. Коллекция выросла ровно.",
+            "{N} пластинок — год, который слышно на полке.",
+        ],
+        .recapHeroHeavy: [
+            "{N} пластинок за год — серьёзная охота.",
+            "{N} за период. Полка явно не стояла на месте.",
+            "Тяжёлый год для полки: {N} новых пластинок.",
+            "{N} — это уже не хобби на выходных.",
+        ],
+        .recapTopGenreIntro: [
+            "жанр года",
+            "что чаще всего",
+            "куда чаще возвращался",
+        ],
+        .recapTopArtistIntro: [
+            "артист года",
+            "к кому вернулся чаще всех",
+            "чья пластинка звучала чаще",
+        ],
+        .recapTopLabelIntro: [
+            "лейбл года",
+            "чей звук чаще попадал на полку",
+            "откуда чаще приезжали пластинки",
+        ],
+        .recapMostExpensive: [
+            "самая дорогая покупка",
+            "где жаба уступила сильнее всего",
+            "самый дорогой след периода",
+        ],
+        .recapOldestPress: [
+            "самая старая пластинка года",
+            "самый дальний год издания",
+            "самый старый прессинг за период",
+        ],
+        .recapMonthlyTitle: [
+            "по месяцам",
+            "когда тяжелее всего была полка",
+            "когда добавлял чаще всего",
+        ],
+        .summarySpentLow: [
+            "Вложено {SUM} — и это только начало.",
+            "{SUM} — пока что бюджетно.",
+            "{SUM} вложено. Всё впереди.",
+        ],
+        .summarySpentMid: [
+            "Всего вложено: {SUM}.",
+            "Сумма коллекции: {SUM}.",
+            "Накоплено вложений: {SUM}.",
+        ],
+        .summarySpentHigh: [
+            "Всего вложено: {SUM}.",
+            "Стоимость коллекции по ценам покупки: {SUM}.",
+            "За период в полку ушло: {SUM}.",
+        ],
     ]
 }
